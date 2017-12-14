@@ -1,7 +1,7 @@
 # C-Software-Renderer
 Simple software renderer using C Language
 
-!Requares SDL2 for window init
+!Requires SDL2 for window init
 
 
 Have:
