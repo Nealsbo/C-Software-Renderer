@@ -60,6 +60,11 @@ vec2  vec2_create(float x, float y){
     return v;
 }
 
+vec2  vec2_createv(vec2 v){
+    vec2 v1 = {v.x, v.y};
+    return v1;
+}
+
 vec2  vec2_add(vec2 v1, vec2 v2){
     vec2 v3;
     v3.x = v1.x + v2.x;
@@ -104,6 +109,10 @@ vec2  vec2_nrm(vec2 v1){
 float vec2_lng(vec2 v1){
     float len = sqrtf(v1.x * v1.x + v1.y * v1.y);
     return len;
+}
+
+vec2 vec2_lerp (vec2 v1, vec2 v2, float value){
+    return vec2_add( vec2_mlt( vec2_sub(v2, v1), value ), v1);
 }
 
 void vec2_print(vec2 v){
@@ -182,6 +191,11 @@ vec3  vec3_create(float x, float y, float z){
     return v;
 }
 
+vec3  vec3_createv(vec3 v){
+    vec3 v1 = {v.x, v.y, v.z};
+    return v1;
+}
+
 vec3  vec3_add(vec3 v1, vec3 v2){
     vec3 v3;
     v3.x = v1.x + v2.x;
@@ -241,6 +255,10 @@ float vec3_lng(vec3 v1){
     return len;
 }
 
+vec3 vec3_lerp (vec3 v1, vec3 v2, float value){
+    return vec3_add( vec3_mlt( vec3_sub(v2, v1), value ), v1);
+}
+
 vec2  vec3_toVec2(vec3 v){
     vec2 v2 = {v.x, v.y};
     return v2;
@@ -287,6 +305,11 @@ vec4  vec4_create(float x, float y, float z, float w){
     return v;
 }
 
+vec4  vec4_createv(vec4 v){
+    vec4 v1 = {v.x, v.y, v.z, v.w};
+    return v1;
+}
+
 vec4  vec4_add(vec4 v1, vec4 v2){
     vec4 v3;
     v3.x = v1.x + v2.x;
@@ -323,7 +346,7 @@ vec4  vec4_crs(vec4 v1, vec4 v2){
     v3.x = v1.y * v2.z - v1.z * v2.y;
     v3.y = v1.z * v2.x - v1.x * v2.z;
     v3.z = v1.x * v2.y - v1.y * v2.x;
-    v3.w = 0;
+    v3.w = 1;
     return v3;
 }
 
@@ -344,7 +367,23 @@ float vec4_max(vec4 v1){
     return MAX( MAX( v1.x, v1.y ), MAX( v1.z, v1.w ) );
 }
 
-vec3  vec4_toVec3(vec4 v, int byw){
+vec4 vec4_lerp (vec4 v1, vec4 v2, float value){
+    return vec4_add( vec4_mlt( vec4_sub(v2, v1), value ), v1);
+}
+
+vec4 vec4_pdiv (vec4 v){
+    return vec4_create(v.x / v.w, v.y / v.w, v.z / v.w, v.w);
+}
+
+vec2i vec4_toVec2i(vec4 v){
+    return vec2i_create((int)v.x, (int)v.y);
+}
+
+vec2 vec4_toVec2 (vec4 v){
+    return vec2_create(v.x, v.y);
+}
+
+vec3 vec4_toVec3(vec4 v, int byw){
     if(byw){
         vec3 v2 = {v.x/v.w, v.y/v.w, v.z/v.w};
         return v2;
@@ -354,7 +393,7 @@ vec3  vec4_toVec3(vec4 v, int byw){
     }
 }
 
-vec4  vec4_byMat4(vec4 v, mat4 m){
+vec4 vec4_byMat4(vec4 v, mat4 m){
     vec4 v2 = {m.m[ 0] * v.x + m.m[ 1] * v.y + m.m[ 2] * v.z + m.m[ 3] * v.w,
                m.m[ 4] * v.x + m.m[ 5] * v.y + m.m[ 6] * v.z + m.m[ 7] * v.w,
                m.m[ 8] * v.x + m.m[ 9] * v.y + m.m[10] * v.z + m.m[11] * v.w,
@@ -521,7 +560,7 @@ mat4 mat4_projection(float near, float far, float fov, float aspect){
 mat4 mat4_screen(float halfW, float halfH){
     mat4 m = {{
             halfW,  0.0f, 0.0f, halfW,
-            0.0f, halfH, 0.0f, halfH,
+            0.0f,  halfH, 0.0f, halfH,
             0.0f,   0.0f, 1.0f,  0.0f,
             0.0f,   0.0f, 0.0f,  1.0f }};
     return m;

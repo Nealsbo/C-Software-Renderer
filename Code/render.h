@@ -8,14 +8,34 @@
 //##########################
 
 typedef struct {
-    float x, xStep;
-    int yStart, yEnd;
+    float x;
+    float xStep;
+	int   yStart;
+	int   yEnd;
+	float texCoordX;
+	float texCoordXStep;
+	float texCoordY;
+	float texCoordYStep;
+	float oneOverZ;
+    float oneOverZStep;
+    float depth;
+    float depthStep;
 } edge_t;
 
 typedef struct {
-    color_t m_color[3];
-	vec4    m_colorXStep;
-    vec4    m_colorYStep;
+    float texCoordX[3];
+	float texCoordY[3];
+	float oneOverZ[3];
+	float depth[3];
+
+	float texCoordXXStep;
+	float texCoordXYStep;
+	float texCoordYXStep;
+	float texCoordYYStep;
+	float oneOverZXStep;
+    float oneOverZYStep;
+    float depthXStep;
+    float depthYStep;
 } gradient_t;
 
 //###########################
@@ -54,45 +74,45 @@ typedef struct {
 
 typedef struct {
     renderContext_t *context;
-    bitmap_t        *z_Buffer;
+    float           *z_Buffer;
     float           frameTime;
-    long int        frameCount;
+    uint32_t        frameCount;
 } renderInfo_t;
 
 //############################
 //###   Raster functions   ###
 //############################
 
-void Vertex_Init(vertex_t vert, vec3 pos, vec3 norm, vec2 uv);
-void Vertex_Transform(vertex_t vert, mat4 tf);
+edge_t     Edge_Init ( gradient_t grad, vertex_t *miny, vertex_t *maxy, int miny_index );
+void       Edge_Step ( edge_t *edge );
+void       Edge_Print( edge_t edge );
 
-void Edge_Init(edge_t edge, vec3 miny, vec3 maxy);
-void Edge_Step(edge_t *edge);
-void Edge_Print(edge_t edge);
-
-void Gradient_Init(gradient_t grad, vec3 miny, vec3 midy, vec3 maxy);
+gradient_t Gradient_Init( vertex_t *miny, vertex_t *midy, vertex_t *maxy );
+float      Gradient_CalcXStep( float *values, vertex_t *miny, vertex_t *midy, vertex_t *maxy, float oneOverdX );
+float      Gradient_CalcYStep( float *values, vertex_t *miny, vertex_t *midy, vertex_t *maxy, float oneOverdX );
 
 //###########################
 //###   Scene functions   ###
 //###########################
 
-scene_t *Scene_Init          ( camera_t *camera );
-void    Scene_AddObject      ( scene_t *scene, obj_model_t *model );
-List    *Scene_GetObjectList ( scene_t *scene );
-void    Scene_PrintObjectList( scene_t *scene );
-void    Scene_Destroy        ( scene_t *scene );
+scene_t *Scene_Init           ( camera_t *camera );
+void     Scene_AddObject      ( scene_t *scene, obj_model_t *model );
+List    *Scene_GetObjectList  ( scene_t *scene );
+void     Scene_PrintObjectList( scene_t *scene );
+void     Scene_Destroy        ( scene_t *scene );
 
 //###############################
 //###   Rendering functions   ###
 //###############################
 
-renderContext_t *Render_InitContext(uint32_t flag);
-renderInfo_t    *Render_Init(renderContext_t *context, uint32_t flag);
+renderContext_t *Render_InitContext( uint32_t flag );
+renderInfo_t    *Render_Init( renderContext_t *context, uint32_t flag );
 
 void Render_SwitchRenderState( renderInfo_t *render );
 void Render_UpdateRenderInfo ( renderInfo_t *render ); //TODO
-void Render_DrawLine         ( vec2i p0, vec2i p1, SDL_Surface *image, color_t color );
-void Render_DrawTriangle     ( vec2i t0, vec2i t1, vec2i t2, SDL_Surface *image, color_t color );       //TODO: optimize, vertex, texture rendering, shading
+void Render_ClearZBuffer     ( renderInfo_t *render );
+void Render_DrawLine         ( vertex_t v0, vertex_t v1, SDL_Surface *image, color_t color);
+void Render_DrawTriangle     ( vertex_t *v0, vertex_t *v1, vertex_t *v2, SDL_Surface *image, obj_model_t *model );
 void Render_DrawObject       ( scene_t *scene, renderInfo_t *render, obj_model_t *model, SDL_Surface *Surface, float delta );
 void Render_DrawWorld        ( scene_t *scene, renderInfo_t *render, SDL_Surface *Surface, float delta );
 void Render_Destroy          ( renderInfo_t *render, renderContext_t *context );

@@ -2,7 +2,7 @@
 #define OBJLOADER_H_INCLUDED
 
 typedef struct {
-    vec3 pos[3];
+    vec4 pos[3];
     vec3 norm[3];
     vec2 uv[3];
     color_t color;
@@ -18,7 +18,7 @@ typedef struct {
 } obj_face_t;
 
 typedef struct {
-    vec3 position;
+    vec4 position;
     vec3 normal;
     vec2 uv;
 } vertex_t;
@@ -51,11 +51,15 @@ typedef struct {
     int          *indexes;
 } obj_model_t;
 
+vertex_t Vertex_Init     ( vec4 pos, vec3 norm, vec2 uv );
+void     Vertex_Transform( vertex_t vert, mat4 tf );
+vertex_t Vertex_Lerp     ( vertex_t v, float value );
+float    Vertex_GetPositionElement( vertex_t v, int index );
 
 triangle_t  *CreateTriangle();
 
 obj_face_t   Face_Create(int n, vec3i *v);
-void         Face_Print(obj_face_t f);
+void         Face_Print (obj_face_t f);
 void         Face_Printp(obj_face_t *f);
 
 //###########################

@@ -39,6 +39,7 @@ void  vec2i_printp(void *vp);
 
 //Float
 vec2  vec2_create(float x, float y);
+vec2  vec2_createv(vec2 v);
 
 vec2  vec2_add(vec2 v1, vec2 v2);
 vec2  vec2_sub(vec2 v1, vec2 v2);
@@ -47,6 +48,8 @@ float vec2_dot(vec2 v1, vec2 v2);
 vec2  vec2_neg(vec2 v1);
 vec2  vec2_nrm(vec2 v1);
 float vec2_lng(vec2 v1);
+
+vec2  vec2_lerp(vec2 v1, vec2 v2, float value);
 
 void  vec2_print(vec2 v);
 void  vec2_printp(void *vp);
@@ -69,6 +72,7 @@ void  vec3i_printp(void *vp);
 
 //Float
 vec3  vec3_create(float x, float y, float z);
+vec3  vec3_createv(vec3 v);
 
 vec3  vec3_add(vec3 v1, vec3 v2);
 vec3  vec3_sub(vec3 v1, vec3 v2);
@@ -79,6 +83,7 @@ vec3  vec3_neg(vec3 v1);
 vec3  vec3_nrm(vec3 v1);
 float vec3_lng(vec3 v1);
 
+vec3  vec3_lerp   (vec3 v1, vec3 v2, float value);
 vec2i vec3_toVec2i(vec3 v);
 vec2  vec3_toVec2 (vec3 v);
 vec4  vec3_toVec4 (vec3 v);
@@ -92,6 +97,7 @@ void  vec3_printp(void *vp);
 //###############
 
 vec4  vec4_create(float x, float y, float z, float w);
+vec4  vec4_createv(vec4 v);
 
 vec4  vec4_add(vec4 v1, vec4 v2);
 vec4  vec4_sub(vec4 v1, vec4 v2);
@@ -103,8 +109,12 @@ vec4  vec4_nrm(vec4 v1);
 float vec4_lng(vec4 v1);
 float vec4_max(vec4 v1);
 
-vec3  vec4_toVec3(vec4 v, int byw);
-vec4  vec4_byMat4(vec4 v, mat4 m);
+vec4  vec4_lerp   (vec4 v1, vec4 v2, float value);
+vec4  vec4_pdiv   (vec4 v);
+vec2i vec4_toVec2i(vec4 v);
+vec2  vec4_toVec2 (vec4 v);
+vec3  vec4_toVec3 (vec4 v, int byw);
+vec4  vec4_byMat4 (vec4 v, mat4 m);
 
 void  vec4_print(vec4 v);
 void  vec4_printp(void *vp);

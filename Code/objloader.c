@@ -1,14 +1,38 @@
 #include "srdefs.h"
 #include "objloader.h"
 
-void Vertex_Init(vertex_t vert, vec3 pos, vec3 norm, vec2 uv){
-    vert.position = pos;
-    vert.normal   = norm;
-    vert.uv       = uv;
+vertex_t Vertex_Init(vec4 pos, vec3 norm, vec2 uv){
+    vertex_t vert;
+    vert.position = (vec4){pos.x, pos.y, pos.z, pos.w};
+    vert.normal   = (vec3){norm.x, norm.y, norm.z};
+    vert.uv       = (vec2){uv.x, uv.y};
+    return vert;
 }
 
 void Vertex_Transform(vertex_t vert, mat4 tf){
-    vert.position = vec3_byMat4(vert.position, tf);
+    vert.position = vec4_byMat4(vert.position, tf);
+}
+
+vertex_t Vertex_Lerp( vertex_t v, float value ){
+    vertex_t vert;
+    vert.position = vec4_lerp( vert.position, v.position, value );
+    vert.uv       = vec2_lerp( vert.uv, v.uv, value );
+    return vert;
+}
+
+float Vertex_GetPositionElement( vertex_t v, int index ){
+    switch( index ){
+    case 0:
+        return v.position.x;
+    case 1:
+        return v.position.y;
+    case 2:
+        return v.position.z;
+    case 3:
+        return v.position.w;
+    default:
+        return 0;
+    }
 }
 
 triangle_t *CreateTriangle(){
@@ -123,6 +147,77 @@ obj_model_t *Model_CreateBaseTriangle( const char *model_name ){
     model->faces  = (obj_face_t *)malloc(sizeof(obj_face_t));
     model->faces[0]  = Face_Create(3, vec3i_arrayToVec3ip(9, f_arr[0] ));
 
+    model->diffmap = (texture_t *)malloc(sizeof(texture_t));
+    model->diffmap->bitmap = Bitmap_LoadPPM6("texture.ppm");
+
+    return model;
+}
+
+obj_model_t *Model_CreateBasePlane( const char *model_name ){
+    int i;
+
+    obj_model_t *model = (obj_model_t *)malloc(sizeof(obj_model_t));
+    if(model == NULL){
+        printf("Error: Cannot create model object '%s'\n", model_name);
+        return NULL;
+    }
+
+    memcpy(model->name, model_name, MAX_NAME_LENGTH);                   //Set object name by argument
+
+    model->vertCount   = 4;                                             //Allocation prepared data for model, box in that case
+    model->trisCount   = 2;
+
+    float v_arr[4][3]  = {{-1.0, -1.0, 0.0},
+                          {-1.0,  1.0, 0.0},
+                          { 1.0,  1.0, 0.0},
+                          { 1.0, -1.0, 0.0}};
+
+    float vn_arr[4][3] = {{ 0.0, 0.0, 1.0},
+                          { 0.0, 0.0, 1.0},
+                          { 0.0, 0.0, 1.0},
+                          { 0.0, 0.0, 1.0}};
+
+    float vt_arr[4][2] = {{ 0.0,  0.0},
+                          { 0.0,  1.0},
+                          { 1.0,  1.0},
+                          { 1.0,  0.0}};
+
+    int   f_arr[2][9]  = {{ 1, 1, 1, 2, 2, 2, 3, 3, 3},
+                          { 1, 1, 1, 3, 3, 3, 4, 4, 4}};
+
+    model->position    = vec3_create(0.0, 0.0, 0.0);
+    model->rotation    = vec3_create(0.0, 0.0, 0.0);
+    model->scale       = vec3_create(1.0, 1.0, 1.0);
+    model->baseColor   = Color_Init(0, 245, 116, 255);
+    model->diffmap     = NULL;
+
+    model->vertices    = malloc(sizeof(vec3) * 4);
+    if(model->vertices == NULL){
+        printf("Error: Malloc vertices error'%s'\n", model->name);
+        Model_Free(model);
+        return NULL;
+    }
+    for(i = 0; i < 4; i++){
+        model->vertices[i] = vec3_create(v_arr[i][0], v_arr[i][1], v_arr[i][2]);
+    }
+
+    model->normals     = (vec3 *)malloc(sizeof(vec3) * 4);
+    for(i = 0; i < 4; i++){
+        model->normals[i] = vec3_create(vn_arr[i][0], vn_arr[i][1], vn_arr[i][2]);
+    }
+
+    model->textcoords  = (vec2*)malloc(sizeof(vec2) * 4);
+    for(i = 0; i < 4; i++){
+        model->textcoords[i] = vec2_create(vt_arr[i][0], vt_arr[i][1]);
+    }
+
+    model->faces  = (obj_face_t *)malloc(sizeof(obj_face_t) * 2);
+    model->faces[0]  = Face_Create(3, vec3i_arrayToVec3ip(9, f_arr[0] ));
+    model->faces[1]  = Face_Create(3, vec3i_arrayToVec3ip(9, f_arr[1] ));
+
+    model->diffmap = (texture_t *)malloc(sizeof(texture_t));
+    model->diffmap->bitmap = Bitmap_LoadPPM6("texture.ppm");
+
     return model;
 }
 
@@ -214,7 +309,7 @@ obj_model_t *Model_CreateBaseBox( const char *model_name){
     model->position    = vec3_create(0.0, 0.0, 0.0);
     model->rotation    = vec3_create(0.0, 0.0, 0.0);
     model->scale       = vec3_create(1.0, 1.0, 1.0);
-    model->baseColor   = Color_Init(120, 252, 255, 255);
+    model->baseColor   = Color_Init(255, 255, 255, 255);
     model->diffmap     = NULL;
 
     model->vertices    = (vec3 *)malloc(sizeof(vec3) * 8);
@@ -236,6 +331,9 @@ obj_model_t *Model_CreateBaseBox( const char *model_name){
     for(i = 0; i < 12; i++){
         model->faces[i]  = Face_Create(3, vec3i_arrayToVec3ip(9, f_arr[i]  ));
     }
+
+    model->diffmap = (texture_t *)malloc(sizeof(texture_t));
+    model->diffmap->bitmap = Bitmap_LoadPPM6("texture.ppm");
 
     return model;
 }
@@ -357,6 +455,9 @@ obj_model_t *Model_LoadOBJ( const char *file_name ){
         tmpnode = List_Next(tmpnode);
     }
 
+    model->diffmap = (texture_t *)malloc(sizeof(texture_t));
+    model->diffmap->bitmap = Bitmap_LoadPPM6("texture.ppm");
+
     List_Destroy(vertList);
     List_Destroy(coordList);
     List_Destroy(normList);
@@ -476,8 +577,11 @@ void Model_Free(obj_model_t *model){
             free(model->faces[i].indexes);
         free(model->faces);
     }
-    if( !model->diffmap )
-        free(model->diffmap);   //TODO
+
+    if( !model->diffmap ){
+        Bitmap_Free(model->diffmap->bitmap);
+        free(model->diffmap);
+    }
     //free(specmap);
     //free(normalmap);
     //free(lightmap);

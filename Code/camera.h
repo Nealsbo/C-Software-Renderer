@@ -2,7 +2,7 @@
 #define CAMERA_H_INCLUDED
 
 typedef struct {
-    vec3 position, direction, up;
+    vec3 position, direction, up, right;
     mat4 projection;
     float fov, aspect;
     float near, far;
@@ -24,11 +24,13 @@ vec3     Camera_GetDirection ( camera_t *cam );
 float    Camera_GetFov       ( camera_t *cam );
 float    Camera_GetAspect    ( camera_t *cam );
 mat4     Camera_GetMatrix    ( camera_t *cam );
+mat4     Camera_GetViewProj  ( camera_t *cam );
 float    Camera_GetNear      ( camera_t *cam );
 float    Camera_GetFar       ( camera_t *cam );
 
 void     Camera_PrintInfo    ( camera_t *cam );
 
+void     Camera_PerfMovement ( camera_t *cam, int m_type, float value );
 void     Camera_MoveByVec    ( camera_t *cam, vec3 step );      //TODO
 void     Camera_RotateByVec  ( camera_t *cam, vec3 rot );       //TODO
 

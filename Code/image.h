@@ -21,8 +21,10 @@ typedef struct {
 
 color_t   Color_Init        ( unsigned char r, unsigned char g, unsigned char b, unsigned char a );
 void      Color_Screen      ( color_t res, color_t src1, color_t src2 );
-void      Color_MakeGray    ( color_t c );
+color_t   Color_Gray        ( unsigned char l );
+color_t   Color_ToGray      ( color_t c );
 void      Color_Lerp        ( color_t res, color_t src1, color_t src2, float a );
+color_t   Color_Intensity   ( color_t c, float a );
 uint32_t  Color_ToUInt32    ( color_t c );
 uint32_t  Color_ToUInt32Fast( color_t c );
 
@@ -46,7 +48,5 @@ void      Bitmap_SavePPM3    ( bitmap_t *i );
 void      Bitmap_SavePPM6    ( bitmap_t *i );
 void      Bitmap_Print       ( bitmap_t *i );
 void      Bitmap_Free        ( bitmap_t *i );
-
-void      Bitmap_BlurMap     ( bitmap_t *i, float value );      //TODO
 
 #endif // IMAGE_H_INCLUDED

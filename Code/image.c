@@ -6,11 +6,15 @@ color_t Color_Init(unsigned char r, unsigned char g, unsigned char b, unsigned c
     return c;
 }
 
-void Color_MakeGray( color_t c ){
-    char s = ( c.r + c.g + c.b ) / 3;
-    c.r = s;
-    c.g = s;
-    c.b = s;
+color_t Color_Gray( unsigned char l ){
+    color_t c = {l, l, l, 1};
+    return c;
+}
+
+color_t Color_ToGray( color_t c ){
+    unsigned char s = ( c.r + c.g + c.b ) / 3;
+    color_t r = {s, s, s, c.a};
+    return r;
 }
 
 void Color_Lerp( color_t res, color_t src1, color_t src2, float a ){
@@ -18,6 +22,13 @@ void Color_Lerp( color_t res, color_t src1, color_t src2, float a ){
     res.g = (1 - a) * src1.g + a * src2.g;
     res.b = (1 - a) * src1.b + a * src2.b;
     res.a = (1 - a) * src1.a + a * src2.a;
+}
+
+color_t Color_Intensity( color_t c, float a ){
+    if(a < 0)
+        return Color_Init(0, 0, 0, 255);
+    color_t res = Color_Init((unsigned char)(c.r * a), (unsigned char)(c.g * a), (unsigned char)(c.b * a), c.a );
+    return res;
 }
 
 uint32_t Color_ToUInt32( color_t c ){
@@ -216,7 +227,3 @@ void Bitmap_Free( bitmap_t *i ){
 //###
 //### Bitmap(image) operations
 //###
-
-void Bitmap_BlurMap( bitmap_t *i, float value ){
-
-}
