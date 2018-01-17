@@ -16,6 +16,7 @@ Have:
 
 TODO:
 - Rendering features and optimization
+- Clipping
 - Fixes(Camera, Controls, Z-Buffer, Lighting)
 - Obj material loading
 - Texture manager
