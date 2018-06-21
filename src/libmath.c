@@ -531,9 +531,9 @@ mat4 mat4_rotx( float r ){
 mat4 mat4_roty( float r ){
     mat4 m = {{
 		cos(r), 0.0f, -sin(r), 0.0f,
-		0.0f,   1.0f,    0.0f, 0.0f,
+		  0.0f, 1.0f,    0.0f, 0.0f,
 		sin(r), 0.0f,  cos(r), 0.0f,
-		0.0f,   0.0f,    0.0f, 1.0f }};
+		  0.0f, 0.0f,    0.0f, 1.0f }};
     return m;
 }
 
@@ -559,10 +559,10 @@ mat4 mat4_projection(float near, float far, float fov, float aspect){
 
 mat4 mat4_screen(float halfW, float halfH){
     mat4 m = {{
-            halfW,  0.0f, 0.0f, halfW,
-            0.0f,  halfH, 0.0f, halfH,
-            0.0f,   0.0f, 1.0f,  0.0f,
-            0.0f,   0.0f, 0.0f,  1.0f }};
+            halfW,   0.0f,  0.0f, halfW,
+             0.0f,  halfH,  0.0f, halfH,
+             0.0f,   0.0f,  1.0f,  0.0f,
+             0.0f,   0.0f,  0.0f,  1.0f }};
     return m;
 }
 
@@ -570,21 +570,23 @@ mat4 mat4_screen(float halfW, float halfH){
 //#   Ray   #
 //###########
 
-ray ray_init( vec3 o, vec3 d){
+ray ray_init(vec3 o, vec3 d){
     ray r = {o, d};
     return r;
 }
 
-float ray_getLength( ray r){
-    return sqrtf( power_f_i((r.direction.x - r.origin.x), 2) + power_f_i((r.direction.y - r.origin.y), 2) + power_f_i((r.direction.z - r.origin.z), 2));
+float ray_getLength(ray r){
+    return sqrtf( power_f_i((r.direction.x - r.origin.x), 2) +
+                  power_f_i((r.direction.y - r.origin.y), 2) +
+                  power_f_i((r.direction.z - r.origin.z), 2));
 }
 
-ray ray_rayToPoint( vec3 p1, vec3 p2 ){
+ray ray_rayToPoint(vec3 p1, vec3 p2){
     ray r = {p1, p2};
     return r;
 }
 
-void ray_print( ray r ){
+void ray_print(ray r){
     vec3_print(r.origin);
     vec3_print(r.direction);
 }
@@ -594,14 +596,14 @@ void ray_print( ray r ){
 //#   Math Functions   #
 //######################
 
-float power_f_i( float x, int y ){
+float power_f_i(float x, int y){
     int i;
     float s = 1;
     for(i = y; i != 0; --i) s *= x;
     return s;
 }
 
-float clamp( float value, float lower, float higher ){
+float clamp(float value, float lower, float higher){
     if(value > higher)
         return higher;
     if(value < lower)

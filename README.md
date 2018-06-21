@@ -9,7 +9,7 @@ Have:
 - Lit textured draw(unoptimized)
 - - Perspective texture mapping
 - Multiple model draw
-- Camera implementation(not used in full purpose)
+- Camera implementation(not used in its purpose)
 - Obj model loading(Triangulated)
 - PPM image save/load
 - Z-Buffer(half-broken)

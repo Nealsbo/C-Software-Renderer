@@ -150,17 +150,17 @@ void  mat4_printp(void *mp);
 //#   Ray   #
 //###########
 
-ray   ray_init      ( vec3 o, vec3 d );
-float ray_getLength ( ray r);
-ray   ray_rayToPoint( vec3 p1, vec3 p2 );
-void  ray_print     ( ray r );
+ray   ray_init      (vec3 o, vec3 d);
+float ray_getLength (ray r);
+ray   ray_rayToPoint(vec3 p1, vec3 p2);
+void  ray_print     (ray r);
 
 //######################
 //#   Math Functions   #
 //######################
 
-float power_f_i( float x, int y );
-float clamp    ( float value, float lower, float higher );
+float power_f_i(float x, int y);
+float clamp    (float value, float lower, float higher);
 
 
 #endif // LIBMATH_H_INCLUDED
