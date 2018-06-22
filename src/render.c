@@ -118,9 +118,11 @@ void Scene_PrintObjectList( scene_t *scene ){
 }
 
 void Scene_Destroy( scene_t *scene ){
-    Model_Free(scene->skybox);
-    free(scene->mainCamera);
-    List_Destroy(scene->objectList);
+    if(scene != NULL) {
+        Model_Free(scene->skybox);
+        free(scene->mainCamera);
+        List_Destroy(scene->objectList);
+    }
 }
 
 //###############################
@@ -361,11 +363,15 @@ void Render_DrawWorld(scene_t *scene, renderInfo_t *render, SDL_Surface *Surface
 }
 
 void Render_Destroy(renderInfo_t *render, renderContext_t *context){
-    free(context);
-    render->context = NULL;
-    free(render->z_Buffer);
-    render->z_Buffer = NULL;
-    render_          = NULL;
-    printf("\nRendered frames: %d\n", render->frameCount);
-    free(render);
+    if(render != NULL) {
+        if(context != NULL){
+            free(context);
+        }
+        render->context = NULL;
+        free(render->z_Buffer);
+        render->z_Buffer = NULL;
+        render_          = NULL;
+        printf("\nRendered frames: %d\n", render->frameCount);
+        free(render);
+    }
 }

@@ -14,13 +14,14 @@ SDL_Surface     *gXOut              = NULL;
 renderContext_t *mainRenderContext  = NULL;
 renderInfo_t    *mainRenderer       = NULL;
 
-void init_world();
-void destroy_world();
-
 int  init();
 void close();
 void putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel);
 void init_world();
+void destroy_world();
+
+extern void Scene_Destroy(scene_t* );
+extern void Render_Destroy(renderInfo_t*, renderContext_t*);
 
 #if 1
 
@@ -39,28 +40,29 @@ int init(){
             gScreenSurface = SDL_GetWindowSurface( gWindow );
         }
     }
+    printf("Success result is: %i\n", success);
     return success;
 }
 
 void close(){
     destroy_world();
 
-	SDL_DestroyWindow( gWindow );
+	SDL_DestroyWindow(gWindow);
 	gWindow = NULL;
 
 	SDL_Quit();
 }
 
 void init_world(){
-    obj_model_t *testModelBox = Model_LoadOBJ("monkey1.obj");
+    //obj_model_t *testModelBox = Model_LoadOBJ("../assets/monkey.obj");
     //obj_model_t *testModelBox = Model_LoadOBJ("box1.obj");
-    //obj_model_t *testModelBox = Model_CreateBaseBox("Box01");
-    Model_SetPosition(testModelBox, (vec3){-1.0, 0.0, -6.0});
+    obj_model_t *testModelBox = Model_CreateBaseBox("Box01");
+    Model_SetPosition(testModelBox, vec3_create(-1.0, 0.0, -6.0));
 
     obj_model_t *testModelBox1 = Model_CreateBasePlane("Plane01");
     //obj_model_t *testModelBox1 = Model_CreateBaseTriangle("Triangle01");
-    Model_SetPosition(testModelBox1, (vec3){2.0, 0.0, -6.0});
-
+    Model_SetPosition(testModelBox1, vec3_create(2.0, 0.0, -6.0));
+    
     camera_t *Cam = Camera_Init(vec3_create(0.0f, 0.0f, 0.0f),          //Position
                                 vec3_create(0.0f, 0.0f, -1.0f),         //Direction
                                 vec3_create(0.0f, 1.0f, 0.0f),          //Up vector
@@ -68,7 +70,7 @@ void init_world(){
                                 (float)WINDOW_WIDTH/WINDOW_HEIGHT,      //Aspect
                                 1.0f,                                   //Near plane
                                 100.0f);                                //Far plane
-
+    
     Scene = Scene_Init(Cam);
     Scene_AddObject(Scene, testModelBox);
     Scene_AddObject(Scene, testModelBox1);
@@ -149,6 +151,9 @@ int main(int argc, char* args[])
 		if( ticksDiff < SCREEN_TICK_PER_FRAME ){
             SDL_Delay( SCREEN_TICK_PER_FRAME - ticksDiff );
 		}
+		if( quit ){
+            break;
+        }
     }
 
 	close();
