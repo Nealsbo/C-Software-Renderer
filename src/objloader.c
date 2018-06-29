@@ -455,7 +455,7 @@ obj_model_t *Model_LoadOBJ( const char *file_name ){
     }
 
     model->diffmap = (texture_t *)malloc(sizeof(texture_t));
-    model->diffmap->bitmap = Bitmap_LoadPPM6("/home/pavel/Workspace/Project/C-Software-Renderer/assets/texture.ppm");
+    model->diffmap->bitmap = Bitmap_LoadPPM6("./assets/texture.ppm");
 
     List_Destroy(vertList);
     List_Destroy(coordList);
