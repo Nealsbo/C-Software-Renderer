@@ -14,18 +14,18 @@ SDL_Surface     *gXOut              = NULL;
 renderContext_t *mainRenderContext  = NULL;
 renderInfo_t    *mainRenderer       = NULL;
 
-int  init();
-void close();
+int  init_app();
+void close_app();
 void putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel);
 void init_world();
 void destroy_world();
 
-extern void Scene_Destroy(scene_t* );
-extern void Render_Destroy(renderInfo_t*, renderContext_t*);
+extern void Scene_Destroy( scene_t* );
+extern void Render_Destroy( renderInfo_t*, renderContext_t* );
 
 #if 1
 
-int init(){
+int init_app(){
     int success = TRUE;
 
     if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
@@ -44,7 +44,7 @@ int init(){
     return success;
 }
 
-void close(){
+void close_app(){
     destroy_world();
 
 	SDL_DestroyWindow(gWindow);
@@ -54,9 +54,8 @@ void close(){
 }
 
 void init_world(){
-    //obj_model_t *testModelBox = Model_LoadOBJ("../assets/monkey.obj");
-    //obj_model_t *testModelBox = Model_LoadOBJ("box1.obj");
-    obj_model_t *testModelBox = Model_CreateBaseBox("Box01");
+    obj_model_t *testModelBox = Model_LoadOBJ("./assets/monkey.obj");
+    //obj_model_t *testModelBox = Model_CreateBaseBox("Box01");
     Model_SetPosition(testModelBox, vec3_create(-1.0, 0.0, -6.0));
 
     obj_model_t *testModelBox1 = Model_CreateBasePlane("Plane01");
@@ -83,7 +82,7 @@ void destroy_world(){
 
 int main(int argc, char* args[])
 {
-	if( !init() ){
+	if( !init_app() ){
 		printf( "Failed to initialize!\n" );
 		return 1;
 	}
@@ -91,7 +90,7 @@ int main(int argc, char* args[])
 	SDL_Event e;
 
 	init_world();
-    mainRenderer = Render_Init(mainRenderContext, RENDER_STATE_WIREFRAME);
+    mainRenderer = Render_Init(mainRenderContext, RENDER_STATE_LIT);
 
     float rot_val = 0.0;
     unsigned int fps = 0;
@@ -108,6 +107,9 @@ int main(int argc, char* args[])
                 switch( e.key.keysym.sym ) {
                     case SDLK_ESCAPE:
                         quit = TRUE;
+                        break;
+                    case SDLK_q:
+						quit = TRUE;
                         break;
                     case SDLK_r:
                         Render_SwitchRenderState(mainRenderer);
@@ -151,12 +153,13 @@ int main(int argc, char* args[])
 		if( ticksDiff < SCREEN_TICK_PER_FRAME ){
             SDL_Delay( SCREEN_TICK_PER_FRAME - ticksDiff );
 		}
+		SDL_Delay( 10.f );
 		if( quit ){
             break;
         }
     }
 
-	close();
+	close_app();
 
 	return 0;
 }

@@ -148,7 +148,7 @@ obj_model_t *Model_CreateBaseTriangle( const char *model_name ){
     model->faces[0]  = Face_Create(3, vec3i_arrayToVec3ip(9, f_arr[0] ));
 
     model->diffmap = (texture_t *)malloc(sizeof(texture_t));
-    model->diffmap->bitmap = Bitmap_LoadPPM6("texture.ppm");
+    model->diffmap->bitmap = Bitmap_LoadPPM6("./assets/texture.ppm");
 
     return model;
 }
@@ -216,7 +216,7 @@ obj_model_t *Model_CreateBasePlane( const char *model_name ){
     model->faces[1]  = Face_Create(3, vec3i_arrayToVec3ip(9, f_arr[1] ));
 
     model->diffmap = (texture_t *)malloc(sizeof(texture_t));
-    model->diffmap->bitmap = Bitmap_LoadPPM6("texture.ppm");
+    model->diffmap->bitmap = Bitmap_LoadPPM6("./assets/texture.ppm");
 
     return model;
 }
@@ -333,12 +333,19 @@ obj_model_t *Model_CreateBaseBox( const char *model_name){
     }
 
     model->diffmap = (texture_t *)malloc(sizeof(texture_t));
-    model->diffmap->bitmap = Bitmap_LoadPPM6("texture.ppm");
+    model->diffmap->bitmap = Bitmap_LoadPPM6("./assets/texture.ppm");
 
     return model;
 }
 
 obj_model_t *Model_LoadOBJ( const char *file_name ){
+	char line[MAX_NAME_LENGTH];
+    FILE *fp;
+    if( ( fp = fopen(file_name, "r") ) == NULL ){
+        printf( "Error: Cannot open file '%s'!\n", file_name );
+        return NULL;
+    }
+	
     obj_model_t *model = Model_Create(file_name);
     if( model == NULL ){
         printf("Error: Cannot create model for file '%s'!\n", file_name);
@@ -362,14 +369,6 @@ obj_model_t *Model_LoadOBJ( const char *file_name ){
     int coordCount = 0;
     int normCount  = 0;
     int faceCount  = 0;
-
-    char line[MAX_NAME_LENGTH];
-    FILE *fp;
-    if( ( fp = fopen(file_name, "r") ) == NULL ){
-        printf( "Error: Cannot open file '%s'!\n", file_name );
-        Model_Free(model);
-        return NULL;
-    }
 
     while(!feof(fp)){
         if(fgets( line, MAX_NAME_LENGTH, fp )){
@@ -456,7 +455,7 @@ obj_model_t *Model_LoadOBJ( const char *file_name ){
     }
 
     model->diffmap = (texture_t *)malloc(sizeof(texture_t));
-    model->diffmap->bitmap = Bitmap_LoadPPM6("texture.ppm");
+    model->diffmap->bitmap = Bitmap_LoadPPM6("/home/pavel/Workspace/Project/C-Software-Renderer/assets/texture.ppm");
 
     List_Destroy(vertList);
     List_Destroy(coordList);

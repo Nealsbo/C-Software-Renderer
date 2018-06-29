@@ -106,7 +106,9 @@ scene_t *Scene_Init( camera_t *camera ){
 }
 
 void Scene_AddObject( scene_t *scene, obj_model_t *model ){
-    List_Push ( scene->objectList, model );
+	if( model != NULL ){
+		List_Push ( scene->objectList, model );
+	}
 }
 
 List *Scene_GetObjectList( scene_t *scene ){

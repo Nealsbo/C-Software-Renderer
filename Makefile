@@ -1,7 +1,7 @@
 #C-Software-Renderer Makefile
 
 CC=gcc
-CFLAGS=-c -std=c99 -g -w -lm -lSDL2 -lSDL2main
+CFLAGS=-c -std=c99 -w -lm -lSDL2 -lSDL2main
 LDFLAGS=-lm -lSDL2
 
 BUILD=build
