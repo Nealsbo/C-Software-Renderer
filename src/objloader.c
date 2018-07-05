@@ -155,7 +155,6 @@ obj_model_t *Model_CreateBaseTriangle( const char *model_name ){
 
 obj_model_t *Model_CreateBasePlane( const char *model_name ){
     int i;
-
     obj_model_t *model = (obj_model_t *)malloc(sizeof(obj_model_t));
     if(model == NULL){
         printf("Error: Cannot create model object '%s'\n", model_name);
@@ -191,12 +190,7 @@ obj_model_t *Model_CreateBasePlane( const char *model_name ){
     model->baseColor   = Color_Init(0, 245, 116, 255);
     model->diffmap     = NULL;
 
-    model->vertices    = malloc(sizeof(vec3) * 4);
-    if(model->vertices == NULL){
-        printf("Error: Malloc vertices error'%s'\n", model->name);
-        Model_Free(model);
-        return NULL;
-    }
+    model->vertices    = (vec3 *)malloc(sizeof(vec3) * 4);
     for(i = 0; i < 4; i++){
         model->vertices[i] = vec3_create(v_arr[i][0], v_arr[i][1], v_arr[i][2]);
     }
@@ -211,9 +205,10 @@ obj_model_t *Model_CreateBasePlane( const char *model_name ){
         model->textcoords[i] = vec2_create(vt_arr[i][0], vt_arr[i][1]);
     }
 
-    model->faces  = (obj_face_t *)malloc(sizeof(obj_face_t) * 2);
-    model->faces[0]  = Face_Create(3, vec3i_arrayToVec3ip(9, f_arr[0] ));
-    model->faces[1]  = Face_Create(3, vec3i_arrayToVec3ip(9, f_arr[1] ));
+    model->faces       = (obj_face_t *)malloc(sizeof(obj_face_t) * 2);
+    for(i = 0; i < 2; i++){
+        model->faces[i]  = Face_Create(3, vec3i_arrayToVec3ip(9, f_arr[i] ));
+    }
 
     model->diffmap = (texture_t *)malloc(sizeof(texture_t));
     model->diffmap->bitmap = Bitmap_LoadPPM6("./assets/texture.ppm");
@@ -322,7 +317,7 @@ obj_model_t *Model_CreateBaseBox( const char *model_name){
         model->normals[i] = vec3_create(vn_arr[i][0], vn_arr[i][1], vn_arr[i][2]);
     }
 
-    model->textcoords  = (vec2*)malloc(sizeof(vec2) * 24);
+    model->textcoords  = (vec2 *)malloc(sizeof(vec2) * 24);
     for(i = 0; i < 24; i++){
         model->textcoords[i] = vec2_create(vt_arr[i][0], vt_arr[i][1]);
     }
@@ -453,6 +448,10 @@ obj_model_t *Model_LoadOBJ( const char *file_name ){
         model->faces[i] = *tmpf;
         tmpnode = List_Next(tmpnode);
     }
+    
+    model->position    = vec3_create(0.0, 0.0, 0.0);
+    model->rotation    = vec3_create(0.0, 0.0, 0.0);
+    model->scale       = vec3_create(1.0, 1.0, 1.0);
 
     model->diffmap = (texture_t *)malloc(sizeof(texture_t));
     model->diffmap->bitmap = Bitmap_LoadPPM6("./assets/texture.ppm");

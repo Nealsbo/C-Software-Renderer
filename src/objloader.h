@@ -70,6 +70,7 @@ void         Face_Printp(obj_face_t *f);
 
 obj_model_t *Model_Create            ( const char *model_name );
 obj_model_t *Model_CreateBaseTriangle( const char *model_name );
+obj_model_t *Model_CreateBasePlane   ( const char *model_name );
 obj_model_t *Model_CreateBaseBox     ( const char *model_name );
 
 obj_model_t *Model_LoadOBJ           ( const char *file_name );     //TODO: Material loading, quads, etc

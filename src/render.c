@@ -121,7 +121,6 @@ void Scene_PrintObjectList( scene_t *scene ){
 
 void Scene_Destroy( scene_t *scene ){
     if(scene != NULL) {
-        Model_Free(scene->skybox);
         free(scene->mainCamera);
         List_Destroy(scene->objectList);
     }
