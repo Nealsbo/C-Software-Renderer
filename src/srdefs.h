@@ -23,8 +23,6 @@
 
 #define FPS_LIMIT 60.0
 
-#define CAMERA_SPEED 2.0
-
 #define MAX_NAME_LENGTH 256
 #define MAX_TEXT_LENGTH 1024
 

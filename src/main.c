@@ -62,10 +62,12 @@ void init_world(){
     //obj_model_t *testModelBox1 = Model_CreateBaseTriangle("Triangle01");
     Model_SetPosition(testModelBox1, vec3_create(2.0, 0.0, -6.0));
     
-    camera_t *Cam = Camera_Init(vec3_create(0.0f, 0.0f, 0.0f),          //Position
+    camera_t *Cam = Camera_Init(vec3_create(0.0f, 0.0f, 2.0f),          //Position
                                 vec3_create(0.0f, 0.0f, -1.0f),         //Direction
                                 vec3_create(0.0f, 1.0f, 0.0f),          //Up vector
-                                120.0f,                                  //FOV - broken
+                                -90.0f,                                 //Yaw
+                                0.0f,                                   //Pitch
+                                120.0f,                                 //FOV - broken
                                 (float)WINDOW_WIDTH/WINDOW_HEIGHT,      //Aspect
                                 1.0f,                                   //Near plane
                                 100.0f);                                //Far plane

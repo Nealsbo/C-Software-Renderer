@@ -1,12 +1,14 @@
 #include "srdefs.h"
 #include "camera.h"
 
-camera_t *Camera_Init( vec3 pos, vec3 dir, vec3 up, float fov, float aspect, float near, float far ){
+camera_t *Camera_Init( vec3 pos, vec3 dir, vec3 up, float yaw, float pitch, float fov, float aspect, float near, float far ){
     camera_t *cam   = (camera_t *)malloc(sizeof(camera_t));
     cam->position   = pos;
-    cam->direction  = dir;
+    cam->front      = dir;
     cam->up         = up;
-    cam->right      = vec3_crs( cam->direction, cam->up );
+    cam->right      = vec3_crs( cam->front, cam->up );
+    cam->yaw        = yaw;
+    cam->pitch      = pitch;
     cam->fov        = fov;
     cam->aspect     = aspect;
     cam->near       = near;
@@ -24,7 +26,7 @@ void Camera_SetPosition( camera_t *cam, vec3 pos ){
 }
 
 void Camera_SetDirection( camera_t *cam, vec3 dir ){
-    cam->direction = dir;
+    cam->front = dir;
 }
 
 void Camera_SetFov( camera_t *cam, float fov ){
@@ -61,7 +63,7 @@ vec3 Camera_GetPosition( camera_t *cam ){
 }
 
 vec3 Camera_GetDirection( camera_t *cam ){
-    return cam->direction;
+    return cam->front;
 }
 
 float Camera_GetFov( camera_t *cam ){
@@ -80,14 +82,14 @@ float Camera_GetFar ( camera_t *cam ){
 }
 
 mat4 Camera_GetViewProj ( camera_t *cam ){
-    return mat4_init();
+    return cam->projection;
 }
 
 void Camera_PrintInfo ( camera_t *cam ){
     printf("Position: ");
     vec3_print(cam->position);
     printf("Direction: ");
-    vec3_print(cam->direction);
+    vec3_print(cam->front);
     printf("Up: ");
     vec3_print(cam->up);
     printf("Right: ");
