@@ -320,17 +320,20 @@ void Render_DrawObject(scene_t *scene, renderInfo_t *render, obj_model_t *model,
     Model_SetRotation(model, (vec3){0.0, delta, 0.0});
     camera_t *cam = scene->mainCamera;
 
-    mat4 worldToCamera         = mat4_translate(-cam->position.x, -cam->position.y, -cam->position.z);
+    mat4 worldToCamera = mat4_lookAt(cam->front, cam->position, (vec3){0.0, 1.0, 0.0});
 
-    mat4 translation           = mat4_translate( model->position.x, model->position.y, model->position.z );
-    mat4 rotation              = mat4_rotation( model->rotation.x, model->rotation.y, model->rotation.z );
-    mat4 before                = mat4_mlt( worldToCamera, mat4_mlt( translation, rotation ) );
-    mat4 transformation        = mat4_mlt( scene->mainCamera->projection, before );
+    mat4 translation   = mat4_translate( model->position.x, model->position.y, model->position.z );
+    mat4 rotation      = mat4_rotation( model->rotation.x, model->rotation.y, model->rotation.z );
+    mat4 scale         = mat4_scale( model->scale.x, model->scale.y, model->scale.z );
+    mat4 modelMat      = mat4_mlt( mat4_mlt(translation, rotation), scale );
+
+    mat4 cameraMat     = mat4_mlt( worldToCamera, modelMat );
+    mat4 viewMat       = mat4_mlt( scene->mainCamera->projection, cameraMat );
 
     for(i = 0; i < model->trisCount; i++){
         face = model->faces[i];
         for(j = 0; j < face.vcount; j++){
-            vertex[j] = Vertex_Init( vec4_byMat4(vec3_toVec4(model->vertices[face.indexes[j].x - 1]), transformation),
+            vertex[j] = Vertex_Init( vec4_byMat4(vec3_toVec4(model->vertices[face.indexes[j].x - 1]), viewMat),
                                      model->normals[face.indexes[j].z - 1],
                                      model->textcoords[face.indexes[j].y - 1] );
         }

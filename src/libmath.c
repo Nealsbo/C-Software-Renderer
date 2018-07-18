@@ -556,32 +556,32 @@ mat4 mat4_rotz( float r ){
     return m;
 }
 
-mat4 mat4_projection(float near, float far, float fov, float aspect){
-    float whtan = tanf(fov/2);
-    float zrange = near - far;
+mat4 mat4_projection(float n, float f, float fov, float aspect){
+    float s = 1.0f/tanf(fov * 0.5f * 3.1415f / 180.0f);
+    float zr = n - f;
     mat4 m = {{
-            1/(whtan*aspect),    0.0f,               0.0f,              0.0f,
-                        0.0f, 1/whtan,               0.0f,              0.0f,
-                        0.0f,    0.0f, (-near-far)/zrange, 2*near*far/zrange,
-                        0.0f,    0.0f,               1.0f,              0.0f }};
+            s/aspect, 0.0f,      0.0f,        0.0f,
+                0.0f,    s,      0.0f,        0.0f,
+                0.0f, 0.0f, (-n-f)/zr, 2.0f*n*f/zr,
+                0.0f, 0.0f,      1.0f,        0.0f }};
     return m;
 }
 
 mat4 mat4_screen(float halfW, float halfH){
     mat4 m = {{
             halfW,   0.0f,  0.0f, halfW,
-             0.0f,  halfH,  0.0f, halfH,
+             0.0f, -halfH,  0.0f, halfH,
              0.0f,   0.0f,  1.0f,  0.0f,
              0.0f,   0.0f,  0.0f,  1.0f }};
     return m;
 }
 
 mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up){
-	mat4 m = mat4_create();
-	vec3 f = vec3_nrm(vec3_sub(center, eye));
+    mat4 m = mat4_create();
+    vec3 f = vec3_nrm(vec3_sub(center, eye));
     vec3 u = vec3_nrm(up);
     vec3 s = vec3_nrm(vec3_crs(f, u));
-    u = vec3_crs(s, f);
+    u      = vec3_crs(s, f);
 
     m.m[0] = s.x;
     m.m[1] = s.y;
@@ -595,7 +595,7 @@ mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up){
     m.m[12] =-vec3_dot(s, eye);
     m.m[13] =-vec3_dot(u, eye);
     m.m[14] = vec3_dot(f, eye);
-	return m;
+    return m;
 }
 
 //###########

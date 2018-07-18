@@ -125,9 +125,9 @@ void Camera_PerfMovement ( camera_t *cam, int m_type, float value ){
         move = vec3_create( -temp.z, temp.y, temp.x );
         break;
     }
-    Camera_MoveByVec( cam, move );
+    Camera_MoveByVec( cam, move, value );
 }
 
-void Camera_MoveByVec ( camera_t *cam, vec3 step ){
-    Camera_SetPosition( cam, vec3_add( Camera_GetPosition( cam ), step ) );
+void Camera_MoveByVec ( camera_t *cam, vec3 step, float value ){
+    Camera_SetPosition( cam, vec3_add( Camera_GetPosition( cam ), vec3_mlt(step, value) ) );
 }

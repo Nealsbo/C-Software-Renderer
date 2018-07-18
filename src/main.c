@@ -4,6 +4,8 @@ const int SCREEN_TICK_PER_FRAME = 1000 / FPS_LIMIT;
 
 int quit = FALSE;
 
+float cam_speed = 1.0f;
+
 scene_t         *Scene              = NULL;
 camera_t        *Cam                = NULL;
 
@@ -19,6 +21,7 @@ void close_app();
 void putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel);
 void init_world();
 void destroy_world();
+void Input(SDL_Event e);
 
 extern void Scene_Destroy( scene_t* );
 extern void Render_Destroy( renderInfo_t*, renderContext_t* );
@@ -56,18 +59,18 @@ void close_app(){
 void init_world(){
     obj_model_t *testModelBox = Model_LoadOBJ("./assets/monkey.obj");
     //obj_model_t *testModelBox = Model_CreateBaseBox("Box01");
-    Model_SetPosition(testModelBox, vec3_create(-1.0, 0.0, -6.0));
+    Model_SetPosition(testModelBox, vec3_create(-1.0, 0.0, -3.0));
 
     obj_model_t *testModelBox1 = Model_CreateBasePlane("Plane01");
     //obj_model_t *testModelBox1 = Model_CreateBaseTriangle("Triangle01");
-    Model_SetPosition(testModelBox1, vec3_create(2.0, 0.0, -6.0));
+    Model_SetPosition(testModelBox1, vec3_create(2.0, 0.0, -3.0));
     
     camera_t *Cam = Camera_Init(vec3_create(0.0f, 0.0f, 2.0f),          //Position
                                 vec3_create(0.0f, 0.0f, -1.0f),         //Direction
                                 vec3_create(0.0f, 1.0f, 0.0f),          //Up vector
                                 -90.0f,                                 //Yaw
                                 0.0f,                                   //Pitch
-                                120.0f,                                 //FOV - broken
+                                60.0f,                                  //FOV - broken
                                 (float)WINDOW_WIDTH/WINDOW_HEIGHT,      //Aspect
                                 1.0f,                                   //Near plane
                                 100.0f);                                //Far plane
@@ -93,44 +96,18 @@ int main(int argc, char* args[])
 
 	init_world();
     mainRenderer = Render_Init(mainRenderContext, RENDER_STATE_LIT);
-
-    float rot_val = 0.0;
+    float rot_val = 0.0f;
     unsigned int fps = 0;
     unsigned int ticks, ticksDiff;
 	unsigned int lastTicks = SDL_GetTicks();
-	float cam_speed = 0.0f;
 
     while (!quit){
 
         while( SDL_PollEvent( &e ) != 0 ){
             if( e.type == SDL_QUIT ){
                 quit = TRUE;
-            } else if( e.type == SDL_KEYDOWN ) {
-                switch( e.key.keysym.sym ) {
-                    case SDLK_ESCAPE:
-                        quit = TRUE;
-                        break;
-                    case SDLK_q:
-						quit = TRUE;
-                        break;
-                    case SDLK_r:
-                        Render_SwitchRenderState(mainRenderer);
-                        break;
-                    case SDLK_w:
-                        Camera_PerfMovement(Scene->mainCamera, 1, cam_speed);
-                        break;
-                    case SDLK_s:
-                        Camera_PerfMovement(Scene->mainCamera, 2, cam_speed);
-                        break;
-                    case SDLK_a:
-                        Camera_PerfMovement(Scene->mainCamera, 3, cam_speed);
-                        break;
-                    case SDLK_d:
-                        Camera_PerfMovement(Scene->mainCamera, 4, cam_speed);
-                        break;
-                    default:
-                        break;
-                }
+            } else {
+                Input(e);
             }
         }
 
@@ -148,14 +125,13 @@ int main(int argc, char* args[])
 		lastTicks = ticks;
 		fps = 1000 / ticksDiff;
 		rot_val += (float)ticksDiff / 2000.f;
-		cam_speed = ticks / 5000.0f;
 
 		printf("FPS: %u\t\r", fps);
 
 		if( ticksDiff < SCREEN_TICK_PER_FRAME ){
             SDL_Delay( SCREEN_TICK_PER_FRAME - ticksDiff );
 		}
-		SDL_Delay( 10.f );
+		SDL_Delay( 10.0f );
 		if( quit ){
             break;
         }
@@ -166,6 +142,37 @@ int main(int argc, char* args[])
 	return 0;
 }
 #endif
+
+void Input(SDL_Event e){
+    switch(e.type){
+        case SDL_KEYDOWN:
+            switch( e.key.keysym.sym ) {
+                case SDLK_ESCAPE:
+                    quit = TRUE;
+                    break;
+                case SDLK_q:
+                    quit = TRUE;
+                    break;
+                case SDLK_r:
+                    Render_SwitchRenderState(mainRenderer);
+                    break;
+                case SDLK_w:
+                    Camera_PerfMovement(Scene->mainCamera, 1, cam_speed);
+                    break;
+                case SDLK_s:
+                    Camera_PerfMovement(Scene->mainCamera, 2, cam_speed);
+                    break;
+                case SDLK_a:
+                    Camera_PerfMovement(Scene->mainCamera, 3, cam_speed);
+                    break;
+                case SDLK_d:
+                    Camera_PerfMovement(Scene->mainCamera, 4, cam_speed);
+                    break;
+                default:
+                    break;
+            }
+    }
+}
 
 #if 0
 int main(int argc, char* args[]){

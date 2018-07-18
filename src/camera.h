@@ -33,7 +33,7 @@ float    Camera_GetFar       ( camera_t *cam );
 void     Camera_PrintInfo    ( camera_t *cam );
 
 void     Camera_PerfMovement ( camera_t *cam, int m_type, float value );
-void     Camera_MoveByVec    ( camera_t *cam, vec3 step );      //TODO
+void     Camera_MoveByVec    ( camera_t *cam, vec3 step, float value );      //TODO
 void     Camera_RotateByVec  ( camera_t *cam, vec3 rot );       //TODO
 
 #endif // CAMERA_H_INCLUDED

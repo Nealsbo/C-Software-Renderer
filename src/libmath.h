@@ -148,7 +148,7 @@ mat4  mat4_rotx     (float r);
 mat4  mat4_roty     (float r);
 mat4  mat4_rotz     (float r);
 
-mat4  mat4_projection(float near, float far, float fov, float aspect);      //TO FIX
+mat4  mat4_projection(float n, float f, float fov, float aspect);      //TO FIX
 mat4  mat4_screen    (float halfW, float halfH);      //TO FIX
 mat4  mat4_lookAt    (vec3 pos, vec3 front, vec3 up);
 
