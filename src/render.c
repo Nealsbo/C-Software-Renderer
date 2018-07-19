@@ -13,15 +13,15 @@ edge_t Edge_Init(gradient_t grad, vertex_t *miny, vertex_t *maxy, int miny_index
     edge.yStart = (int)ceilf(miny->position.y);
     edge.yEnd   = (int)ceilf(maxy->position.y);
 
-	float yDist = maxy->position.y - miny->position.y;
-	float xDist = maxy->position.x - miny->position.x;
+    float yDist = maxy->position.y - miny->position.y;
+    float xDist = maxy->position.x - miny->position.x;
 
-	float yPrestep = edge.yStart - miny->position.y;
-	edge.xStep   = xDist / yDist;
-	edge.x       = miny->position.x + yPrestep * edge.xStep;
-	float xPrestep = edge.x - miny->position.x;
+    float yPrestep = edge.yStart - miny->position.y;
+    edge.xStep   = xDist / yDist;
+    edge.x       = miny->position.x + yPrestep * edge.xStep;
+    float xPrestep = edge.x - miny->position.x;
 
-	edge.texCoordX     = grad.texCoordX[miny_index] + grad.texCoordXXStep * xPrestep + grad.texCoordXYStep * yPrestep;
+    edge.texCoordX     = grad.texCoordX[miny_index] + grad.texCoordXXStep * xPrestep + grad.texCoordXYStep * yPrestep;
     edge.texCoordXStep = grad.texCoordXYStep + grad.texCoordXXStep * edge.xStep;
     edge.texCoordY     = grad.texCoordY[miny_index] + grad.texCoordYXStep * xPrestep + grad.texCoordYYStep * yPrestep;
     edge.texCoordYStep = grad.texCoordYYStep + grad.texCoordYXStep * edge.xStep;
@@ -44,31 +44,31 @@ void Edge_Step(edge_t *edge){
 gradient_t Gradient_Init(vertex_t *miny, vertex_t *midy, vertex_t *maxy){
     gradient_t grad;
     float oneOverdX = 1.0f /
-			(((midy->position.x - maxy->position.x) * (miny->position.y - maxy->position.y)) -
-			 ((miny->position.x - maxy->position.x) * (midy->position.y - maxy->position.y)));
+            (((midy->position.x - maxy->position.x) * (miny->position.y - maxy->position.y)) -
+             ((miny->position.x - maxy->position.x) * (midy->position.y - maxy->position.y)));
 
-	float oneOverdY = -oneOverdX;
+    float oneOverdY = -oneOverdX;
 
-	grad.depth[0] = miny->position.z;
-	grad.depth[1] = midy->position.z;
-	grad.depth[2] = maxy->position.z;
+    grad.depth[0] = miny->position.z;
+    grad.depth[1] = midy->position.z;
+    grad.depth[2] = maxy->position.z;
 
-	grad.oneOverZ[0] = 1.0f / miny->position.w;
-	grad.oneOverZ[1] = 1.0f / midy->position.w;
-	grad.oneOverZ[2] = 1.0f / maxy->position.w;
+    grad.oneOverZ[0] = 1.0f / miny->position.w;
+    grad.oneOverZ[1] = 1.0f / midy->position.w;
+    grad.oneOverZ[2] = 1.0f / maxy->position.w;
 
-	grad.texCoordX[0] = miny->uv.x * grad.oneOverZ[0];
-	grad.texCoordX[1] = midy->uv.x * grad.oneOverZ[1];
-	grad.texCoordX[2] = maxy->uv.x * grad.oneOverZ[2];
+    grad.texCoordX[0] = miny->uv.x * grad.oneOverZ[0];
+    grad.texCoordX[1] = midy->uv.x * grad.oneOverZ[1];
+    grad.texCoordX[2] = maxy->uv.x * grad.oneOverZ[2];
 
-	grad.texCoordY[0] = miny->uv.y * grad.oneOverZ[0];
-	grad.texCoordY[1] = midy->uv.y * grad.oneOverZ[1];
-	grad.texCoordY[2] = maxy->uv.y * grad.oneOverZ[2];
+    grad.texCoordY[0] = miny->uv.y * grad.oneOverZ[0];
+    grad.texCoordY[1] = midy->uv.y * grad.oneOverZ[1];
+    grad.texCoordY[2] = maxy->uv.y * grad.oneOverZ[2];
 
-	grad.texCoordXXStep = Gradient_CalcXStep( grad.texCoordX, miny, midy, maxy, oneOverdX );
-	grad.texCoordXYStep = Gradient_CalcYStep( grad.texCoordX, miny, midy, maxy, oneOverdY );
-	grad.texCoordYXStep = Gradient_CalcXStep( grad.texCoordY, miny, midy, maxy, oneOverdX );
-	grad.texCoordYYStep = Gradient_CalcYStep( grad.texCoordY, miny, midy, maxy, oneOverdY );
+    grad.texCoordXXStep = Gradient_CalcXStep( grad.texCoordX, miny, midy, maxy, oneOverdX );
+    grad.texCoordXYStep = Gradient_CalcYStep( grad.texCoordX, miny, midy, maxy, oneOverdY );
+    grad.texCoordYXStep = Gradient_CalcXStep( grad.texCoordY, miny, midy, maxy, oneOverdX );
+    grad.texCoordYYStep = Gradient_CalcYStep( grad.texCoordY, miny, midy, maxy, oneOverdY );
     grad.oneOverZXStep  = Gradient_CalcXStep( grad.oneOverZ,  miny, midy, maxy, oneOverdX );
     grad.oneOverZYStep  = Gradient_CalcYStep( grad.oneOverZ,  miny, midy, maxy, oneOverdY );
     grad.depthXStep     = Gradient_CalcXStep( grad.depth,     miny, midy, maxy, oneOverdX );
@@ -106,9 +106,9 @@ scene_t *Scene_Init( camera_t *camera ){
 }
 
 void Scene_AddObject( scene_t *scene, obj_model_t *model ){
-	if( model != NULL ){
-		List_Push ( scene->objectList, model );
-	}
+    if( model != NULL ){
+        List_Push ( scene->objectList, model );
+    }
 }
 
 List *Scene_GetObjectList( scene_t *scene ){
@@ -230,17 +230,17 @@ void Render_DrawLine(vertex_t v0, vertex_t v1, SDL_Surface *image, color_t color
 
 void Render_DrawTriangle( vertex_t *miny, vertex_t *midy, vertex_t *maxy, SDL_Surface *Surface, obj_model_t *model ){
     mat4 sst       = mat4_screen( WINDOW_WIDTH/2, WINDOW_HEIGHT/2 );
-	miny->position = vec4_pdiv(vec4_byMat4( miny->position, sst ));
-	midy->position = vec4_pdiv(vec4_byMat4( midy->position, sst ));
-	maxy->position = vec4_pdiv(vec4_byMat4( maxy->position, sst ));
+    miny->position = vec4_pdiv(vec4_byMat4( miny->position, sst ));
+    midy->position = vec4_pdiv(vec4_byMat4( midy->position, sst ));
+    maxy->position = vec4_pdiv(vec4_byMat4( maxy->position, sst ));
 
-	if( TriangleAreaTimesTwo( miny, maxy, midy ) >= 0)
+    if( TriangleAreaTimesTwo( miny, maxy, midy ) >= 0)
         return;
 
-	if( maxy->position.y < midy->position.y )
+    if( maxy->position.y < midy->position.y )
         SWAP(maxy, midy, vertex_t *);
 
-	if( midy->position.y < miny->position.y )
+    if( midy->position.y < miny->position.y )
         SWAP(midy, miny, vertex_t *);
 
     if( maxy->position.y < midy->position.y )
@@ -250,52 +250,52 @@ void Render_DrawTriangle( vertex_t *miny, vertex_t *midy, vertex_t *maxy, SDL_Su
 }
 
 void ScanTriangle( vertex_t *miny, vertex_t *midy, vertex_t *maxy, int handedness, SDL_Surface *Surface, bitmap_t *texture ){
-		gradient_t grad       = Gradient_Init( miny, midy, maxy );
+        gradient_t grad       = Gradient_Init( miny, midy, maxy );
 
-		edge_t topToBottom    = Edge_Init( grad, miny, maxy, 0) ;
-		edge_t topToMiddle    = Edge_Init( grad, miny, midy, 0 );
-		edge_t middleToBottom = Edge_Init( grad, midy, maxy, 1 );
+        edge_t topToBottom    = Edge_Init( grad, miny, maxy, 0) ;
+        edge_t topToMiddle    = Edge_Init( grad, miny, midy, 0 );
+        edge_t middleToBottom = Edge_Init( grad, midy, maxy, 1 );
 
-		ScanEdges( &topToBottom, &topToMiddle, handedness, Surface, texture );
-		ScanEdges( &topToBottom, &middleToBottom, handedness, Surface, texture );
+        ScanEdges( &topToBottom, &topToMiddle, handedness, Surface, texture );
+        ScanEdges( &topToBottom, &middleToBottom, handedness, Surface, texture );
 }
 
 void ScanEdges(edge_t *a, edge_t *b, int handedness, SDL_Surface *Surface, bitmap_t *texture){
         int j;
-		edge_t *left = a;
-		edge_t *right = b;
-		if(handedness)
+        edge_t *left = a;
+        edge_t *right = b;
+        if(handedness)
             SWAP(left, right, edge_t *);
 
-		int yStart = b->yStart;
-		int yEnd   = b->yEnd;
+        int yStart = b->yStart;
+        int yEnd   = b->yEnd;
 
-		for(j = yStart; j < yEnd; j++) {
-			DrawScanLine(left, right, j, Surface, texture);
-			Edge_Step(left);
-			Edge_Step(right);
-		}
+        for(j = yStart; j < yEnd; j++) {
+            DrawScanLine(left, right, j, Surface, texture);
+            Edge_Step(left);
+            Edge_Step(right);
+        }
 }
 
 void DrawScanLine(edge_t *left, edge_t *right, int j, SDL_Surface *Surface, bitmap_t *texture){
     int i;
     int xMin = (int)ceilf(left->x);
-	int xMax = (int)ceilf(right->x);
+    int xMax = (int)ceilf(right->x);
 
-	float xPrestep = xMin - left->x;
-	float xDist    = right->x - left->x;
+    float xPrestep = xMin - left->x;
+    float xDist    = right->x - left->x;
 
-	float texCoordXXStep = (right->texCoordX - left->texCoordX)/xDist;
-	float texCoordYXStep = (right->texCoordY - left->texCoordY)/xDist;
-	float oneOverZXStep  = (right->oneOverZ  - left->oneOverZ )/xDist;
-	float depthXStep     = (right->depth     - left->depth    )/xDist;
+    float texCoordXXStep = (right->texCoordX - left->texCoordX)/xDist;
+    float texCoordYXStep = (right->texCoordY - left->texCoordY)/xDist;
+    float oneOverZXStep  = (right->oneOverZ  - left->oneOverZ )/xDist;
+    float depthXStep     = (right->depth     - left->depth    )/xDist;
 
-	float texCoordX = left->texCoordX + texCoordXXStep * xPrestep;
-	float texCoordY = left->texCoordY + texCoordYXStep * xPrestep;
-	float oneOverZ  = left->oneOverZ  + oneOverZXStep  * xPrestep;
-	float depth     = left->depth     + depthXStep     * xPrestep;
+    float texCoordX = left->texCoordX + texCoordXXStep * xPrestep;
+    float texCoordY = left->texCoordY + texCoordYXStep * xPrestep;
+    float oneOverZ  = left->oneOverZ  + oneOverZXStep  * xPrestep;
+    float depth     = left->depth     + depthXStep     * xPrestep;
 
-	for( i = xMin; i < xMax; i++ ){
+    for( i = xMin; i < xMax; i++ ){
 
         int index = j * WINDOW_WIDTH + i;
         if( depth < render_->z_Buffer[index] ){
@@ -305,11 +305,11 @@ void DrawScanLine(edge_t *left, edge_t *right, int j, SDL_Surface *Surface, bitm
             unsigned int srcY = (unsigned int)((texCoordY * z) * (float)(texture->height - 1) + 0.5f);
             putpixel(Surface, i, j, Color_ToUInt32(Bitmap_GetPixel(texture, srcX, srcY)));
         }
-		oneOverZ  += oneOverZXStep;
-		texCoordX += texCoordXXStep;
-		texCoordY += texCoordYXStep;
-		depth     += depthXStep;
-	}
+        oneOverZ  += oneOverZXStep;
+        texCoordX += texCoordXXStep;
+        texCoordY += texCoordYXStep;
+        depth     += depthXStep;
+    }
 }
 
 void Render_DrawObject(scene_t *scene, renderInfo_t *render, obj_model_t *model, SDL_Surface *Surface, float delta){

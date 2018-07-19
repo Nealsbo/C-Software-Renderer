@@ -50,10 +50,10 @@ int init_app(){
 void close_app(){
     destroy_world();
 
-	SDL_DestroyWindow(gWindow);
-	gWindow = NULL;
+    SDL_DestroyWindow(gWindow);
+    gWindow = NULL;
 
-	SDL_Quit();
+    SDL_Quit();
 }
 
 void init_world(){
@@ -87,19 +87,19 @@ void destroy_world(){
 
 int main(int argc, char* args[])
 {
-	if( !init_app() ){
-		printf( "Failed to initialize!\n" );
-		return 1;
-	}
+    if( !init_app() ){
+        printf( "Failed to initialize!\n" );
+        return 1;
+    }
 
-	SDL_Event e;
+    SDL_Event e;
 
-	init_world();
+    init_world();
     mainRenderer = Render_Init(mainRenderContext, RENDER_STATE_LIT);
     float rot_val = 0.0f;
     unsigned int fps = 0;
     unsigned int ticks, ticksDiff;
-	unsigned int lastTicks = SDL_GetTicks();
+    unsigned int lastTicks = SDL_GetTicks();
 
     while (!quit){
 
@@ -117,29 +117,29 @@ int main(int argc, char* args[])
         SDL_UpdateWindowSurface( gWindow );
 
         ticks = SDL_GetTicks();
-		ticksDiff = ticks - lastTicks;
+        ticksDiff = ticks - lastTicks;
 
-		if(ticksDiff == 0)
-			continue;
+        if(ticksDiff == 0)
+            continue;
 
-		lastTicks = ticks;
-		fps = 1000 / ticksDiff;
-		rot_val += (float)ticksDiff / 2000.f;
+        lastTicks = ticks;
+        fps = 1000 / ticksDiff;
+        rot_val += (float)ticksDiff / 2000.f;
 
-		printf("FPS: %u\t\r", fps);
+        printf("FPS: %u\t\r", fps);
 
-		if( ticksDiff < SCREEN_TICK_PER_FRAME ){
+        if( ticksDiff < SCREEN_TICK_PER_FRAME ){
             SDL_Delay( SCREEN_TICK_PER_FRAME - ticksDiff );
-		}
-		SDL_Delay( 10.0f );
-		if( quit ){
+        }
+        SDL_Delay( 10.0f );
+        if( quit ){
             break;
         }
     }
 
-	close_app();
+    close_app();
 
-	return 0;
+    return 0;
 }
 #endif
 
@@ -177,6 +177,6 @@ void Input(SDL_Event e){
 #if 0
 int main(int argc, char* args[]){
 
-	return 0;
+    return 0;
 }
 #endif

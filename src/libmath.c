@@ -446,18 +446,18 @@ mat4 mat4_mlt( mat4 m1, mat4 m2 ){
     mat4 m3 = {{0}};
     int i, j, k;
     for (i = 0; i < 4; i++)
-		for (j = 0; j < 4; j++)
-			for(k = 0; k < 4; k++)
-				m3.m[i * 4 + j] += m1.m[i * 4 + k] * m2.m[4 * k + j];
+        for (j = 0; j < 4; j++)
+            for(k = 0; k < 4; k++)
+                m3.m[i * 4 + j] += m1.m[i * 4 + k] * m2.m[4 * k + j];
     return m3;
 }
 
 mat4 mat4_tsp( mat4 m1 ){
     mat4 m2;
     int i, j;
-	for (i = 0; i < 4; i++)
-		for (j = 0; j < 4; j++)
-			m2.m[i * 4 + j] = m1.m[i + j * 4];
+    for (i = 0; i < 4; i++)
+        for (j = 0; j < 4; j++)
+            m2.m[i * 4 + j] = m1.m[i + j * 4];
     return m2;
 }
 
@@ -513,7 +513,7 @@ mat4 mat4_rotationA(float x, float y, float z, float angle){
     float sin = sinf(angle);
     float cos = cosf(angle);
 
-	mat4 m = {{
+    mat4 m = {{
               cos+x*x*(1-cos), x*y*(1-cos)-z*sin, x*z*(1-cos)+y*sin, 0,
             y*x*(1-cos)+z*sin,   cos+y*y*(1-cos), y*z*(1-cos)-x*sin, 0,
             z*x*(1-cos)-y*sin, z*y*(1-cos)+x*sin,   cos+z*z*(1-cos), 0,
@@ -531,28 +531,28 @@ mat4 mat4_rotation(float x, float y, float z){
 
 mat4 mat4_rotx( float r ){
     mat4 m = {{
-		1.0f,    0.0f,   0.0f, 0.0f,
-		0.0f,  cos(r), sin(r), 0.0f,
-		0.0f, -sin(r), cos(r), 0.0f,
-		0.0f,    0.0f,   0.0f, 1.0f }};
+        1.0f,    0.0f,   0.0f, 0.0f,
+        0.0f,  cos(r), sin(r), 0.0f,
+        0.0f, -sin(r), cos(r), 0.0f,
+        0.0f,    0.0f,   0.0f, 1.0f }};
     return m;
 }
 
 mat4 mat4_roty( float r ){
     mat4 m = {{
-		cos(r), 0.0f, -sin(r), 0.0f,
-		  0.0f, 1.0f,    0.0f, 0.0f,
-		sin(r), 0.0f,  cos(r), 0.0f,
-		  0.0f, 0.0f,    0.0f, 1.0f }};
+        cos(r), 0.0f, -sin(r), 0.0f,
+          0.0f, 1.0f,    0.0f, 0.0f,
+        sin(r), 0.0f,  cos(r), 0.0f,
+          0.0f, 0.0f,    0.0f, 1.0f }};
     return m;
 }
 
 mat4 mat4_rotz( float r ){
     mat4 m = {{
-		 cos(r), sin(r), 0.0f, 0.0f,
-		-sin(r), cos(r), 0.0f, 0.0f,
-		   0.0f,   0.0f, 1.0f, 0.0f,
-		   0.0f,   0.0f, 0.0f, 1.0f }};
+         cos(r), sin(r), 0.0f, 0.0f,
+        -sin(r), cos(r), 0.0f, 0.0f,
+           0.0f,   0.0f, 1.0f, 0.0f,
+           0.0f,   0.0f, 0.0f, 1.0f }};
     return m;
 }
 

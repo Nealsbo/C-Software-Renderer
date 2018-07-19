@@ -10,13 +10,13 @@
 typedef struct {
     float x;
     float xStep;
-	int   yStart;
-	int   yEnd;
-	float texCoordX;
-	float texCoordXStep;
-	float texCoordY;
-	float texCoordYStep;
-	float oneOverZ;
+    int   yStart;
+    int   yEnd;
+    float texCoordX;
+    float texCoordXStep;
+    float texCoordY;
+    float texCoordYStep;
+    float oneOverZ;
     float oneOverZStep;
     float depth;
     float depthStep;
@@ -24,15 +24,15 @@ typedef struct {
 
 typedef struct {
     float texCoordX[3];
-	float texCoordY[3];
-	float oneOverZ[3];
-	float depth[3];
+    float texCoordY[3];
+    float oneOverZ[3];
+    float depth[3];
 
-	float texCoordXXStep;
-	float texCoordXYStep;
-	float texCoordYXStep;
-	float texCoordYYStep;
-	float oneOverZXStep;
+    float texCoordXXStep;
+    float texCoordXYStep;
+    float texCoordYXStep;
+    float texCoordYYStep;
+    float oneOverZXStep;
     float oneOverZYStep;
     float depthXStep;
     float depthYStep;

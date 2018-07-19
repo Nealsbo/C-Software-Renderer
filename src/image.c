@@ -32,11 +32,11 @@ color_t Color_Intensity( color_t c, float a ){
 }
 
 uint32_t Color_ToUInt32( color_t c ){
-	uint32_t r = (uint32_t)c.r;
-	uint32_t g = (uint32_t)c.g;
-	uint32_t b = (uint32_t)c.b;
-	uint32_t a = (uint32_t)c.a;
-	return (a << 24) | (r << 16) | (g << 8) | b;
+    uint32_t r = (uint32_t)c.r;
+    uint32_t g = (uint32_t)c.g;
+    uint32_t b = (uint32_t)c.b;
+    uint32_t a = (uint32_t)c.a;
+    return (a << 24) | (r << 16) | (g << 8) | b;
 }
 
 uint32_t Color_ToUInt32Fast( color_t c ){     //broken, indexes reversed
@@ -122,7 +122,7 @@ bitmap_t *Bitmap_LoadPPM6( const char *fileName ){
 /*
 void Bitmap_SetBitBuffer(bitmap_t *i, uint32_t *buffer, unsigned int w, unsigned int h ){
     i.bitmap = (color_t*)buffer;
-	i.width = width;
+    i.width = width;
     i.height = height;
 }*/
 

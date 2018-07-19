@@ -334,13 +334,13 @@ obj_model_t *Model_CreateBaseBox( const char *model_name){
 }
 
 obj_model_t *Model_LoadOBJ( const char *file_name ){
-	char line[MAX_NAME_LENGTH];
+    char line[MAX_NAME_LENGTH];
     FILE *fp;
     if( ( fp = fopen(file_name, "r") ) == NULL ){
         printf( "Error: Cannot open file '%s'!\n", file_name );
         return NULL;
     }
-	
+    
     obj_model_t *model = Model_Create(file_name);
     if( model == NULL ){
         printf("Error: Cannot create model for file '%s'!\n", file_name);

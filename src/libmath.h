@@ -18,7 +18,7 @@ typedef struct { float m[16]; }             mat4;
 typedef struct { vec3 origin, direction; }  ray;
 
 typedef struct { vec3 pos, color;
-				 ray  origin, normal; }	    ray_hit;
+                 ray  origin, normal; }     ray_hit;
 
 //#####################
 //#   Function Init   #
