@@ -576,25 +576,17 @@ mat4 mat4_screen(float halfW, float halfH){
     return m;
 }
 
-mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up){
-    mat4 m = mat4_create();
+mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up){    
     vec3 f = vec3_nrm(vec3_sub(center, eye));
-    vec3 u = vec3_nrm(up);
-    vec3 s = vec3_nrm(vec3_crs(f, u));
-    u      = vec3_crs(s, f);
+    vec3 r = vec3_crs(up, f);
+    vec3 u = vec3_crs(f, r);
 
-    m.m[0] = s.x;
-    m.m[1] = s.y;
-    m.m[2] = s.z;
-    m.m[4] = u.x;
-    m.m[5] = u.y;
-    m.m[6] = u.z;
-    m.m[8] =-f.x;
-    m.m[9] =-f.y;
-    m.m[10] =-f.z;
-    m.m[12] =-vec3_dot(s, eye);
-    m.m[13] =-vec3_dot(u, eye);
-    m.m[14] = vec3_dot(f, eye);
+    mat4 m = {{
+             r.x,  u.x,  f.x, eye.x,
+             r.y,  u.y,  f.y, eye.y,
+             r.z,  u.z,  f.z, eye.z,
+            0.0f, 0.0f, 0.0f,  1.0f }};
+    
     return m;
 }
 

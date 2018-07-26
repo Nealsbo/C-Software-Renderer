@@ -317,10 +317,10 @@ void Render_DrawObject(scene_t *scene, renderInfo_t *render, obj_model_t *model,
     obj_face_t face;
     vertex_t vertex[3];
 
-    Model_SetRotation(model, (vec3){0.0, delta, 0.0});
+    Model_SetRotation(model, vec3_create(0.0, delta, 0.0));
     camera_t *cam = scene->mainCamera;
 
-    mat4 worldToCamera = mat4_lookAt(cam->front, cam->position, (vec3){0.0, 1.0, 0.0});
+    mat4 worldToCamera = mat4_lookAt(cam->position, cam->front, vec3_create(0.0, 1.0, 0.0));
 
     mat4 translation   = mat4_translate( model->position.x, model->position.y, model->position.z );
     mat4 rotation      = mat4_rotation( model->rotation.x, model->rotation.y, model->rotation.z );
