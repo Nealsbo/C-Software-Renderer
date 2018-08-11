@@ -6,25 +6,24 @@ int quit = FALSE;
 
 float cam_speed = 1.0f;
 
-scene_t         *Scene              = NULL;
-camera_t        *Cam                = NULL;
+scene_t     *Scene              = NULL;
+camera_t    *Cam                = NULL;
 
-SDL_Window      *gWindow            = NULL;
-SDL_Surface     *gScreenSurface     = NULL;
-SDL_Surface     *gXOut              = NULL;
+SDL_Window  *gWindow            = NULL;
+SDL_Surface *gScreenSurface     = NULL;
+SDL_Surface *gXOut              = NULL;
 
-renderContext_t *mainRenderContext  = NULL;
-renderInfo_t    *mainRenderer       = NULL;
+renderer_t  *mainRenderer  = NULL;
 
 int  init_app();
 void close_app();
-void putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel);
+void Renderer_Putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel);
 void init_world();
 void destroy_world();
 void Input(SDL_Event e);
 
 extern void Scene_Destroy( scene_t* );
-extern void Render_Destroy( renderInfo_t*, renderContext_t* );
+extern void Renderer_Destroy( renderer_t* );
 
 #if 1
 
@@ -58,11 +57,9 @@ void close_app(){
 
 void init_world(){
     obj_model_t *testModelBox = Model_LoadOBJ("./assets/monkey.obj");
-    //obj_model_t *testModelBox = Model_CreateBaseBox("Box01");
     Model_SetPosition(testModelBox, vec3_create(-1.0, 0.0, -3.0));
 
     obj_model_t *testModelBox1 = Model_CreateBasePlane("Plane01");
-    //obj_model_t *testModelBox1 = Model_CreateBaseTriangle("Triangle01");
     Model_SetPosition(testModelBox1, vec3_create(2.0, 0.0, -3.0));
     
     camera_t *Cam = Camera_Init(vec3_create(0.0f, 0.0f, 2.0f),          //Position
@@ -82,7 +79,7 @@ void init_world(){
 
 void destroy_world(){
     Scene_Destroy(Scene);
-    Render_Destroy(mainRenderer, mainRenderContext);
+    Renderer_Destroy(mainRenderer);
 }
 
 int main(int argc, char* args[])
@@ -95,13 +92,23 @@ int main(int argc, char* args[])
     SDL_Event e;
 
     init_world();
-    mainRenderer = Render_Init(mainRenderContext, RENDER_STATE_LIT);
+    mainRenderer = Renderer_Init(RENDER_STATE_LIT, RENDER_TYPE_SOFTWARE_EDGE);
+    
     float rot_val = 0.0f;
-    unsigned int fps = 0;
-    unsigned int ticks, ticksDiff;
-    unsigned int lastTicks = SDL_GetTicks();
+    float time_slice = 0.0f;
+    float frames_slice = 0.0f;
+    float total_time = 0.0f;
+    unsigned int frames_slice_count = 0;
+    clock_t curr_time, last_time;
+    last_time = clock();
 
     while (!quit){
+        
+        frames_slice_count++;
+        curr_time = clock();
+        time_slice = (float)(curr_time - last_time)/CLOCKS_PER_SEC;
+        frames_slice += time_slice;
+        total_time += time_slice;
 
         while( SDL_PollEvent( &e ) != 0 ){
             if( e.type == SDL_QUIT ){
@@ -111,30 +118,21 @@ int main(int argc, char* args[])
             }
         }
 
-        SDL_FillRect( gScreenSurface, NULL, SDL_MapRGB( gScreenSurface->format, 0x00, 0x00, 0x00 ) );
-        Render_ClearZBuffer(mainRenderer);
-        Render_DrawWorld(Scene, mainRenderer, gScreenSurface, rot_val);
+        Renderer_DrawWorld(Scene, mainRenderer, gScreenSurface, rot_val);
         SDL_UpdateWindowSurface( gWindow );
-
-        ticks = SDL_GetTicks();
-        ticksDiff = ticks - lastTicks;
-
-        if(ticksDiff == 0)
-            continue;
-
-        lastTicks = ticks;
-        fps = 1000 / ticksDiff;
-        rot_val += (float)ticksDiff / 2000.f;
-
-        printf("FPS: %u\t\r", fps);
-
-        if( ticksDiff < SCREEN_TICK_PER_FRAME ){
-            SDL_Delay( SCREEN_TICK_PER_FRAME - ticksDiff );
+        
+        if(frames_slice > 1.0f){
+            printf("FPS: %u\n", (unsigned int)(1.0f / frames_slice * (float)frames_slice_count));
+            frames_slice = 0.0f;
+            frames_slice_count = 0;
         }
-        SDL_Delay( 10.0f );
+
+        rot_val = total_time;
+
         if( quit ){
             break;
         }
+        last_time = curr_time;
     }
 
     close_app();
@@ -154,7 +152,7 @@ void Input(SDL_Event e){
                     quit = TRUE;
                     break;
                 case SDLK_r:
-                    Render_SwitchRenderState(mainRenderer);
+                    Renderer_SwitchRendState(mainRenderer);
                     break;
                 case SDLK_w:
                     Camera_PerfMovement(Scene->mainCamera, 1, cam_speed);
@@ -172,6 +170,10 @@ void Input(SDL_Event e){
                     break;
             }
     }
+}
+
+void UpdateWorld(){
+    
 }
 
 #if 0

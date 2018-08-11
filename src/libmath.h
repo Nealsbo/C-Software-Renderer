@@ -161,6 +161,9 @@ void  mat4_printp(void *mp);
 
 ray   ray_create    (vec3 o, vec3 d);
 ray   ray_creater   (ray r1);
+vec3  ray_point     (ray r, float t);
+ray   ray_normalize (ray r);
+ray   ray_reflect   (ray r, ray n);
 float ray_getLength (ray r);
 void  ray_print     (ray r);
 

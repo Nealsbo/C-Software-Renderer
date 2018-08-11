@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 #include <string.h>
 #include <stdint.h>
 #include <float.h>
@@ -35,5 +36,7 @@
 #include "camera.h"
 #include "objloader.h"
 #include "render.h"
+#include "render_se.h"
+#include "render_rt.h"
 
 #endif // SRDEFS_H_INCLUDED

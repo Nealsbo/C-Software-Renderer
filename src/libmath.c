@@ -604,6 +604,20 @@ ray ray_creater(ray r1){
     return r;
 }
 
+vec3 ray_point(ray r, float t){
+    vec3 p = vec3_add(r.origin, vec3_mlt(r.direction, t));
+    return p;
+}
+
+ray ray_normalize (ray r){
+    return ray_create(r.origin, vec3_nrm(r.direction));
+}
+/*
+ray ray_reflect (ray r, ray n){
+    
+}
+*/
+
 float ray_getLength(ray r){
     return sqrtf( power_f_i((r.direction.x - r.origin.x), 2) +
                   power_f_i((r.direction.y - r.origin.y), 2) +
