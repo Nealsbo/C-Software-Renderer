@@ -557,7 +557,7 @@ mat4 mat4_rotz( float r ){
 }
 
 mat4 mat4_projection(float n, float f, float fov, float aspect){
-    float s = 1.0f/tanf(fov * 0.5f * 3.1415f / 180.0f);
+    float s = 1.0f/tanf(fov * 0.5f * M_PI / 180.0f);
     float zr = n - f;
     mat4 m = {{
             s/aspect, 0.0f,      0.0f,        0.0f,

@@ -2,8 +2,20 @@
 #define LIBMATH_H_INCLUDED
 
 //###############
+//#   Defines   #
+//###############
+
+#ifndef M_PI
+#define M_PI 3.14159265
+#endif
+
+#define EPS 0.001f
+
+//###############
 //#   Typedef   #
 //###############
+
+typedef unsigned char bool;
 
 typedef struct { float x, y; }              vec2;
 typedef struct { float x, y, z; }           vec3;
