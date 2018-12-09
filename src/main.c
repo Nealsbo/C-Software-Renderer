@@ -70,7 +70,7 @@ void init_world() {
                                 (float)WINDOW_WIDTH/WINDOW_HEIGHT,      // Aspect
                                 1.0f,                                   // Near plane
                                 100.0f,                                 // Far plane
-                                1.0f);                                  // Speed
+                                0.1f);                                  // Speed
     
     Scene = Scene_Init( Cam );
     Scene_AddObject( Scene, testModelBox );
@@ -110,7 +110,7 @@ int main(int argc, char* args[]) {
         frames_slice += time_slice;
         total_time += time_slice;
 
-        IH_ProcessInput(e, mainRenderer);
+        IH_ProcessInput( e, mainRenderer );
 
         Renderer_DrawWorld( Scene, mainRenderer, gScreenSurface, rot_val );
         
@@ -141,6 +141,21 @@ void UpdateWorld() {
 }
 
 void IH_ProcessInput( SDL_Event e, renderer_t *renderer ) {
+	
+	uint8_t *keystate = SDL_GetKeyboardState(NULL);
+	if( keystate[SDL_SCANCODE_W] ) {
+		Camera_ProcMovement( renderer->scene->mainCamera, 1 );
+	}
+    if( keystate[SDL_SCANCODE_S] ) {
+		Camera_ProcMovement( renderer->scene->mainCamera, 2 );
+	}
+	if( keystate[SDL_SCANCODE_A] ) {
+		Camera_ProcMovement( renderer->scene->mainCamera, 3 );
+	}
+    if( keystate[SDL_SCANCODE_D] ) {
+		Camera_ProcMovement( renderer->scene->mainCamera, 4 );
+	}
+	
 	while( SDL_PollEvent( &e ) != 0 ) {
         if( e.type == SDL_QUIT ) {
             quit = TRUE;
@@ -162,18 +177,6 @@ void IH_Handle( SDL_Event e, renderer_t *renderer ) {
                     break;
                 case SDLK_r:
                     Renderer_SwitchRendState( renderer );
-                    break;
-                case SDLK_w:
-                    Camera_ProcMovement( renderer->scene->mainCamera, 1 );
-                    break;
-                case SDLK_s:
-                    Camera_ProcMovement( renderer->scene->mainCamera, 2 );
-                    break;
-                case SDLK_a:
-                    Camera_ProcMovement( renderer->scene->mainCamera, 3 );
-                    break;
-                case SDLK_d:
-                    Camera_ProcMovement( renderer->scene->mainCamera, 4 );
                     break;
                 default:
                     break;
