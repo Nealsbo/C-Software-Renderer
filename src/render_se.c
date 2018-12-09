@@ -252,7 +252,7 @@ void Render_SE_DrawObject(scene_t *scene, renderer_t *renderer, obj_model_t *mod
         face = model->faces[i];
         for(j = 0; j < face.vcount; j++){
             vertex[j] = Vertex_Init( vec4_byMat4(vec3_toVec4(model->vertices[face.indexes[j].x - 1]), viewMat),
-                                     vec4_byMat4(vec3_toVec4(model->normals[face.indexes[j].z - 1]), viewMat),
+                                     vec4_byMat4(vec3_toVec4(model->normals[face.indexes[j].z - 1]), rotation),
                                      model->textcoords[face.indexes[j].y - 1] );
         }
 
