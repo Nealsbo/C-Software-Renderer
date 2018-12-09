@@ -33,6 +33,8 @@ static edge_t Edge_Init(gradient_t grad, vertex_t *miny, vertex_t *maxy, int min
     edge.oneOverZStep  = grad.oneOverZYStep  + grad.oneOverZXStep  * edge.xStep;
     edge.depth         = grad.depth[miny_index]     + grad.depthXStep     * xPrestep + grad.depthYStep     * yPrestep;
     edge.depthStep     = grad.depthYStep     + grad.depthXStep     * edge.xStep;
+    edge.light         = grad.light[miny_index]     + grad.lightXStep     * xPrestep + grad.lightYStep     * yPrestep;
+    edge.lightStep     = grad.lightYStep     + grad.lightXStep     * edge.xStep;
 
     return edge;
 }
@@ -43,10 +45,12 @@ static void Edge_Step(edge_t *edge){
     edge->texCoordY += edge->texCoordYStep;
     edge->oneOverZ  += edge->oneOverZStep;
     edge->depth     += edge->depthStep;
+    edge->light     += edge->lightStep;
 }
 
 static gradient_t Gradient_Init(vertex_t *miny, vertex_t *midy, vertex_t *maxy){
     gradient_t grad;
+    vec4 light = renderer_->scene->dummLight;
     float oneOverdX = 1.0f /
             (((midy->position.x - maxy->position.x) * (miny->position.y - maxy->position.y)) -
              ((miny->position.x - maxy->position.x) * (midy->position.y - maxy->position.y)));
@@ -56,6 +60,10 @@ static gradient_t Gradient_Init(vertex_t *miny, vertex_t *midy, vertex_t *maxy){
     grad.depth[0] = miny->position.z;
     grad.depth[1] = midy->position.z;
     grad.depth[2] = maxy->position.z;
+    
+    grad.light[0] = clamp( vec3_dot( vec4_toVec3(miny->normal, TRUE), vec4_toVec3(light, FALSE)), 0.0f, 1.0f ) * 0.8f + 0.2f;
+    grad.light[1] = clamp( vec3_dot( vec4_toVec3(midy->normal, TRUE), vec4_toVec3(light, FALSE)), 0.0f, 1.0f ) * 0.8f + 0.2f;
+    grad.light[2] = clamp( vec3_dot( vec4_toVec3(maxy->normal, TRUE), vec4_toVec3(light, FALSE)), 0.0f, 1.0f ) * 0.8f + 0.2f;
 
     grad.oneOverZ[0] = 1.0f / miny->position.w;
     grad.oneOverZ[1] = 1.0f / midy->position.w;
@@ -77,6 +85,8 @@ static gradient_t Gradient_Init(vertex_t *miny, vertex_t *midy, vertex_t *maxy){
     grad.oneOverZYStep  = Gradient_CalcYStep( grad.oneOverZ,  miny, midy, maxy, oneOverdY );
     grad.depthXStep     = Gradient_CalcXStep( grad.depth,     miny, midy, maxy, oneOverdX );
     grad.depthYStep     = Gradient_CalcYStep( grad.depth,     miny, midy, maxy, oneOverdY );
+    grad.lightXStep     = Gradient_CalcXStep( grad.light,     miny, midy, maxy, oneOverdX );
+    grad.lightYStep     = Gradient_CalcYStep( grad.light,     miny, midy, maxy, oneOverdY );
     return grad;
 }
 
@@ -192,11 +202,13 @@ static void DrawScanLine(edge_t *left, edge_t *right, int j, SDL_Surface *Surfac
     float texCoordYXStep = (right->texCoordY - left->texCoordY)/xDist;
     float oneOverZXStep  = (right->oneOverZ  - left->oneOverZ )/xDist;
     float depthXStep     = (right->depth     - left->depth    )/xDist;
+    float lightXStep     = (right->light     - left->light    )/xDist;
 
     float texCoordX = left->texCoordX + texCoordXXStep * xPrestep;
     float texCoordY = left->texCoordY + texCoordYXStep * xPrestep;
     float oneOverZ  = left->oneOverZ  + oneOverZXStep  * xPrestep;
     float depth     = left->depth     + depthXStep     * xPrestep;
+    float light     = left->light     + lightXStep     * xPrestep;
 
     for( i = xMin; i < xMax; i++ ){
 
@@ -204,14 +216,16 @@ static void DrawScanLine(edge_t *left, edge_t *right, int j, SDL_Surface *Surfac
         if( depth < renderer_->z_Buffer[index] ){
             renderer_->z_Buffer[index] = depth;
             float z = 1.0f / oneOverZ;
+            float lightStr = light;
             unsigned int srcX = (unsigned int)((texCoordX * z) * (float)(texture->width  - 1) + 0.5f);
             unsigned int srcY = (unsigned int)((texCoordY * z) * (float)(texture->height - 1) + 0.5f);
-            renderer_->PutPixel(Surface, i, j, Color_ToUInt32(Bitmap_GetPixel(texture, srcX, srcY)));
+            renderer_->PutPixel(Surface, i, j, Color_ToUInt32(Color_Intensity(Bitmap_GetPixel(texture, srcX, srcY), lightStr)));
         }
         oneOverZ  += oneOverZXStep;
         texCoordX += texCoordXXStep;
         texCoordY += texCoordYXStep;
         depth     += depthXStep;
+        light     += lightXStep;
     }
 }
 
@@ -238,7 +252,7 @@ void Render_SE_DrawObject(scene_t *scene, renderer_t *renderer, obj_model_t *mod
         face = model->faces[i];
         for(j = 0; j < face.vcount; j++){
             vertex[j] = Vertex_Init( vec4_byMat4(vec3_toVec4(model->vertices[face.indexes[j].x - 1]), viewMat),
-                                     model->normals[face.indexes[j].z - 1],
+                                     vec4_byMat4(vec3_toVec4(model->normals[face.indexes[j].z - 1]), viewMat),
                                      model->textcoords[face.indexes[j].y - 1] );
         }
 

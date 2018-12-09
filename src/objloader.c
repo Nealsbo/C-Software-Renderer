@@ -1,11 +1,11 @@
 #include "srdefs.h"
 #include "objloader.h"
 
-vertex_t Vertex_Init(vec4 pos, vec3 norm, vec2 uv){
+vertex_t Vertex_Init(vec4 pos, vec4 norm, vec2 uv){
     vertex_t vert;
-    vert.position = (vec4){pos.x, pos.y, pos.z, pos.w};
-    vert.normal   = (vec3){norm.x, norm.y, norm.z};
-    vert.uv       = (vec2){uv.x, uv.y};
+    vert.position = pos;
+    vert.normal   = norm;
+    vert.uv       = uv;
     return vert;
 }
 
@@ -16,6 +16,7 @@ void Vertex_Transform(vertex_t vert, mat4 tf){
 vertex_t Vertex_Lerp( vertex_t v, float value ){
     vertex_t vert;
     vert.position = vec4_lerp( vert.position, v.position, value );
+    vert.normal   = vec4_lerp( vert.normal, v.normal, value );
     vert.uv       = vec2_lerp( vert.uv, v.uv, value );
     return vert;
 }
@@ -580,9 +581,6 @@ void Model_Free(obj_model_t *model){
         Bitmap_Free(model->diffmap->bitmap);
         free(model->diffmap);
     }
-    //free(specmap);
-    //free(normalmap);
-    //free(lightmap);
 
     model->vertices   = NULL;
     model->normals    = NULL;

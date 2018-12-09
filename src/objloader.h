@@ -3,7 +3,7 @@
 
 typedef struct {
     vec4 pos[3];
-    vec3 norm[3];
+    vec4 norm[3];
     vec2 uv[3];
     color_t color;
 } triangle_t;
@@ -19,7 +19,7 @@ typedef struct {
 
 typedef struct {
     vec4 position;
-    vec3 normal;
+    vec4 normal;
     vec2 uv;
 } vertex_t;
 
@@ -42,16 +42,12 @@ typedef struct {
 
     color_t      baseColor;
 
-    texture_t     *diffmap;         //TODO
-    //texture_t     *specmap;       //TODO?
-    //texture_t     *normalmap;     //TODO?
-    //texture_t     *lightmap;      //TODO?
-
+    texture_t     *diffmap;
 
     int          *indexes;
 } obj_model_t;
 
-vertex_t Vertex_Init     ( vec4 pos, vec3 norm, vec2 uv );
+vertex_t Vertex_Init     ( vec4 pos, vec4 norm, vec2 uv );
 void     Vertex_Transform( vertex_t vert, mat4 tf );
 vertex_t Vertex_Lerp     ( vertex_t v, float value );
 float    Vertex_GetPositionElement( vertex_t v, int index );
@@ -73,7 +69,7 @@ obj_model_t *Model_CreateBaseTriangle( const char *model_name );
 obj_model_t *Model_CreateBasePlane   ( const char *model_name );
 obj_model_t *Model_CreateBaseBox     ( const char *model_name );
 
-obj_model_t *Model_LoadOBJ           ( const char *file_name );     //TODO: Material loading, quads, etc
+obj_model_t *Model_LoadOBJ           ( const char *file_name );
 void         Model_Test              ( obj_model_t *model );
 
 void         Model_SetPosition       ( obj_model_t *model, vec3 pos );

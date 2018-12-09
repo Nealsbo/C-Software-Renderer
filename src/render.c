@@ -18,6 +18,7 @@ scene_t *Scene_Init( camera_t *camera ){
     List_Init(scene->objectList, &Model_Test, &Model_Free);
 
     scene->mainCamera = camera;
+    scene->dummLight  = vec4_create(0.0f, 1.0f, 1.0f, 0.0f);
     scene->skybox     = NULL;
     return scene;
 }

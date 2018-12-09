@@ -22,6 +22,8 @@ typedef struct {
     float oneOverZStep;
     float depth;
     float depthStep;
+    float light;
+    float lightStep;
 } edge_t;
 
 typedef struct {
@@ -29,6 +31,7 @@ typedef struct {
     float texCoordY[3];
     float oneOverZ[3];
     float depth[3];
+    float light[3];
 
     float texCoordXXStep;
     float texCoordXYStep;
@@ -38,6 +41,8 @@ typedef struct {
     float oneOverZYStep;
     float depthXStep;
     float depthYStep;
+    float lightXStep;
+    float lightYStep;
 } gradient_t;
 
 

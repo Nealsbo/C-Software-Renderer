@@ -37,6 +37,7 @@ enum RenderType_e{
 typedef struct {
     obj_model_t       *skybox;
     camera_t          *mainCamera;
+    vec4              dummLight;
     List              *objectList;
     enum SceneState_e currentState;
 } scene_t;
