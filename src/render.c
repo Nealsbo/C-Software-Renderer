@@ -47,8 +47,9 @@ void Scene_Destroy( scene_t *scene ){
 //###   Rendering functions   ###
 //###############################
 
-renderer_t *Renderer_Init(uint32_t rs_flag, uint32_t rt_flag){
+renderer_t *Renderer_Init(scene_t *scene, uint32_t rs_flag, uint32_t rt_flag){
     renderer_t *renderer = malloc(sizeof(renderer_t));
+    renderer->scene      = scene;
     renderer->flagState  = rs_flag;
     renderer->renderType = rt_flag;
     renderer->fog        = 0;

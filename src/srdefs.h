@@ -27,8 +27,6 @@
 #define MAX_NAME_LENGTH 256
 #define MAX_TEXT_LENGTH 1024
 
-#define MAX_POLYGON_COUNT 100000
-
 #include "func.h"
 #include "data.h"
 #include "libmath.h"

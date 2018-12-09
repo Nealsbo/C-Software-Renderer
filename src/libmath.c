@@ -634,17 +634,26 @@ void ray_print(ray r){
 //#   Math Functions   #
 //######################
 
-float power_f_i(float x, int y){
+float to_radians( float degrees ) {
+	return degrees * ( M_PI / 180.0f );
+}
+
+float to_degrees( float radians ) {
+	return radians * ( 180.0f / M_PI );
+}
+
+float power_f_i( float x, int y ) {
     int i;
     float s = 1;
-    for(i = y; i != 0; --i) s *= x;
+    for( i = y; i != 0; --i )
+		s *= x;
     return s;
 }
 
-float clamp(float value, float lower, float higher){
-    if(value > higher)
+float clamp( float value, float lower, float higher ) {
+    if( value > higher )
         return higher;
-    if(value < lower)
+    if( value < lower )
         return lower;
     return value;
 }

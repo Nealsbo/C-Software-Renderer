@@ -183,8 +183,10 @@ void  ray_print     (ray r);
 //#   Math Functions   #
 //######################
 
-float power_f_i(float x, int y);
-float clamp    (float value, float lower, float higher);
+float to_radians( float degrees );
+float to_degrees( float radians );
+float power_f_i ( float x, int y );
+float clamp     ( float value, float lower, float higher );
 
 
 #endif // LIBMATH_H_INCLUDED

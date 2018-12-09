@@ -42,6 +42,7 @@ typedef struct {
 } scene_t;
 
 typedef struct {
+	scene_t         *scene;
     uint32_t        flagState;
     uint32_t        renderType;
     int             fog;
@@ -70,7 +71,7 @@ void     Scene_Destroy        ( scene_t *scene );
 //###   Renderer functions   ###
 //##############################
 
-renderer_t *Renderer_Init ( uint32_t rs_flag, uint32_t rt_flag );
+renderer_t *Renderer_Init ( scene_t *scene, uint32_t rs_flag, uint32_t rt_flag );
 
 void Renderer_SwitchRendState ( renderer_t *renderer );
 void Renderer_UpdateInfo      ( renderer_t *renderer ); //TODO
