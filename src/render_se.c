@@ -3,11 +3,15 @@
 
 extern renderer_t *renderer_;
 
+static void ScanTriangle( vertex_t *miny, vertex_t *midy, vertex_t *maxy, int handedness, SDL_Surface *Surface, bitmap_t *texture );
+static void ScanEdges(edge_t *a, edge_t *b, int handedness, SDL_Surface *Surface, bitmap_t *texture);
+static void DrawScanLine(edge_t *left, edge_t *right, int j, SDL_Surface *Surface, bitmap_t *texture);
+
 //############################
 //###   Raster functions   ###
 //############################
 
-edge_t Edge_Init(gradient_t grad, vertex_t *miny, vertex_t *maxy, int miny_index){
+static edge_t Edge_Init(gradient_t grad, vertex_t *miny, vertex_t *maxy, int miny_index){
     edge_t edge;
 
     edge.yStart = (int)ceilf(miny->position.y);
@@ -33,7 +37,7 @@ edge_t Edge_Init(gradient_t grad, vertex_t *miny, vertex_t *maxy, int miny_index
     return edge;
 }
 
-void Edge_Step(edge_t *edge){
+static void Edge_Step(edge_t *edge){
     edge->x         += edge->xStep;
     edge->texCoordX += edge->texCoordXStep;
     edge->texCoordY += edge->texCoordYStep;
@@ -41,7 +45,7 @@ void Edge_Step(edge_t *edge){
     edge->depth     += edge->depthStep;
 }
 
-gradient_t Gradient_Init(vertex_t *miny, vertex_t *midy, vertex_t *maxy){
+static gradient_t Gradient_Init(vertex_t *miny, vertex_t *midy, vertex_t *maxy){
     gradient_t grad;
     float oneOverdX = 1.0f /
             (((midy->position.x - maxy->position.x) * (miny->position.y - maxy->position.y)) -
@@ -76,17 +80,17 @@ gradient_t Gradient_Init(vertex_t *miny, vertex_t *midy, vertex_t *maxy){
     return grad;
 }
 
-float Gradient_CalcXStep( float *values, vertex_t *miny, vertex_t *midy, vertex_t *maxy, float oneOverdX ){
+static float Gradient_CalcXStep( float *values, vertex_t *miny, vertex_t *midy, vertex_t *maxy, float oneOverdX ){
     return (((values[1] - values[2]) * (miny->position.y - maxy->position.y)) -
             ((values[0] - values[2]) * (midy->position.y - maxy->position.y))) * oneOverdX;
 }
 
-float Gradient_CalcYStep( float *values, vertex_t *miny, vertex_t *midy, vertex_t *maxy, float oneOverdY ){
+static float Gradient_CalcYStep( float *values, vertex_t *miny, vertex_t *midy, vertex_t *maxy, float oneOverdY ){
     return (((values[1] - values[2]) * (miny->position.x - maxy->position.x)) -
             ((values[0] - values[2]) * (midy->position.x - maxy->position.x))) * oneOverdY;
 }
 
-float TriangleAreaTimesTwo( vertex_t *a, vertex_t *b, vertex_t *c ){
+static float TriangleAreaTimesTwo( vertex_t *a, vertex_t *b, vertex_t *c ){
     float x1 = b->position.x - a->position.x;
     float y1 = b->position.y - a->position.y;
     float x2 = c->position.x - a->position.x;
@@ -123,7 +127,11 @@ static void Render_DrawLine(vertex_t v0, vertex_t v1, SDL_Surface *image, color_
     }
 }
 
-static void Render_DrawTriangle( vertex_t *miny, vertex_t *midy, vertex_t *maxy, SDL_Surface *Surface, obj_model_t *model ){
+static void Render_DrawTriangle( vertex_t *v, SDL_Surface *Surface, obj_model_t *model ) {
+	vertex_t *miny, *midy, *maxy;
+	miny = &v[0];
+	midy = &v[1];
+	maxy = &v[2];
     mat4 sst       = mat4_screen( WINDOW_WIDTH/2, WINDOW_HEIGHT/2 );
     miny->position = vec4_pdiv(vec4_byMat4( miny->position, sst ));
     midy->position = vec4_pdiv(vec4_byMat4( midy->position, sst ));
@@ -144,7 +152,7 @@ static void Render_DrawTriangle( vertex_t *miny, vertex_t *midy, vertex_t *maxy,
     ScanTriangle( miny, midy, maxy, TriangleAreaTimesTwo(miny, maxy, midy) >= 0, Surface, model->diffmap->bitmap );
 }
 
-void ScanTriangle( vertex_t *miny, vertex_t *midy, vertex_t *maxy, int handedness, SDL_Surface *Surface, bitmap_t *texture ){
+static void ScanTriangle( vertex_t *miny, vertex_t *midy, vertex_t *maxy, int handedness, SDL_Surface *Surface, bitmap_t *texture ){
         gradient_t grad       = Gradient_Init( miny, midy, maxy );
 
         edge_t topToBottom    = Edge_Init( grad, miny, maxy, 0) ;
@@ -155,7 +163,7 @@ void ScanTriangle( vertex_t *miny, vertex_t *midy, vertex_t *maxy, int handednes
         ScanEdges( &topToBottom, &middleToBottom, handedness, Surface, texture );
 }
 
-void ScanEdges(edge_t *a, edge_t *b, int handedness, SDL_Surface *Surface, bitmap_t *texture){
+static void ScanEdges(edge_t *a, edge_t *b, int handedness, SDL_Surface *Surface, bitmap_t *texture){
         int j;
         edge_t *left = a;
         edge_t *right = b;
@@ -172,7 +180,7 @@ void ScanEdges(edge_t *a, edge_t *b, int handedness, SDL_Surface *Surface, bitma
         }
 }
 
-void DrawScanLine(edge_t *left, edge_t *right, int j, SDL_Surface *Surface, bitmap_t *texture){
+static void DrawScanLine(edge_t *left, edge_t *right, int j, SDL_Surface *Surface, bitmap_t *texture){
     int i;
     int xMin = (int)ceilf(left->x);
     int xMax = (int)ceilf(right->x);
@@ -242,7 +250,7 @@ void Render_SE_DrawObject(scene_t *scene, renderer_t *renderer, obj_model_t *mod
                 break;
 
             case RENDER_STATE_LIT:
-                Render_DrawTriangle( &vertex[0], &vertex[1], &vertex[2], Surface, model );
+                Render_DrawTriangle( vertex, Surface, model );
                 break;
 
             default:

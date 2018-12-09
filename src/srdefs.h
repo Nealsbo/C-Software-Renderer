@@ -35,6 +35,5 @@
 #include "objloader.h"
 #include "render.h"
 #include "render_se.h"
-#include "render_rt.h"
 
 #endif // SRDEFS_H_INCLUDED
