@@ -44,19 +44,19 @@ void Camera_SetProjMatrix( camera_t *cam, float fov, float znear, float zfar, fl
     cam->projection = mat4_projection( znear, zfar, fov, aspect );
 }
 
-void Camera_UpdateMatrix ( camera_t *cam ) {
+void Camera_UpdateMatrix( camera_t *cam ) {
     cam->projection = mat4_projection( cam->near, cam->far, cam->fov, cam->aspect );
 }
 
-void Camera_SetNear ( camera_t *cam, float n) {
+void Camera_SetNear( camera_t *cam, float n) {
     cam->near = n;
 }
 
-void Camera_SetFar ( camera_t *cam, float f) {
+void Camera_SetFar( camera_t *cam, float f) {
     cam->far = f;
 }
 
-void Camera_SetSpeed ( camera_t *cam, float s) {
+void Camera_SetSpeed( camera_t *cam, float s) {
 	cam->speed = s;
 }
 
@@ -113,31 +113,31 @@ void Camera_PrintInfo ( camera_t *cam ) {
 //###   Camera control   ###
 //##########################
 
-void Camera_ProcMovement ( camera_t *cam, int m_type/*, float delta*/ ) {
+void Camera_ProcMovement ( camera_t *cam, int m_type, float delta ) {
     vec3  move, front, right;
-    float speed_value = Camera_GetSpeed( cam ) /* * delta*/;
+    float speed_value = cam->speed * delta;
     switch( m_type ){
     case 1:
-        move = vec3_mlt( Camera_GetFront( cam ), speed_value );
+        move = vec3_mlt( cam->front, speed_value );
         break;
 
     case 2:
-        move = vec3_mlt( Camera_GetFront( cam ), -speed_value );
+        move = vec3_mlt( cam->front, -speed_value );
         break;
 
     case 3:
-        move = vec3_mlt( Camera_GetRight( cam ), speed_value );
+        move = vec3_mlt( cam->right, speed_value );
         break;
 
     case 4:
-        move = vec3_mlt( Camera_GetRight( cam ), -speed_value );
+        move = vec3_mlt( cam->right, -speed_value );
         break;
     }
     Camera_AddPosition( cam, move );
 }
 
 void Camera_AddPosition ( camera_t *cam, vec3 step ) {
-    Camera_SetPosition( cam, vec3_add( Camera_GetPosition( cam ), step ) );
+    Camera_SetPosition( cam, vec3_add( cam->position, step ) );
 }
 
 static void Camera_UpdateVectors( camera_t *cam ) {

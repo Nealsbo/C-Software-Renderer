@@ -229,13 +229,12 @@ static void DrawScanLine(edge_t *left, edge_t *right, int j, SDL_Surface *Surfac
     }
 }
 
-void Render_SE_DrawObject(scene_t *scene, renderer_t *renderer, obj_model_t *model, SDL_Surface *Surface, float delta){
+void Render_SE_DrawObject(scene_t *scene, renderer_t *renderer, obj_model_t *model, SDL_Surface *Surface ){
     int i, j;
     obj_face_t face;
     vertex_t vertex[3];
     
     renderer_ = renderer;
-    Model_SetRotation(model, vec3_create(0.0, delta, 0.0));
     camera_t *cam = scene->mainCamera;
 
     mat4 worldToCamera = mat4_lookAt(cam->position, cam->front, vec3_create(0.0, 1.0, 0.0));

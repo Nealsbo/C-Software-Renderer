@@ -13,14 +13,18 @@ SDL_Window  *gWindow            = NULL;
 SDL_Surface *gScreenSurface     = NULL;
 SDL_Surface *gXOut              = NULL;
 
-renderer_t  *mainRenderer  = NULL;
+renderer_t  *mainRenderer       = NULL;
+
+char        *loadedObjectName   = "./assets/monkey.obj";
+
+int moveDirection[2] = {0,0}; // {forward, right};
 
 int  init_app();
 void close_app();
-void Renderer_Putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel);
 void init_world();
 void destroy_world();
-void Input(SDL_Event e);
+void Input( SDL_Event e );
+void UpdateScene( renderer_t *renderer, float delta );
 
 extern void Scene_Destroy( scene_t* );
 extern void Renderer_Destroy( renderer_t* );
@@ -56,11 +60,12 @@ void close_app() {
 }
 
 void init_world() {
-    obj_model_t *testModelBox = Model_LoadOBJ( "./assets/monkey.obj" );
-    Model_SetPosition( testModelBox, vec3_create(-1.0, 0.0, -3.0));
+    obj_model_t *testModelBox = Model_LoadOBJ( loadedObjectName );
+    Model_SetPosition( testModelBox, vec3_create(-1.0f, 0.0f, -3.0f));
 
     obj_model_t *testModelBox1 = Model_CreateBasePlane( "Plane01" );
-    Model_SetPosition( testModelBox1, vec3_create(2.0, 0.0, -3.0) );
+    Model_SetPosition( testModelBox1, vec3_create(2.0f, 0.0f, -3.0f) );
+    Model_AddRotation(testModelBox1, vec3_create(0.0f, 180.0f, 0.0f));
     
     camera_t *Cam = Camera_Init(vec3_create(0.0f, 0.0f, 2.0f),          // Position
                                 vec3_create(0.0f, 1.0f, 0.0f),          // Up vector
@@ -70,7 +75,7 @@ void init_world() {
                                 (float)WINDOW_WIDTH/WINDOW_HEIGHT,      // Aspect
                                 1.0f,                                   // Near plane
                                 100.0f,                                 // Far plane
-                                0.1f);                                  // Speed
+                                5.0f);                                  // Speed
     
     Scene = Scene_Init( Cam );
     Scene_AddObject( Scene, testModelBox );
@@ -94,26 +99,26 @@ int main(int argc, char* args[]) {
     mainRenderer = Renderer_Init( Scene, RENDER_STATE_LIT, RENDER_TYPE_SOFTWARE_EDGE );
     
     float rot_val      = 0.0f;
-    float time_slice   = 0.0f;
     float frames_slice = 0.0f;
     float total_time   = 0.0f;
+    
+    float delta = 0.0f;
     
     unsigned int frames_slice_count = 0;
     clock_t curr_time, last_time;
     last_time = clock();
 
     while ( !quit ) {
-        
-        frames_slice_count++;
         curr_time = clock();
-        time_slice = (float)( curr_time - last_time )/CLOCKS_PER_SEC;
-        frames_slice += time_slice;
-        total_time += time_slice;
+        delta = (float)( curr_time - last_time )/CLOCKS_PER_SEC;
+        
+        frames_slice += delta;
+        total_time += delta;
+        frames_slice_count++;
 
         IH_ProcessInput( e, mainRenderer );
-
-        Renderer_DrawWorld( Scene, mainRenderer, gScreenSurface, rot_val );
-        
+        UpdateScene( mainRenderer, delta );
+        Renderer_DrawWorld( mainRenderer, gScreenSurface );
         SDL_UpdateWindowSurface( gWindow );
         
         if(frames_slice > 1.0f){
@@ -122,11 +127,6 @@ int main(int argc, char* args[]) {
             frames_slice_count = 0;
         }
 
-        rot_val = total_time;
-
-        if( quit ) {
-            break;
-        }
         last_time = curr_time;
     }
 
@@ -136,24 +136,44 @@ int main(int argc, char* args[]) {
 }
 #endif
 
-void UpdateWorld() {
-    
+void UpdateScene( renderer_t *renderer, float delta ) {
+	obj_model_t *model = Scene_FindObjectByName( renderer->scene, loadedObjectName );
+	if( model != NULL )
+		Model_AddRotation(model, vec3_create(0.0f, delta, 0.0f));
+		
+	int f = moveDirection[0]; // 1 - Forward; -1 - Backward;
+	int r = moveDirection[1]; // 1 - Right;   -1 - Left;
+	
+	if(f){
+		if(f > 0)
+			Camera_ProcMovement( renderer->scene->mainCamera, 1, delta );
+		else
+			Camera_ProcMovement( renderer->scene->mainCamera, 2, delta );
+	}
+	if(r){
+		if(r > 0)
+			Camera_ProcMovement( renderer->scene->mainCamera, 4, delta );
+		else
+			Camera_ProcMovement( renderer->scene->mainCamera, 3, delta );
+	}
+	moveDirection[0] = 0;
+	moveDirection[1] = 0;
 }
 
 void IH_ProcessInput( SDL_Event e, renderer_t *renderer ) {
 	
 	uint8_t *keystate = SDL_GetKeyboardState(NULL);
 	if( keystate[SDL_SCANCODE_W] ) {
-		Camera_ProcMovement( renderer->scene->mainCamera, 1 );
+		moveDirection[0] = 1;
 	}
     if( keystate[SDL_SCANCODE_S] ) {
-		Camera_ProcMovement( renderer->scene->mainCamera, 2 );
+		moveDirection[0] = -1;
 	}
-	if( keystate[SDL_SCANCODE_A] ) {
-		Camera_ProcMovement( renderer->scene->mainCamera, 3 );
+	if( keystate[SDL_SCANCODE_D] ) {
+		moveDirection[1] = 1;
 	}
-    if( keystate[SDL_SCANCODE_D] ) {
-		Camera_ProcMovement( renderer->scene->mainCamera, 4 );
+    if( keystate[SDL_SCANCODE_A] ) {
+		moveDirection[1] = -1;
 	}
 	
 	while( SDL_PollEvent( &e ) != 0 ) {

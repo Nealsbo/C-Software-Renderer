@@ -33,6 +33,28 @@ List *Scene_GetObjectList( scene_t *scene ){
     return scene->objectList;
 }
 
+obj_model_t *Scene_FindObjectByName( scene_t *scene, char *name ){
+	List        *objList = Scene_GetObjectList( scene );
+	node_t      *curr    = List_Head( objList );
+	obj_model_t *obj     = NULL;
+	
+	int isFound = FALSE;
+	
+	while( curr != NULL ){
+        if( !strcmp( name, Model_GetName(List_Data(curr)) ) ){
+			isFound = TRUE;
+			break;
+		}
+        curr = curr->next;
+    }
+    if(isFound){
+		obj = List_Data(curr);
+	} else {
+		printf("SceneWarn: Object \"%s\" not found!\n", name);
+	}
+	return obj;
+}
+
 void Scene_PrintObjectList( scene_t *scene ){
     List_Print( scene->objectList );
 }
@@ -48,7 +70,7 @@ void Scene_Destroy( scene_t *scene ){
 //###   Rendering functions   ###
 //###############################
 
-renderer_t *Renderer_Init(scene_t *scene, uint32_t rs_flag, uint32_t rt_flag){
+renderer_t *Renderer_Init( scene_t *scene, uint32_t rs_flag, uint32_t rt_flag ){
     renderer_t *renderer = malloc(sizeof(renderer_t));
     renderer->scene      = scene;
     renderer->flagState  = rs_flag;
@@ -69,9 +91,9 @@ void Renderer_SwitchRendState( renderer_t *renderer ){
         renderer->flagState = RENDER_STATE_WIREFRAME;
 }
 
-void Renderer_Update(renderer_t *renderer){} //TODO
+void Renderer_Update( renderer_t *renderer ){} //TODO
 
-void Renderer_ClearZBuffer(renderer_t *renderer){
+void Renderer_ClearZBuffer( renderer_t *renderer ){
     int i;
     for( i = 0; i < WINDOW_WIDTH * WINDOW_HEIGHT; i++ ) renderer->z_Buffer[i] = FLT_MAX;
 }
@@ -105,13 +127,14 @@ void Renderer_Putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel){
     }
 }
 
-void Renderer_DrawWorld(scene_t *scene, renderer_t *renderer, SDL_Surface *Surface, float delta){
+void Renderer_DrawWorld( renderer_t *renderer, SDL_Surface *Surface ){
+	scene_t *scene = renderer->scene;
     SDL_FillRect( Surface, NULL, SDL_MapRGB( Surface->format, 0x00, 0x00, 0x00 ) );
     Renderer_ClearZBuffer(renderer);
     node_t *objList_node = List_Head( Scene_GetObjectList(scene) );
 
     while(objList_node != NULL){
-        Render_SE_DrawObject(scene, renderer, List_Data(objList_node), Surface, delta);
+        Render_SE_DrawObject( scene, renderer, List_Data(objList_node), Surface );
         objList_node = objList_node->next;
     }
     renderer->frameCount++;
