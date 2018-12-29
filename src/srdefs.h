@@ -33,7 +33,8 @@
 #include "image.h"
 #include "camera.h"
 #include "objloader.h"
+#include "scene.h"
 #include "render.h"
-#include "render_se.h"
+#include "raster.h"
 
 #endif // SRDEFS_H_INCLUDED

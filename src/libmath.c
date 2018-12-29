@@ -49,6 +49,11 @@ vec2i vec2i_neg(vec2i v1){
     return v2;
 }
 
+vec2  vec2i_toVec2(vec2i v1){
+    vec2 v2 = {(float)v1.x, (float)v1.y};
+    return v2;
+}
+
 void vec2i_print(vec2i v){
     printf("Vector2i:{ %d, %d )\n", v.x, v.y);
 }
@@ -114,6 +119,11 @@ vec2 vec2_nrm(vec2 v1){
 float vec2_lng(vec2 v1){
     float len = sqrtf(v1.x * v1.x + v1.y * v1.y);
     return len;
+}
+
+vec2i vec2_toVec2i(vec2 v){
+    vec2i v2 = {(int)v.x, (int)v.y};
+    return v2;
 }
 
 vec2 vec2_lerp (vec2 v1, vec2 v2, float value){

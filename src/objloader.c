@@ -481,6 +481,19 @@ void Model_SetBaseColor ( obj_model_t *model, color_t color ){
     model->baseColor = color;
 }
 
+void Model_AddPosition( obj_model_t *model, vec3 pos ){
+	Model_SetPosition( model, vec3_add( Model_GetPosition(model), pos) );
+}
+void Model_AddRotation( obj_model_t *model, vec3 rot ){
+	Model_SetRotation( model, vec3_add( Model_GetRotation(model), rot) );
+}
+
+
+
+char *Model_GetName( obj_model_t *model ){
+	return model->name;
+}
+
 void Model_Test(obj_model_t *model){
     int i;
     if(model == NULL){

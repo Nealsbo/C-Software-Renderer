@@ -49,6 +49,8 @@ vec2i vec2i_sub(vec2i v1, vec2i v2);
 vec2i vec2i_mlt(vec2i v1,  float f);
 vec2i vec2i_neg(vec2i v1);
 
+vec2  vec2i_toVec2(vec2i v1);
+
 void  vec2i_print (vec2i v);
 void  vec2i_printp(void *vp);
 
@@ -64,6 +66,8 @@ float vec2_dot(vec2 v1, vec2 v2);
 vec2  vec2_neg(vec2 v1);
 vec2  vec2_nrm(vec2 v1);
 float vec2_lng(vec2 v1);
+
+vec2i vec2_toVec2i(vec2 v1);
 
 vec2  vec2_lerp(vec2 v1, vec2 v2, float value);
 
