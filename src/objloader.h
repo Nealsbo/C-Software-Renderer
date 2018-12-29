@@ -77,7 +77,6 @@ void         Model_SetRotation       ( obj_model_t *model, vec3 rot );
 void         Model_SetScale          ( obj_model_t *model, vec3 scale );
 void         Model_SetBaseColor      ( obj_model_t *model, color_t color );
 void         Model_Rename            ( obj_model_t *model, char *new_name );
-obj_model_t *Model_FindByName        ( char *name );                //TODO: Listing/Searching
 
 void         Model_AddPosition       ( obj_model_t *model, vec3 pos );
 void         Model_AddRotation       ( obj_model_t *model, vec3 rot );

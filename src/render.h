@@ -42,6 +42,22 @@ typedef struct {
 
 
 
+<<<<<<< HEAD
+=======
+//###########################
+//###   Scene functions   ###
+//###########################
+
+scene_t      *Scene_Init            ( camera_t *camera );
+void          Scene_AddObject       ( scene_t *scene, obj_model_t *model );
+List         *Scene_GetObjectList   ( scene_t *scene );
+obj_model_t  *Scene_FindObjectByName( scene_t *scene, char *name );
+void          Scene_PrintObjectList ( scene_t *scene );
+void          Scene_Destroy         ( scene_t *scene );
+
+
+
+>>>>>>> 2df03e5a9b8884e01c3fa6ec953dda5c4a34a6d3
 //##############################
 //###   Renderer functions   ###
 //##############################
@@ -52,7 +68,11 @@ void Renderer_SwitchRendState ( renderer_t *renderer );
 void Renderer_UpdateInfo      ( renderer_t *renderer ); //TODO
 void Renderer_ClearZBuffer    ( renderer_t *renderer );
 void Renderer_Putpixel        ( SDL_Surface *surface, int x, int y, uint32_t pixel );
+<<<<<<< HEAD
 void Renderer_DrawObject      ( scene_t *scene, renderer_t *renderer, obj_model_t *model, SDL_Surface *Surface );
+=======
+
+>>>>>>> 2df03e5a9b8884e01c3fa6ec953dda5c4a34a6d3
 void Renderer_DrawWorld       ( renderer_t *renderer, SDL_Surface *Surface );
 void Renderer_Destroy         ( renderer_t *renderer );
 
