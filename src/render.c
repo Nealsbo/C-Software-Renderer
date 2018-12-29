@@ -4,83 +4,12 @@
 
 renderer_t *renderer_ = NULL;
 
-<<<<<<< HEAD
-=======
-//###########################
-//###   Scene functions   ###
-//###########################
-
-scene_t *Scene_Init( camera_t *camera ){
-    scene_t *scene = (scene_t *)malloc(sizeof(scene_t));
-    if(scene == NULL){
-        printf("Error: Cannot create scene!\n");
-        return NULL;
-    }
-
-    scene->objectList = (List *)malloc(sizeof(List));
-    List_Init(scene->objectList, &Model_Test, &Model_Free);
-
-    scene->mainCamera = camera;
-    scene->dummLight  = vec4_create(0.0f, 1.0f, 1.0f, 0.0f);
-    scene->skybox     = NULL;
-    return scene;
-}
-
-void Scene_AddObject( scene_t *scene, obj_model_t *model ){
-    if( model != NULL ){
-        List_Push ( scene->objectList, model );
-    }
-}
-
-List *Scene_GetObjectList( scene_t *scene ){
-    return scene->objectList;
-}
-
-obj_model_t *Scene_FindObjectByName( scene_t *scene, char *name ){
-	List        *objList = Scene_GetObjectList( scene );
-	node_t      *curr    = List_Head( objList );
-	obj_model_t *obj     = NULL;
-	
-	int isFound = FALSE;
-	
-	while( curr != NULL ){
-        if( !strcmp( name, Model_GetName(List_Data(curr)) ) ){
-			isFound = TRUE;
-			break;
-		}
-        curr = curr->next;
-    }
-    if(isFound){
-		obj = List_Data(curr);
-	} else {
-		printf("SceneWarn: Object \"%s\" not found!\n", name);
-	}
-	return obj;
-}
-
-void Scene_PrintObjectList( scene_t *scene ){
-    List_Print( scene->objectList );
-}
-
-void Scene_Destroy( scene_t *scene ){
-    if(scene != NULL) {
-        free(scene->mainCamera);
-        List_Destroy(scene->objectList);
-    }
-}
-
->>>>>>> 2df03e5a9b8884e01c3fa6ec953dda5c4a34a6d3
 //###############################
 //###   Rendering functions   ###
 //###############################
 
-<<<<<<< HEAD
 renderer_t *Renderer_Init(scene_t *scene, uint32_t rs_flag, uint32_t rt_flag) {
     renderer_t *renderer = malloc( sizeof(renderer_t) );
-=======
-renderer_t *Renderer_Init( scene_t *scene, uint32_t rs_flag, uint32_t rt_flag ){
-    renderer_t *renderer = malloc(sizeof(renderer_t));
->>>>>>> 2df03e5a9b8884e01c3fa6ec953dda5c4a34a6d3
     renderer->scene      = scene;
     renderer->flagState  = rs_flag;
     renderer->renderType = rt_flag;
@@ -102,11 +31,7 @@ void Renderer_SwitchRendState( renderer_t *renderer ) {
 
 void Renderer_Update( renderer_t *renderer ){} //TODO
 
-<<<<<<< HEAD
 void Renderer_ClearZBuffer(renderer_t *renderer) {
-=======
-void Renderer_ClearZBuffer( renderer_t *renderer ){
->>>>>>> 2df03e5a9b8884e01c3fa6ec953dda5c4a34a6d3
     int i;
     for( i = 0; i < WINDOW_WIDTH * WINDOW_HEIGHT; i++ )
 		renderer->z_Buffer[i] = 0.0f;
@@ -141,7 +66,6 @@ void Renderer_Putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel) {
     }
 }
 
-<<<<<<< HEAD
 void Renderer_DrawObject(scene_t *scene, renderer_t *renderer, obj_model_t *model, SDL_Surface *Surface) {
     int i, j;
     obj_face_t face;
@@ -186,21 +110,13 @@ void Renderer_DrawObject(scene_t *scene, renderer_t *renderer, obj_model_t *mode
 }
 
 void Renderer_DrawWorld(renderer_t *renderer, SDL_Surface *Surface) {
-=======
-void Renderer_DrawWorld( renderer_t *renderer, SDL_Surface *Surface ){
->>>>>>> 2df03e5a9b8884e01c3fa6ec953dda5c4a34a6d3
 	scene_t *scene = renderer->scene;
     SDL_FillRect( Surface, NULL, SDL_MapRGB( Surface->format, 0x00, 0x00, 0x00 ) );
     Renderer_ClearZBuffer(renderer);
     node_t *objList_node = List_Head( Scene_GetObjectList(scene) );
 
-<<<<<<< HEAD
     while(objList_node != NULL) {
         Renderer_DrawObject(scene, renderer, List_Data(objList_node), Surface);
-=======
-    while(objList_node != NULL){
-        Render_SE_DrawObject( scene, renderer, List_Data(objList_node), Surface );
->>>>>>> 2df03e5a9b8884e01c3fa6ec953dda5c4a34a6d3
         objList_node = objList_node->next;
     }
     renderer->frameCount++;
