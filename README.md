@@ -14,12 +14,11 @@ Simple software renderer using C Language
 Have:
 - Wireframe draw
 - Lit textured draw
-- - Perspective texture mapping
-- Simple Camera (not used in its purpose)
+- Simple Camera
 - Obj model loading(Triangulated)
 - PPM image save/load
 - Z-Buffer
 
 TODO:
 - Rendering features and optimization
-- Fixes(Camera, Controls, Lighting)
+- Fixes(Lighting)
