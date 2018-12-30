@@ -67,8 +67,8 @@ void Raster_DrawTriangle( vertex_t *v, SDL_Surface *Surface, obj_model_t *model 
 	mat4 sst    = mat4_screen( WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
 	vec3 p;
 	vec3 pts[3] = {vec4_toVec3( vec4_byMat4(v[0].position, sst), TRUE ),
-				   vec4_toVec3( vec4_byMat4(v[2].position, sst), TRUE ),
-				   vec4_toVec3( vec4_byMat4(v[1].position, sst), TRUE )};
+				   vec4_toVec3( vec4_byMat4(v[1].position, sst), TRUE ),
+				   vec4_toVec3( vec4_byMat4(v[2].position, sst), TRUE )};
 				   
 	vec2i bboxmin = vec2i_create( 0, 0 );
 	vec2i bboxmax = vec2i_create( WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1 );
@@ -95,11 +95,11 @@ void Raster_DrawTriangle( vertex_t *v, SDL_Surface *Surface, obj_model_t *model 
 				w2 /= area;
 				z = 1.0f / ( pts[0].z * w0 + pts[1].z * w1 + pts[2].z * w2 );
 				
-				if( z > renderer_->z_Buffer[index] ) {
+				if( z < renderer_->z_Buffer[index] ) {
 					renderer_->z_Buffer[index] = z;
 					
-					int srcX = ( v[0].uv.x * w0 + v[1].uv.x * w1 + v[2].uv.x * w2 ) * model->diffmap->bitmap->width;
-					int srcY = ( v[0].uv.y * w0 + v[1].uv.y * w1 + v[2].uv.y * w2 ) * model->diffmap->bitmap->width;
+					int srcX = ( v[0].uv.x * w0 + v[1].uv.x * w1 + v[2].uv.x * w2 ) * ( model->diffmap->bitmap->width - 1 );
+					int srcY = ( v[0].uv.y * w0 + v[1].uv.y * w1 + v[2].uv.y * w2 ) * ( model->diffmap->bitmap->height - 1 );
 					
 					renderer_->PutPixel(Surface, p.x, p.y, Color_ToUInt32(Bitmap_GetPixel(model->diffmap->bitmap, srcX, srcY)));
 				}

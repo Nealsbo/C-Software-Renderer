@@ -573,14 +573,14 @@ mat4 mat4_projection(float n, float f, float fov, float aspect){
             s/aspect, 0.0f,      0.0f,        0.0f,
                 0.0f,    s,      0.0f,        0.0f,
                 0.0f, 0.0f, (-n-f)/zr, 2.0f*n*f/zr,
-                0.0f, 0.0f,      1.0f,        0.0f }};
+                0.0f, 0.0f,     -1.0f,        0.0f }};
     return m;
 }
 
 mat4 mat4_screen(float halfW, float halfH){
     mat4 m = {{
             halfW,   0.0f,  0.0f, halfW,
-             0.0f, -halfH,  0.0f, halfH,
+             0.0f,  halfH,  0.0f, halfH,
              0.0f,   0.0f,  1.0f,  0.0f,
              0.0f,   0.0f,  0.0f,  1.0f }};
     return m;

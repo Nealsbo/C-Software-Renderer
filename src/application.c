@@ -140,9 +140,9 @@ void UpdateScene( renderer_t *renderer, float delta ) {
 	}
 	if(r){
 		if(r > 0)
-			Camera_ProcMovement( renderer->scene->mainCamera, 4, delta );
-		else
 			Camera_ProcMovement( renderer->scene->mainCamera, 3, delta );
+		else
+			Camera_ProcMovement( renderer->scene->mainCamera, 4, delta );
 	}
 	moveDirection[0] = 0;
 	moveDirection[1] = 0;

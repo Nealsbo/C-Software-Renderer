@@ -34,7 +34,7 @@ void Renderer_Update( renderer_t *renderer ){} //TODO
 void Renderer_ClearZBuffer(renderer_t *renderer) {
     int i;
     for( i = 0; i < WINDOW_WIDTH * WINDOW_HEIGHT; i++ )
-		renderer->z_Buffer[i] = 0.0f;
+		renderer->z_Buffer[i] = FLT_MAX;
 }
 
 void Renderer_Putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel) {
