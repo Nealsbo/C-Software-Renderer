@@ -17,9 +17,8 @@ enum RenderState_e{
 };
 
 enum RenderType_e{
-    RENDER_TYPE_SOFTWARE_EDGE = 0,
-    RENDER_TYPE_SOFTWARE_BARYCENTRIC = 1,
-    RENDER_TYPE_RAYTRACING = 2
+    RENDER_TYPE_SOFTWARE = 0,
+    RENDER_TYPE_RAYTRACING = 1      // TODO? :)
 };
 
 

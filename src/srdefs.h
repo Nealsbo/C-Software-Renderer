@@ -35,6 +35,7 @@
 #include "objloader.h"
 #include "scene.h"
 #include "render.h"
+#include "shader.h"
 #include "raster.h"
 
 #endif // SRDEFS_H_INCLUDED

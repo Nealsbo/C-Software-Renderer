@@ -3,10 +3,9 @@
 
 #include "srdefs.h"
 
-enum SceneState_e{
-    SCENE_STATE_FREEZE = 0,
-    SCENE_STATE_RENDER = 1,
-    SCENE_STATE_UPDATE_SCENE = 2
+enum SceneState_e {
+    SCENE_STATE_FROZEN    = 0,
+    SCENE_STATE_UPDATABLE = 1
 };
 
 //#########################
@@ -14,11 +13,10 @@ enum SceneState_e{
 //#########################
 
 typedef struct {
-    obj_model_t       *skybox;
     camera_t          *mainCamera;
-    vec4              dummLight;
+    vec4               dummLight;
     List              *objectList;
-    enum SceneState_e currentState;
+    enum SceneState_e  currentState;
 } scene_t;
 
 

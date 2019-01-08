@@ -74,7 +74,7 @@ void Application_Run(){
     SDL_Event e;
 
     SetupScene( Scene );
-    mainRenderer = Renderer_Init( Scene, RENDER_STATE_LIT, RENDER_TYPE_SOFTWARE_EDGE );
+    mainRenderer = Renderer_Init( Scene, RENDER_STATE_LIT, RENDER_TYPE_SOFTWARE );
     
     float time_slice   = 0.0f;
     float frames_slice = 0.0f;
@@ -125,7 +125,7 @@ void Application_Close(){
 }
 
 void UpdateScene( renderer_t *renderer, float delta ) {
-	obj_model_t *model = Scene_FindObjectByName( renderer->scene, loadedObjectName );
+	obj_model_t *model = Scene_FindObjectByName( renderer->scene, "monkey.obj" );
 	if( model != NULL )
 		Model_AddRotation(model, vec3_create(0.0f, delta, 0.0f));
 		
@@ -149,7 +149,6 @@ void UpdateScene( renderer_t *renderer, float delta ) {
 }
 
 void IH_ProcessInput( SDL_Event e, renderer_t *renderer ) {
-	
 	uint8_t *keystate = SDL_GetKeyboardState(NULL);
 	if( keystate[SDL_SCANCODE_W] ) {
 		moveDirection[0] = 1;
