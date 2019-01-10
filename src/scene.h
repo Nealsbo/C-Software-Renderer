@@ -14,7 +14,7 @@ enum SceneState_e {
 
 typedef struct {
     camera_t          *mainCamera;
-    vec4               dummLight;
+    vec3               dummLight;
     List              *objectList;
     enum SceneState_e  currentState;
 } scene_t;

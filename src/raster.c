@@ -17,16 +17,21 @@ static float TriangleAreaTimesTwo( vertex_t *a, vertex_t *b, vertex_t *c ) {
     return ( x1 * y2 - x2 * y1 );
 }
 
-void Raster_DrawLine(vertex_t v0, vertex_t v1, SDL_Surface *image, color_t color) {
+void Raster_DrawLine(vec4 v0, vec4 v1, SDL_Surface *image, color_t color) {
     mat4 sst = mat4_screen ( WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
     
-    vec2i p0 = vec4_toVec2i( vec4_pdiv( vec4_byMat4( v0.position, sst ) ) );
-    vec2i p1 = vec4_toVec2i( vec4_pdiv( vec4_byMat4( v1.position, sst ) ) );
+    vec2i p0 = vec4_toVec2i( vec4_pdiv( vec4_byMat4( v0, sst ) ) );
+    vec2i p1 = vec4_toVec2i( vec4_pdiv( vec4_byMat4( v1, sst ) ) );
 
-    int x0 = p0.x, y0 = p0.y, x1 = p1.x, y1 = p1.y;
+    int x0 = p0.x;
+    int y0 = p0.y;
+    int x1 = p1.x;
+    int y1 = p1.y;
 
-    int deltax = abs( x1 - x0 ), signx = x0 < x1 ? 1 : -1;
-    int deltay = abs( y1 - y0 ), signy = y0 < y1 ? 1 : -1;
+    int deltax = abs( x1 - x0 );
+    int deltay = abs( y1 - y0 );
+    int signx = x0 < x1 ? 1 : -1;
+    int signy = y0 < y1 ? 1 : -1;
     int error2, error = ( deltax > deltay ? deltax : -deltay ) / 2;
 
     while(1) {
@@ -47,18 +52,15 @@ void Raster_DrawLine(vertex_t v0, vertex_t v1, SDL_Surface *image, color_t color
     }
 }
 
-void Raster_DrawTriangle( vertex_t *v, SDL_Surface *Surface, obj_model_t *model ) {
+void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, shader_t *shader ) {
 	float w0, w1, w2, z, area;
 	int i, x ,y, srcX, srcY;
 	
 	mat4 sst    = mat4_screen( WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
 	vec3 p;
-	vec3 pts[3] = {vec4_toVec3( vec4_byMat4(v[0].position, sst), TRUE ),
-				   vec4_toVec3( vec4_byMat4(v[1].position, sst), TRUE ),
-				   vec4_toVec3( vec4_byMat4(v[2].position, sst), TRUE )};
-	vec3 ptsn[3] = {vec4_toVec3( vec4_byMat4(v[0].normal, sst), FALSE ),
-				    vec4_toVec3( vec4_byMat4(v[1].normal, sst), FALSE ),
-				    vec4_toVec3( vec4_byMat4(v[2].normal, sst), FALSE )};
+	vec3 pts[3] = {vec4_toVec3( vec4_byMat4(v[0], sst), TRUE ),
+				   vec4_toVec3( vec4_byMat4(v[1], sst), TRUE ),
+				   vec4_toVec3( vec4_byMat4(v[2], sst), TRUE )};
 				   
 	vec2i bboxmin = vec2i_create( 0, 0 );
 	vec2i bboxmax = vec2i_create( WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1 );
@@ -87,17 +89,9 @@ void Raster_DrawTriangle( vertex_t *v, SDL_Surface *Surface, obj_model_t *model 
 				
 				if( z < renderer_->z_Buffer[index] ) {
 					renderer_->z_Buffer[index] = z;
-					
-					int srcX = ( v[0].uv.x * w0 + v[1].uv.x * w1 + v[2].uv.x * w2 ) * ( model->diffmap->bitmap->width - 1 );
-					int srcY = ( v[0].uv.y * w0 + v[1].uv.y * w1 + v[2].uv.y * w2 ) * ( model->diffmap->bitmap->height - 1 );
-					
-					float nx = ( v[0].normal.x * w0 + v[1].normal.x * w1 + v[2].normal.x * w2 );
-					float ny = ( v[0].normal.y * w0 + v[1].normal.y * w1 + v[2].normal.y * w2 );
-					float nz = ( v[0].normal.z * w0 + v[1].normal.z * w1 + v[2].normal.z * w2 );
-					
-					vec3 nrm = vec3_create( nx, ny, nz );
-					
-					renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( Bitmap_GetPixel( model->diffmap->bitmap, srcX, srcY ) ) );
+				
+					//renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( Bitmap_GetPixel( model->diffmap->bitmap, srcX, srcY ) ) );
+					renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( Shader_Fragment( shader, model, vec3_create(w0, w1, w2) ) ) );
 				}
 			}
 		}

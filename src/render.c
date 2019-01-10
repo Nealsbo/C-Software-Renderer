@@ -69,11 +69,14 @@ void Renderer_Putpixel(SDL_Surface *surface, int x, int y, uint32_t pixel) {
 void Renderer_DrawObject(scene_t *scene, renderer_t *renderer, obj_model_t *model, SDL_Surface *Surface) {
     int i, j;
     obj_face_t face;
-    vertex_t vertex[3];
+    vec4 rast_verts[3];
+    vertex_t vertex[3], vertexx[3];
     
     renderer_       = renderer;
     camera_t *cam   = scene->mainCamera;
-    shader_t shader = { 0 };
+    shader_t shader;
+    
+    Shader_SetLight( &shader, scene->dummLight, vec3_create(1.0f, 0.0f, 0.0f) );
 
     mat4 worldToCamera = mat4_lookAt(cam->position, cam->front, vec3_create(0.0, 1.0, 0.0));
 
@@ -88,20 +91,35 @@ void Renderer_DrawObject(scene_t *scene, renderer_t *renderer, obj_model_t *mode
     for(i = 0; i < model->trisCount; i++){
         face = model->faces[i];
         for(j = 0; j < face.vcount; j++){
+            /*
             vertex[j] = Vertex_Init( vec4_byMat4(vec3_toVec4(model->vertices[face.indexes[j].x - 1]), viewMat),
                                      vec4_byMat4(vec3_toVec4(model->normals[face.indexes[j].z - 1]), rotation),
                                      model->textcoords[face.indexes[j].y - 1] );
+
+                                     
+            vertexx[j] = Vertex_Init( vec3_toVec4( model->vertices[face.indexes[j].x - 1] ),
+                                     vec4_byMat4( vec3_toVec4( model->normals[face.indexes[j].z - 1] ), rotation ),
+                                     model->textcoords[face.indexes[j].y - 1] );
+            vertex[j] = Vertex_Init( vec3_toVec4( Shader_Vertex( &shader, &vertexx[j], viewMat ) ),
+                                     vec3_toVec4( model->normals[face.indexes[j].z - 1] ),
+                                     model->textcoords[face.indexes[j].y - 1] );
+            */
+            vertex[j]     = Vertex_Init( vec3_toVec4( model->vertices  [face.indexes[j].x - 1] ),
+                                         vec3_toVec4( model->normals   [face.indexes[j].z - 1] ),
+                                         model->textcoords[face.indexes[j].y - 1] );
+
+            rast_verts[j] = Shader_Vertex( &shader, &vertex[j], viewMat, j );
         }
 
         switch(renderer->flagState){
             case RENDER_STATE_WIREFRAME:
-                Raster_DrawLine( vertex[0], vertex[1], Surface, model->baseColor );
-                Raster_DrawLine( vertex[1], vertex[2], Surface, model->baseColor );
-                Raster_DrawLine( vertex[0], vertex[2], Surface, model->baseColor );
+                Raster_DrawLine( rast_verts[0], rast_verts[1], Surface, model->baseColor );
+                Raster_DrawLine( rast_verts[1], rast_verts[2], Surface, model->baseColor );
+                Raster_DrawLine( rast_verts[0], rast_verts[2], Surface, model->baseColor );
                 break;
 
             case RENDER_STATE_LIT:
-                Raster_DrawTriangle( vertex, Surface, model );
+                Raster_DrawTriangle( rast_verts, Surface, model, &shader );
                 break;
 
             default:

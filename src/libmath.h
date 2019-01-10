@@ -17,9 +17,23 @@
 
 typedef unsigned char bool;
 
-typedef struct { float x, y; }              vec2;
-typedef struct { float x, y, z; }           vec3;
-typedef struct { float x, y, z, w; }        vec4;
+typedef union
+{
+	struct { float x, y; };
+	float data[2]
+}											vec2;
+
+typedef union
+{ 
+	struct { float x, y, z; };
+	float data[3]
+}             								vec3;
+				
+typedef union
+{
+	struct { float x, y, z, w; };
+	float data[4]
+}	      									vec4;
 
 typedef struct { int x, y; }                vec2i;
 typedef struct { int x, y, z; }             vec3i;
