@@ -6,7 +6,7 @@
 typedef struct {
 	mat4 mvp;
 	mat4 mvp_inv;
-	mat3 var_uv;
+	mat4 var_uv;
 	vec3 var_intens;
 	vec3 vert_nrm;
 	vec2 vert_uv;

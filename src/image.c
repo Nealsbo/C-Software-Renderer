@@ -144,15 +144,15 @@ void Bitmap_SetPixel( bitmap_t *i, unsigned int x, unsigned int y, color_t c ) {
 
 color_t Bitmap_GetPixel( bitmap_t *i, unsigned int x, unsigned int y ) {
     color_t col;
-    col = i->bitmap[ y * i->height + x ];
+    col = i->bitmap[ y * i->width + x ];
     return col;
 }
 
 color_t Bitmap_GetPixelUV( bitmap_t *i, vec2 uv ) {
     color_t col;
-    unsigned int x = uv.x * i->width;
-    unsigned int y = uv.y * i->height;
-    col = i->bitmap[ y * i->height + x ];
+    unsigned int x = i->width * uv.x;
+    unsigned int y = i->height * uv.y;
+    col = i->bitmap[ y * i->width + x ];
     return col;
 }
 
@@ -221,6 +221,10 @@ void Bitmap_SavePPM6( bitmap_t *i ) {
         }
     }
     fclose(output);
+}
+
+void Bitmap_PrintInfo( bitmap_t *i ) {
+    printf( "Image:\n  Width  = %i;\n  Height = %i;\n", i->width, i->height );
 }
 
 void Bitmap_Print( bitmap_t *i ) {

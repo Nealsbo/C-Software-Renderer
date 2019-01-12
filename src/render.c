@@ -74,7 +74,7 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
     
     renderer_       = renderer;
     camera_t *cam   = scene->mainCamera;
-    shader_t shader;
+    shader_t shader = { 0 };
     
     Shader_SetLight( &shader, scene->dummLight, vec3_create( 1.0f, 0.0f, 0.0f ) );
 
