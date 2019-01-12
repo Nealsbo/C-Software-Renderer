@@ -22,7 +22,7 @@ int moveDirection[2] = {0,0}; // {forward, right};
 
 static void SetupScene() {
 	printf( "Scene Setup: Start\n");
-    obj_model_t *testModelBox = Model_LoadOBJ( "./assets/monkey.obj" );
+    obj_model_t *testModelBox = Model_LoadOBJ( loadedObjectName );
     Model_SetPosition( testModelBox, vec3_create(-1.0, 0.0, -3.0));
 
     obj_model_t *testModelBox1 = Model_CreateBasePlane( "Plane01" );

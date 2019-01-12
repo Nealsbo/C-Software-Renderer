@@ -88,6 +88,8 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
     mat4 cameraMat     = mat4_mlt( worldToCamera, modelMat );
     mat4 viewMat       = mat4_mlt( scene->mainCamera->projection, cameraMat );
 
+    Shader_SetMatrices( &shader, modelMat, viewMat );
+
     for( i = 0; i < model->trisCount; i++ ) {
         face = model->faces[i];
         for( j = 0; j < face.vcount; j++ ) {
@@ -95,7 +97,7 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
                                          vec3_toVec4( model->normals   [face.indexes[j].z - 1] ),
                                          model->textcoords[face.indexes[j].y - 1] );
 
-            rast_verts[j] = Shader_Vertex( &shader, &vertex[j], viewMat, j );
+            rast_verts[j] = Shader_Vertex( &shader, &vertex[j], j );
         }
 
         switch( renderer->flagState ) {

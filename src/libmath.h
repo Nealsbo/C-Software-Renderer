@@ -181,7 +181,8 @@ mat4  mat4_add(mat4 m1, mat4 m2);
 mat4  mat4_sub(mat4 m1, mat4 m2);
 mat4  mat4_mlt(mat4 m1, mat4 m2);
 mat4  mat4_tsp(mat4 m1);
-float mat4_det(mat4 m1);
+mat4  mat4_inv(mat4 m1);
+float mat4_det(mat4 m1);  // NO FUNCTION
 
 mat4  mat4_translate(float x, float y, float z);
 mat4  mat4_scale    (float x, float y, float z);
