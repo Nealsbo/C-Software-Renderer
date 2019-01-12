@@ -49,6 +49,7 @@ void Renderer_SwitchRendState ( renderer_t *renderer );
 void Renderer_UpdateInfo      ( renderer_t *renderer ); //TODO
 void Renderer_ClearZBuffer    ( renderer_t *renderer );
 void Renderer_Putpixel        ( SDL_Surface *surface, int x, int y, uint32_t pixel );
+int  Renderer_ClipTriangle    ( vec4 *v );
 void Renderer_DrawObject      ( scene_t *scene, renderer_t *renderer, obj_model_t *model, SDL_Surface *Surface );
 
 void Renderer_DrawWorld       ( renderer_t *renderer, SDL_Surface *Surface );

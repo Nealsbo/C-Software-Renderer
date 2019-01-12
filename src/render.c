@@ -66,6 +66,17 @@ void Renderer_Putpixel( SDL_Surface *surface, int x, int y, uint32_t pixel ) {
     }
 }
 
+int Renderer_ClipTriangle( vec4 *v ) {
+	int i, res = 0;
+	for( i = 0; i < 3; i++ ) {
+		if( ( v[i].x < -1.0f && v[i].x > 1.0 ) &&
+		    ( v[i].y < -1.0f && v[i].y > 1.0 ) &&
+		    ( v[i].z <  0.0f && v[i].z > 1.0 ) )
+		    res++;
+	}
+	return res == 3 ? 1 : 0;
+}
+
 void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *model, SDL_Surface *Surface ) {
     int i, j;
     obj_face_t face;
@@ -99,6 +110,9 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
 
             rast_verts[j] = Shader_Vertex( &shader, &vertex[j], j );
         }
+        
+        if( Renderer_ClipTriangle( rast_verts ) )
+			continue;
 
         switch( renderer->flagState ) {
             case RENDER_STATE_WIREFRAME:

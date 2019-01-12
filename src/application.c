@@ -21,16 +21,16 @@ char        *loadedObjectName   = "./assets/monkey.obj";
 int moveDirection[2] = {0,0}; // {forward, right};
 
 static void SetupScene() {
-	printf( "Scene Setup: Start\n");
-    obj_model_t *testModelBox = Model_LoadOBJ( loadedObjectName );
-    Model_SetPosition( testModelBox, vec3_create(-1.0, 0.0, -3.0));
+	printf( "Scene Setup: Start\n" );
+    obj_model_t *testModel0 = Model_LoadOBJ( loadedObjectName );
+    Model_SetPosition( testModel0, vec3_create( -1.0f, 0.0f, -3.0f ) );
 
-    obj_model_t *testModelBox1 = Model_CreateBasePlane( "Plane01" );
-    Model_SetPosition( testModelBox1, vec3_create(2.0, 0.0, -3.0) );
-    Model_SetRotation( testModelBox1, vec3_create(0.0, 180.0, 0.0) );
+    obj_model_t *testModel1 = Model_CreateBasePlane( "Plane01" );
+    Model_SetRotation( testModel1, vec3_create( 0.0f, to_radians( 180.0f ), 0.0f ) );
+    Model_SetPosition( testModel1, vec3_create( 2.0f, 0.0f, -3.0f ) );
     
-    camera_t *Cam = Camera_Init(vec3_create(0.0f, 0.0f, 2.0f),          // Position
-                                vec3_create(0.0f, 1.0f, 0.0f),          // Up vector
+    camera_t *Cam = Camera_Init(vec3_create( 0.0f, 0.0f, 2.0f ),          // Position
+                                vec3_create( 0.0f, 1.0f, 0.0f ),          // Up vector
                                 -90.0f,                                 // Yaw
                                 0.0f,                                   // Pitch
                                 60.0f,                                  // FOV - broken
@@ -40,8 +40,8 @@ static void SetupScene() {
                                 5.0f);                                  // Speed
     
     Scene = Scene_Init( Cam );
-    Scene_AddObject( Scene, testModelBox );
-    Scene_AddObject( Scene, testModelBox1 );
+    Scene_AddObject( Scene, testModel0 );
+    Scene_AddObject( Scene, testModel1 );
 }
 
 static void SceneCleanUp() {
@@ -127,8 +127,8 @@ void Application_Close(){
 void UpdateScene( renderer_t *renderer, float delta ) {
 	obj_model_t *model = Scene_FindObjectByName( renderer->scene, "monkey.obj" );
 	if( model != NULL )
-		Model_AddRotation(model, vec3_create(0.0f, delta, 0.0f));
-		
+		Model_AddRotation( model, vec3_create( 0.0f, delta, 0.0f ) );
+
 	int f = moveDirection[0]; // 1 - Forward; -1 - Backward;
 	int r = moveDirection[1]; // 1 - Right;   -1 - Left;
 	

@@ -150,9 +150,12 @@ color_t Bitmap_GetPixel( bitmap_t *i, unsigned int x, unsigned int y ) {
 
 color_t Bitmap_GetPixelUV( bitmap_t *i, vec2 uv ) {
     color_t col;
-    unsigned int x = i->width * uv.x;
-    unsigned int y = i->height * uv.y;
-    col = i->bitmap[ y * i->width + x ];
+    unsigned int x = i->width * (uv.x - (int)uv.x);
+    unsigned int y = i->height * (uv.y - (int)uv.y);
+    if( x < 0 || y < 0 || x >= i->width || y >= i->height )
+		col = Color_Init(0,0,0,0);
+	else
+		col = i->bitmap[ y * i->width + x ];
     return col;
 }
 
