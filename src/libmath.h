@@ -163,6 +163,20 @@ void  vec4_printp(void *vp);
 
 mat4  mat4_create();
 
+void  mat4_setColVec2( mat4 *m, vec2 v, int i );
+void  mat4_setColVec3( mat4 *m, vec3 v, int i );
+void  mat4_setColVec4( mat4 *m, vec4 v, int i );
+void  mat4_setRowVec2( mat4 *m, vec2 v, int i );
+void  mat4_setRowVec3( mat4 *m, vec3 v, int i );
+void  mat4_setRowVec4( mat4 *m, vec4 v, int i );
+
+vec2  mat4_getColVec2( mat4 m, vec2 v, int i );
+vec3  mat4_getColVec3( mat4 m, vec3 v, int i );
+vec4  mat4_getColVec4( mat4 m, vec4 v, int i );
+vec2  mat4_getRowVec2( mat4 m, vec2 v, int i );
+vec3  mat4_getRowVec3( mat4 m, vec3 v, int i );
+vec4  mat4_getRowVec4( mat4 m, vec4 v, int i );
+
 mat4  mat4_add(mat4 m1, mat4 m2);
 mat4  mat4_sub(mat4 m1, mat4 m2);
 mat4  mat4_mlt(mat4 m1, mat4 m2);

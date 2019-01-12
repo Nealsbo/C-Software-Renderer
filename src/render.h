@@ -9,14 +9,14 @@
 //###   Rendering enums   ###
 //###########################
 
-enum RenderState_e{
+enum RenderState_e {
     RENDER_STATE_WIREFRAME = 0,
     RENDER_STATE_LIT = 1,
     RENDER_STATE_UNLIT = 2,
     RENDER_STATE_Z_BUFFER = 3
 };
 
-enum RenderType_e{
+enum RenderType_e {
     RENDER_TYPE_SOFTWARE = 0,
     RENDER_TYPE_RAYTRACING = 1      // TODO? :)
 };
@@ -36,7 +36,7 @@ typedef struct {
     float           *z_Buffer;
     float           frameTime;
     uint32_t        frameCount;
-    void            (*PutPixel)(SDL_Surface *surface, int x, int y, uint32_t pixel);
+    void            (*PutPixel)( SDL_Surface *surface, int x, int y, uint32_t pixel );
 } renderer_t;
 
 //##############################

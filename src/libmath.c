@@ -492,6 +492,78 @@ mat4 mat4_create(){
     return m;
 }
 
+void mat4_setColVec2( mat4 *m, vec2 v, int i ) {
+	if( i >= 0 || i <= 3 ) {
+        m->m[    i] = v.x;
+        m->m[4 + i] = v.y;
+	}
+}
+
+void mat4_setColVec3( mat4 *m, vec3 v, int i ) {
+	if( i >= 0 || i <= 3 ) {
+        m->m[    i] = v.x;
+        m->m[4 + i] = v.y;
+        m->m[8 + i] = v.z;
+	}
+}
+
+void mat4_setColVec4( mat4 *m, vec4 v, int i ) {
+	if( i >= 0 || i <= 3 ) {
+        m->m[     i] = v.x;
+        m->m[ 4 + i] = v.y;
+        m->m[ 8 + i] = v.z;
+        m->m[12 + i] = v.w;
+	}
+}
+
+void mat4_setRowVec2( mat4 *m, vec2 v, int i ) {
+	if( i >= 0 || i <= 3 ) {
+        m->m[i    ] = v.x;
+        m->m[i + 1] = v.y;
+	}
+}
+
+void mat4_setRowVec3( mat4 *m, vec3 v, int i ) {
+	if( i >= 0 || i <= 3 ) {
+        m->m[i    ] = v.x;
+        m->m[i + 1] = v.y;
+        m->m[i + 2] = v.z;
+	}
+}
+
+void mat4_setRowVec4( mat4 *m, vec4 v, int i ) {
+	if( i >= 0 || i <= 3 ) {
+        m->m[i    ] = v.x;
+        m->m[i + 1] = v.y;
+        m->m[i + 2] = v.z;
+        m->m[i + 3] = v.w;
+	}
+}
+
+vec2  mat4_getColVec2( mat4 m, vec2 v, int i ) {
+	return vec2_create( m.m[i], m.m[4 + i] );
+}
+
+vec3  mat4_getColVec3( mat4 m, vec3 v, int i ) {
+	return vec3_create( m.m[i], m.m[4 + i], m.m[8 + i] );
+}
+
+vec4  mat4_getColVec4( mat4 m, vec4 v, int i ) {
+	return vec4_create( m.m[i], m.m[4 + i], m.m[8 + i], m.m[12 + i] );
+}
+
+vec2  mat4_getRowVec2( mat4 m, vec2 v, int i ) {
+	return vec2_create( m.m[i], m.m[i + 1]);
+}
+
+vec3  mat4_getRowVec3( mat4 m, vec3 v, int i ) {
+	return vec3_create( m.m[i], m.m[i + 1], m.m[i + 2] );
+}
+
+vec4  mat4_getRowVec4( mat4 m, vec4 v, int i ) {
+	return vec4_create( m.m[i], m.m[i + 1], m.m[i + 2], m.m[i + 3] );
+}
+
 mat4 mat4_translate(float x, float y, float z){
     mat4 m = {{
             1.0f, 0.0f, 0.0f,    x,

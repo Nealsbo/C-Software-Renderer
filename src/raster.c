@@ -76,7 +76,7 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 	for( x = bboxmin.x; x <= bboxmax.x; x++ ) {
 		for( y = bboxmin.y; y <= bboxmax.y; y++ ) {
 			int index = y * WINDOW_WIDTH + x;
-			p = vec3_create(x, y, 0.0f);
+			p = vec3_create( x, y, 0.0f );
 			float w0 = EdgeFunc( pts[1], pts[2], p );
 			float w1 = EdgeFunc( pts[2], pts[0], p );
 			float w2 = EdgeFunc( pts[0], pts[1], p );
