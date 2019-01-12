@@ -29,8 +29,11 @@ void Color_Lerp( color_t res, color_t src1, color_t src2, float a ) {
 }
 
 color_t Color_Intensity( color_t c, float a ) {
-    if( a < 0 )
+	int intens;
+    if( a < 0.0f )
         return Color_Init(0, 0, 0, 255);
+    if( a > 1.0f )
+        return c;
     color_t res = Color_Init( (unsigned char)(c.r * a), (unsigned char)(c.g * a), (unsigned char)(c.b * a), c.a );
     return res;
 }
