@@ -151,7 +151,8 @@ vec4  vec4_lerp   (vec4 v1, vec4 v2, float value);
 vec4  vec4_pdiv   (vec4 v);
 vec2i vec4_toVec2i(vec4 v);
 vec2  vec4_toVec2 (vec4 v);
-vec3  vec4_toVec3 (vec4 v, int byw);
+vec3  vec4_toVec3 (vec4 v);
+//vec3  vec4_toVec3 (vec4 v, int byw);
 vec4  vec4_byMat4 (vec4 v, mat4 m);
 
 void  vec4_print (vec4 v);

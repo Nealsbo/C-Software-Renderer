@@ -58,9 +58,9 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 	
 	mat4 sst    = mat4_screen( WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
 	vec3 p;
-	vec3 pts[3] = {vec4_toVec3( vec4_byMat4(v[0], sst), TRUE ),
-				   vec4_toVec3( vec4_byMat4(v[1], sst), TRUE ),
-				   vec4_toVec3( vec4_byMat4(v[2], sst), TRUE )};
+	vec3 pts[3] = {vec4_toVec3( vec4_pdiv( vec4_byMat4(v[0], sst) ) ),
+				   vec4_toVec3( vec4_pdiv( vec4_byMat4(v[1], sst) ) ),
+				   vec4_toVec3( vec4_pdiv( vec4_byMat4(v[2], sst) ) )};
 				   
 	vec2i bboxmin = vec2i_create( 0, 0 );
 	vec2i bboxmax = vec2i_create( WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1 );

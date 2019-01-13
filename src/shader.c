@@ -4,7 +4,7 @@
 vec4 Shader_Vertex( shader_t *shader, vertex_t *vert, int index ) {
 	mat4_setColVec2( &shader->var_uv, vert->uv, index );
 	shader->vert_nrm = vec4_byMat4( vert->normal, mat4_tsp( mat4_inv( shader->m ) ) );
-	shader->light_intens = MAX( 0.0f, vec3_dot( vec4_toVec3( shader->vert_nrm, FALSE ), shader->light_pos ) );
+	shader->light_intens = MAX( 0.0f, vec3_dot( vec4_toVec3( shader->vert_nrm ), shader->light_pos ) );
 	shader->var_intens.data[index] = MAX( 0.0f, vec4_dot( ( shader->vert_nrm ), vec4_nrm( vec4_sub( vec3_toVec4( shader->light_pos ), vert->position ) ) ) );
 	return vec4_byMat4( vert->position, shader->mvp );
 }

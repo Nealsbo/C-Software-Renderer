@@ -304,7 +304,7 @@ vec3 vec3_byMat4(vec3 v, mat4 m){
                m.m[ 4] * v.x + m.m[ 5] * v.y + m.m[ 6] * v.z,
                m.m[ 8] * v.x + m.m[ 9] * v.y + m.m[10] * v.z};
     */
-    return vec4_toVec3(v2, 1);
+    return vec4_toVec3( vec4_pdiv( v2) );
 }
 
 void vec3_print(vec3 v){
@@ -403,6 +403,12 @@ vec2 vec4_toVec2 (vec4 v){
     return vec2_create(v.x, v.y);
 }
 
+vec3 vec4_toVec3(vec4 v){
+	vec3 v2 = {v.x, v.y, v.z};
+    return v2;
+}
+
+/*
 vec3 vec4_toVec3(vec4 v, int byw){
     if(byw){
         vec3 v2 = {v.x/v.w, v.y/v.w, v.z/v.w};
@@ -412,6 +418,7 @@ vec3 vec4_toVec3(vec4 v, int byw){
         return v2;
     }
 }
+*/
 
 vec4 vec4_byMat4(vec4 v, mat4 m){
     vec4 v2 = {m.m[ 0] * v.x + m.m[ 1] * v.y + m.m[ 2] * v.z + m.m[ 3] * v.w,
