@@ -89,8 +89,15 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 				
 				if( z < renderer_->z_Buffer[index] ) {
 					renderer_->z_Buffer[index] = z;
-				
-					renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( Shader_Fragment( shader, model, vec3_create(w0, w1, w2) ) ) );
+					switch( renderer_->flagState ) {
+						case RENDER_STATE_Z_BUFFER:
+							renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( Color_Gray( (unsigned char)( 255.0f * renderer_->z_Buffer[index] ) ) ) );
+							break;
+						case RENDER_STATE_LIT:;
+							renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( Shader_Fragment( shader, model, vec3_create(w0, w1, w2) ) ) );
+							break;
+					}
+						
 				}
 			}
 		}

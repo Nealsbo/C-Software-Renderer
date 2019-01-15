@@ -23,10 +23,13 @@ renderer_t *Renderer_Init( scene_t *scene, uint32_t rs_flag, uint32_t rt_flag ) 
 }
 
 void Renderer_SwitchRendState( renderer_t *renderer ) {
-    if( renderer->flagState == RENDER_STATE_WIREFRAME )
+    if( renderer->flagState == RENDER_STATE_WIREFRAME ) {
         renderer->flagState = RENDER_STATE_LIT;
-    else if( renderer->flagState == RENDER_STATE_LIT )
-        renderer->flagState = RENDER_STATE_WIREFRAME;
+    } else if( renderer->flagState == RENDER_STATE_LIT ) {
+        renderer->flagState = RENDER_STATE_Z_BUFFER;
+    } else if( renderer->flagState == RENDER_STATE_Z_BUFFER ) {
+		renderer->flagState = RENDER_STATE_WIREFRAME;
+	}
 }
 
 void Renderer_Update( renderer_t *renderer ){} //TODO
@@ -124,6 +127,9 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
             case RENDER_STATE_LIT:
                 Raster_DrawTriangle( rast_verts, Surface, model, &shader );
                 break;
+                
+            case RENDER_STATE_Z_BUFFER:
+				Raster_DrawTriangle( rast_verts, Surface, model, &shader );
 
             default:
                 break;

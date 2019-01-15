@@ -35,7 +35,7 @@ static void SetupScene() {
                                 0.0f,                                   // Pitch
                                 60.0f,                                  // FOV - broken
                                 (float)WINDOW_WIDTH/WINDOW_HEIGHT,      // Aspect
-                                1.0f,                                   // Near plane
+                                0.5f,                                   // Near plane
                                 100.0f,                                 // Far plane
                                 5.0f);                                  // Speed
     
