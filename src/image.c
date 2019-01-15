@@ -7,11 +7,11 @@ color_t Color_Init( unsigned char r, unsigned char g, unsigned char b, unsigned 
 }
 
 color_t Color_InitFromVec3( vec3 v ) {
-	color_t c = {(unsigned char)v.x, (unsigned char)v.y, (unsigned char)v.z, 255};
+	color_t c = Color_Init( (unsigned char)( v.x * 255.0f ), (unsigned char)( v.y * 255.0f ), (unsigned char)( v.z * 255.0f ), 255 );
 }
 
 color_t Color_Gray( unsigned char l ) {
-    color_t c = {l, l, l, 1};
+    color_t c = Color_Init( l, l, l, 255 );
     return c;
 }
 

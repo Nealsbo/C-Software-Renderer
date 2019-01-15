@@ -56,6 +56,8 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 	float w0, w1, w2, z, area;
 	int i, x ,y, srcX, srcY;
 	
+	color_t col;
+	
 	mat4 sst    = mat4_screen( WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
 	vec3 p;
 	vec3 pts[3] = {vec4_toVec3( vec4_pdiv( vec4_byMat4(v[0], sst) ) ),
@@ -91,13 +93,14 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 					renderer_->z_Buffer[index] = z;
 					switch( renderer_->flagState ) {
 						case RENDER_STATE_Z_BUFFER:
-							renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( Color_Gray( (unsigned char)( 255.0f * renderer_->z_Buffer[index] ) ) ) );
+							col = Color_Gray( (unsigned char)( 255.0f * renderer_->z_Buffer[index] ) );
 							break;
 						case RENDER_STATE_LIT:;
-							renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( Shader_Fragment( shader, model, vec3_create(w0, w1, w2) ) ) );
+							col = Shader_Fragment( shader, model, vec3_create(w0, w1, w2) );
 							break;
 					}
-						
+					//Color_Print(col);
+					renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( col ) );
 				}
 			}
 		}
