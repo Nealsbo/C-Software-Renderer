@@ -240,6 +240,14 @@ vec3 vec3_mlt(vec3 v1, float f){
     return v3;
 }
 
+vec3 vec3_mltv(vec3 v1, vec3 v2){
+    vec3 v3;
+    v3.x = v1.x * v2.x;
+    v3.y = v1.y * v2.y;
+    v3.z = v1.z * v2.z;
+    return v3;
+}
+
 float vec3_dot(vec3 v1, vec3 v2){
     float res = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
     return res;
@@ -279,6 +287,14 @@ vec3 vec3_lerp (vec3 v1, vec3 v2, float value){
     return vec3_add( vec3_mlt( vec3_sub(v2, v1), value ), v1);
 }
 
+vec3 vec3_refl(vec3 v1, vec3 v2) {
+	return vec3_sub( v1, vec3_mlt( vec3_mlt( v2, vec3_dot( v1, v2 ) ), 2.0f ) );
+}
+
+vec3 vec3_pdiv (vec3 v){
+    return vec3_create(v.x / v.z, v.y / v.z, v.z);
+}
+
 vec2 vec3_toVec2(vec3 v){
     vec2 v2 = {v.x, v.y};
     return v2;
@@ -304,7 +320,7 @@ vec3 vec3_byMat4(vec3 v, mat4 m){
                m.m[ 4] * v.x + m.m[ 5] * v.y + m.m[ 6] * v.z,
                m.m[ 8] * v.x + m.m[ 9] * v.y + m.m[10] * v.z};
     */
-    return vec4_toVec3( vec4_pdiv( v2) );
+    return vec4_toVec3( vec4_pdiv( v2 ) );
 }
 
 void vec3_print(vec3 v){
@@ -404,7 +420,7 @@ vec2 vec4_toVec2 (vec4 v){
 }
 
 vec3 vec4_toVec3(vec4 v){
-	vec3 v2 = {v.x, v.y, v.z};
+    vec3 v2 = {v.x, v.y, v.z};
     return v2;
 }
 
@@ -767,9 +783,5 @@ float power_f_i( float x, int y ) {
 }
 
 float clamp( float value, float lower, float higher ) {
-    if( value > higher )
-        return higher;
-    if( value < lower )
-        return lower;
-    return value;
+    return (value > higher) ? higher : (value < lower) ? lower : value;
 }

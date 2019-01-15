@@ -121,7 +121,9 @@ vec3  vec3_neg(vec3 v1);
 vec3  vec3_nrm(vec3 v1);
 float vec3_lng(vec3 v1);
 
+vec3  vec3_refl   (vec3 v1, vec3 v2);
 vec3  vec3_lerp   (vec3 v1, vec3 v2, float value);
+vec3  vec3_pdiv   (vec3 v);
 vec2i vec3_toVec2i(vec3 v);
 vec2  vec3_toVec2 (vec3 v);
 vec4  vec3_toVec4 (vec3 v);
@@ -140,6 +142,7 @@ vec4  vec4_createv(vec4 v);
 vec4  vec4_add(vec4 v1, vec4 v2);
 vec4  vec4_sub(vec4 v1, vec4 v2);
 vec4  vec4_mlt(vec4 v1, float f);
+vec3  vec3_mltv(vec3 v1, vec3 v2);
 float vec4_dot(vec4 v1, vec4 v2);
 vec4  vec4_crs(vec4 v1, vec4 v2);
 vec4  vec4_neg(vec4 v1);

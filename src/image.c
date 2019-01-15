@@ -6,8 +6,11 @@ color_t Color_Init( unsigned char r, unsigned char g, unsigned char b, unsigned 
     return c;
 }
 
-color_t Color_InitFromVec3( vec3 v ) {
-	color_t c = Color_Init( (unsigned char)( v.x * 255.0f ), (unsigned char)( v.y * 255.0f ), (unsigned char)( v.z * 255.0f ), 255 );
+color_t Color_InitVec3( vec3 v ) {
+	color_t c = Color_Init( (unsigned char)( clamp( v.x, 0.0f, 1.0f ) * 255.0f ),
+                            (unsigned char)( clamp( v.y, 0.0f, 1.0f ) * 255.0f ),
+                            (unsigned char)( clamp( v.z, 0.0f, 1.0f ) * 255.0f ),
+                            255 );
 }
 
 color_t Color_Gray( unsigned char l ) {
@@ -21,20 +24,30 @@ color_t Color_ToGray( color_t c ) {
     return r;
 }
 
-void Color_Lerp( color_t res, color_t src1, color_t src2, float a ) {
+color_t Color_Lerp( color_t src1, color_t src2, float a ) {
+	color_t res;
     res.r = (1 - a) * src1.r + a * src2.r;
     res.g = (1 - a) * src1.g + a * src2.g;
     res.b = (1 - a) * src1.b + a * src2.b;
     res.a = (1 - a) * src1.a + a * src2.a;
+    return res;
 }
 
 color_t Color_Intensity( color_t c, float a ) {
-	int intens;
     if( a < 0.0f )
-        return Color_Init(0, 0, 0, 255);
+        return Color_Init( 0, 0, 0, 255 );
     if( a > 1.0f )
         return c;
     color_t res = Color_Init( (unsigned char)(c.r * a), (unsigned char)(c.g * a), (unsigned char)(c.b * a), c.a );
+    return res;
+}
+
+color_t Color_IntensityVec3( color_t c, vec3 v ) {
+	float x, y, z;
+    x = clamp( v.x, 0.0f, 1.0f );
+    y = clamp( v.y, 0.0f, 1.0f );
+    z = clamp( v.z, 0.0f, 1.0f );
+    color_t res = Color_Init( (unsigned char)(c.r * x), (unsigned char)(c.g * y), (unsigned char)(c.b * z), c.a );
     return res;
 }
 

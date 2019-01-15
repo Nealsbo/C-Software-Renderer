@@ -28,8 +28,8 @@ void Renderer_SwitchRendState( renderer_t *renderer ) {
     } else if( renderer->flagState == RENDER_STATE_LIT ) {
         renderer->flagState = RENDER_STATE_Z_BUFFER;
     } else if( renderer->flagState == RENDER_STATE_Z_BUFFER ) {
-		renderer->flagState = RENDER_STATE_WIREFRAME;
-	}
+        renderer->flagState = RENDER_STATE_WIREFRAME;
+    }
 }
 
 void Renderer_Update( renderer_t *renderer ){} //TODO
@@ -90,19 +90,22 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
     camera_t *cam   = scene->mainCamera;
     shader_t shader = { 0 };
     
-    Shader_SetLight( &shader, scene->dummLight, vec3_create( 1.0f, 0.0f, 0.0f ) );
+    Shader_SetLight( &shader, scene->directLight, vec3_create( 1.0f, 0.5f, 0.0f ) );
 
-    mat4 worldToCamera = mat4_lookAt( cam->position, cam->front, vec3_create( 0.0, 1.0, 0.0 ) );
+    mat4 lookAtMat   = mat4_lookAt( Camera_GetPosition( cam ),
+                                    vec3_add( Camera_GetPosition( cam ), Camera_GetFront( cam ) ),
+                                    vec3_create( 0.0, 1.0, 0.0 ) );
 
-    mat4 translation   = mat4_translate( model->position.x, model->position.y, model->position.z );
-    mat4 rotation      = mat4_rotation( model->rotation.x, model->rotation.y, model->rotation.z );
-    mat4 scale         = mat4_scale( model->scale.x, model->scale.y, model->scale.z );
-    mat4 modelMat      = mat4_mlt( mat4_mlt(translation, rotation), scale );
+    mat4 translation = mat4_translate( model->position.x, model->position.y, model->position.z );
+    mat4 rotation    = mat4_rotation( model->rotation.x, model->rotation.y, model->rotation.z );
+    mat4 scale       = mat4_scale( model->scale.x, model->scale.y, model->scale.z );
+    mat4 modelMat    = mat4_mlt( mat4_mlt(translation, rotation), scale );
 
-    mat4 cameraMat     = mat4_mlt( worldToCamera, modelMat );
-    mat4 viewMat       = mat4_mlt( scene->mainCamera->projection, cameraMat );
+    mat4 viewMat     = mat4_mlt( lookAtMat, modelMat );
+    mat4 projMat     = mat4_mlt( scene->mainCamera->projection, viewMat );
 
-    Shader_SetMatrices( &shader, modelMat, viewMat );
+    Shader_SetMatrices( &shader, modelMat, lookAtMat, projMat );
+    Shader_SetCamera( &shader, Camera_GetPosition( cam ) );
 
     for( i = 0; i < model->trisCount; i++ ) {
         face = model->faces[i];

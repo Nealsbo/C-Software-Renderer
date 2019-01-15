@@ -6,6 +6,7 @@ const int SCREEN_TICK_PER_FRAME = 1000 / FPS_LIMIT;
 int quit = FALSE;
 
 float cam_speed = 1.0f;
+float elapsed_time = 0.0f;
 
 scene_t     *Scene;
 camera_t    *Cam;
@@ -23,12 +24,13 @@ int moveDirection[2] = {0,0}; // {forward, right};
 static void SetupScene() {
 	printf( "Scene Setup: Start\n" );
     obj_model_t *testModel0 = Model_LoadOBJ( loadedObjectName );
-    Model_SetPosition( testModel0, vec3_create( -1.0f, 0.0f, -3.0f ) );
-
+    Model_SetPosition( testModel0, vec3_create( 0.0f, 0.0f, -2.0f ) );
+/*
     obj_model_t *testModel1 = Model_CreateBasePlane( "Plane01" );
-    Model_SetRotation( testModel1, vec3_create( 0.0f, to_radians( 180.0f ), 0.0f ) );
-    Model_SetPosition( testModel1, vec3_create( 2.0f, 0.0f, -3.0f ) );
-    
+    Model_SetRotation( testModel1, vec3_create( to_radians( -90.0f ), to_radians( 180.0f ), 0.0f ) );
+    Model_SetPosition( testModel1, vec3_create( 0.0f, -2.0f, 0.0f ) );
+    Model_SetScale( testModel1, vec3_create( 5.0f, 5.0f, 5.0f ) );
+    */
     camera_t *Cam = Camera_Init(vec3_create( 0.0f, 0.0f, 2.0f ),          // Position
                                 vec3_create( 0.0f, 1.0f, 0.0f ),          // Up vector
                                 -90.0f,                                 // Yaw
@@ -41,7 +43,7 @@ static void SetupScene() {
     
     Scene = Scene_Init( Cam );
     Scene_AddObject( Scene, testModel0 );
-    Scene_AddObject( Scene, testModel1 );
+    //Scene_AddObject( Scene, testModel1 );
 }
 
 static void SceneCleanUp() {
@@ -69,7 +71,7 @@ int Application_Init() {
 	return success;
 }
 
-void Application_Run(){
+void Application_Run() {
 	printf( "Application Run: Start\n");
     SDL_Event e;
 
@@ -100,7 +102,7 @@ void Application_Run(){
         SDL_UpdateWindowSurface( gWindow );
         
         if(frames_slice > 1.0f){
-            //printf("FPS: %u\n", (unsigned int)(1.0f / frames_slice * (float)frames_slice_count));
+            printf("FPS: %u\n", (unsigned int)(1.0f / frames_slice * (float)frames_slice_count));
             frames_slice = 0.0f;
             frames_slice_count = 0;
         }
@@ -114,7 +116,7 @@ void Application_Run(){
     return 0;
 }
 
-void Application_Close(){
+void Application_Close() {
 	printf( "Application Close\n");
 	SceneCleanUp();
 	
@@ -125,10 +127,15 @@ void Application_Close(){
 }
 
 void UpdateScene( renderer_t *renderer, float delta ) {
+	vec3 light_new_pos = vec3_byMat4( renderer->scene->directLight, mat4_roty(delta * 2.0f) );
+	renderer->scene->directLight = light_new_pos;
+	
+	/*
 	obj_model_t *model = Scene_FindObjectByName( renderer->scene, "monkey.obj" );
 	if( model != NULL )
 		Model_AddRotation( model, vec3_create( 0.0f, delta, 0.0f ) );
-
+	*/
+	
 	int f = moveDirection[0]; // 1 - Forward; -1 - Backward;
 	int r = moveDirection[1]; // 1 - Right;   -1 - Left;
 	

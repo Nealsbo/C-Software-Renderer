@@ -20,12 +20,13 @@ typedef struct {
 //#######################
 
 color_t   Color_Init         ( unsigned char r, unsigned char g, unsigned char b, unsigned char a );
-color_t   Color_InitFromVec3 ( vec3 v );
+color_t   Color_InitVec3     ( vec3 v );
 void      Color_Screen       ( color_t res, color_t src1, color_t src2 );
 color_t   Color_Gray         ( unsigned char l );
 color_t   Color_ToGray       ( color_t c );
-void      Color_Lerp         ( color_t res, color_t src1, color_t src2, float a );
+color_t   Color_Lerp         ( color_t src1, color_t src2, float a );
 color_t   Color_Intensity    ( color_t c, float a );
+color_t   Color_IntensityVec3( color_t c, vec3 v );
 uint32_t  Color_ToUInt32     ( color_t c );
 uint32_t  Color_ToUInt32Fast ( color_t c );
 

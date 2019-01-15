@@ -14,7 +14,7 @@ scene_t *Scene_Init( camera_t *camera ) {
     List_Init( scene->objectList, &Model_Test, &Model_Free );
 
     scene->mainCamera   = camera;
-    scene->dummLight    = vec3_create( 0.0f, 5.0f, 5.0f );
+    scene->directLight  = vec3_create( 0.0f, 2.0f, 5.0f ); // From to center
     scene->currentState = SCENE_STATE_UPDATABLE;
     return scene;
 }

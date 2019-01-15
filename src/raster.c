@@ -54,12 +54,13 @@ void Raster_DrawLine(vec4 v0, vec4 v1, SDL_Surface *image, color_t color) {
 
 void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, shader_t *shader ) {
 	float w0, w1, w2, z, area;
-	int i, x ,y, srcX, srcY;
+	int index, x ,y, srcX, srcY;
 	
-	color_t col;
+	color_t color;
 	
 	mat4 sst    = mat4_screen( WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
 	vec3 p;
+	vec3 overW = vec3_create( 1.0f / v[0].w, 1.0f / v[1].w, 1.0f / v[2].w );
 	vec3 pts[3] = {vec4_toVec3( vec4_pdiv( vec4_byMat4(v[0], sst) ) ),
 				   vec4_toVec3( vec4_pdiv( vec4_byMat4(v[1], sst) ) ),
 				   vec4_toVec3( vec4_pdiv( vec4_byMat4(v[2], sst) ) )};
@@ -79,9 +80,9 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 		for( y = bboxmin.y; y <= bboxmax.y; y++ ) {
 			int index = y * WINDOW_WIDTH + x;
 			p = vec3_create( x, y, 0.0f );
-			float w0 = EdgeFunc( pts[1], pts[2], p );
-			float w1 = EdgeFunc( pts[2], pts[0], p );
-			float w2 = EdgeFunc( pts[0], pts[1], p );
+			w0 = EdgeFunc( pts[1], pts[2], p );
+			w1 = EdgeFunc( pts[2], pts[0], p );
+			w2 = EdgeFunc( pts[0], pts[1], p );
 			
 			if( w0 >= 0.0f && w1 >= 0.0f && w2 >= 0.0f ) {
 				w0 /= area;
@@ -91,16 +92,19 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 				
 				if( z < renderer_->z_Buffer[index] ) {
 					renderer_->z_Buffer[index] = z;
+					
+					vec3 d = vec3_create( w0, w1, w2 );
+					//vec3 d = vec3_create( w0 * overW.x, w1 * overW.y, w2 * overW.z );
+					
 					switch( renderer_->flagState ) {
 						case RENDER_STATE_Z_BUFFER:
-							col = Color_Gray( (unsigned char)( 255.0f * renderer_->z_Buffer[index] ) );
+							color = Color_Gray( (unsigned char)( 255.0f * renderer_->z_Buffer[index] ) );
 							break;
 						case RENDER_STATE_LIT:;
-							col = Shader_Fragment( shader, model, vec3_create(w0, w1, w2) );
+							color = Shader_Fragment( shader, model, d );
 							break;
 					}
-					//Color_Print(col);
-					renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( col ) );
+					renderer_->PutPixel( Surface, p.x, p.y, Color_ToUInt32( color ) );
 				}
 			}
 		}
