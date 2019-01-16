@@ -90,7 +90,7 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
     camera_t *cam   = scene->mainCamera;
     shader_t shader = { 0 };
     
-    Shader_SetLight( &shader, scene->directLight, vec3_create( 1.0f, 0.5f, 0.0f ) );
+    Shader_SetLight( &shader, scene->directLight, scene->directLightColor, scene->ambientLightColor );
 
     mat4 lookAtMat   = mat4_lookAt( Camera_GetPosition( cam ),
                                     vec3_add( Camera_GetPosition( cam ), Camera_GetFront( cam ) ),

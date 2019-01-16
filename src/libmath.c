@@ -126,6 +126,11 @@ vec2i vec2_toVec2i(vec2 v){
     return v2;
 }
 
+vec3 vec2_toVec3(vec2 v){
+    vec3 v2 = {v.x, v.y, 1.0};
+    return v2;
+}
+
 vec2 vec2_lerp (vec2 v1, vec2 v2, float value){
     return vec2_add( vec2_mlt( vec2_sub(v2, v1), value ), v1);
 }

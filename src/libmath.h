@@ -81,7 +81,8 @@ vec2  vec2_neg(vec2 v1);
 vec2  vec2_nrm(vec2 v1);
 float vec2_lng(vec2 v1);
 
-vec2i vec2_toVec2i(vec2 v1);
+vec2i vec2_toVec2i(vec2 v);
+vec3  vec2_toVec3 (vec2 v);
 
 vec2  vec2_lerp(vec2 v1, vec2 v2, float value);
 

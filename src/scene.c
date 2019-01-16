@@ -14,7 +14,6 @@ scene_t *Scene_Init( camera_t *camera ) {
     List_Init( scene->objectList, &Model_Test, &Model_Free );
 
     scene->mainCamera   = camera;
-    scene->directLight  = vec3_create( 0.0f, 2.0f, 5.0f ); // From to center
     scene->currentState = SCENE_STATE_UPDATABLE;
     return scene;
 }
@@ -30,6 +29,14 @@ List *Scene_GetObjectList( scene_t *scene ) {
 		return NULL;
 	}
     return scene->objectList;
+}
+
+void Scene_SetDirectLight( scene_t *scene, vec3 dir, vec3 color ) {
+	scene->directLight = dir;
+	scene->directLightColor = color;
+}
+void Scene_SetAmbientLight( scene_t *scene, vec3 color ) {
+	scene->ambientLightColor = color;
 }
 
 void Scene_PrintObjectList( scene_t *scene ) {

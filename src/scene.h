@@ -15,6 +15,8 @@ enum SceneState_e {
 typedef struct {
     camera_t          *mainCamera;
     vec3               directLight;
+    vec3               directLightColor;
+    vec3               ambientLightColor;
     List              *objectList;
     enum SceneState_e  currentState;
 } scene_t;
@@ -27,6 +29,8 @@ typedef struct {
 
 scene_t     *Scene_Init            ( camera_t *camera );
 void         Scene_AddObject       ( scene_t *scene, obj_model_t *model );
+void         Scene_SetDirectLight  ( scene_t *scene, vec3 dir, vec3 color );
+void         Scene_SetAmbientLight ( scene_t *scene, vec3 color );
 List        *Scene_GetObjectList   ( scene_t *scene );
 void         Scene_PrintObjectList ( scene_t *scene );
 obj_model_t *Scene_FindObjectByName( scene_t *scene, char *name );

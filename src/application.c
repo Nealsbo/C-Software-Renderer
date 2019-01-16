@@ -42,6 +42,8 @@ static void SetupScene() {
                                 5.0f);                                  // Speed
     
     Scene = Scene_Init( Cam );
+    Scene_SetDirectLight( Scene, vec3_create( 0.0f, 2.0f, 5.0f ), vec3_create( 1.0f, 0.5f, 0.0f ) );
+    Scene_SetAmbientLight( Scene, vec3_create( 0.0f, 0.5f, 1.0f ) );
     Scene_AddObject( Scene, testModel0 );
     //Scene_AddObject( Scene, testModel1 );
 }
