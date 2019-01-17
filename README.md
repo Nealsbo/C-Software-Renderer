@@ -1,24 +1,30 @@
 # C-Software-Renderer
-Simple software renderer using C Language
+Simple software renderer in C
 
 !Requires SDL2 for window init
 
+---
 ## Build
 ### Linux
 
 1. Install SDL2
 2. `git clone`
 3. Go to downloaded folder and run `make`
-
-
-Have:
-- Wireframe draw
-- Lit textured draw
+---
+#### Have:
+- Vertex and Fragment shaders implementation
+- Phong shading model
+- Z-Buffering
+- Rendering modes:
+- - Lit
+- - Unlit
+- - Z-Buffer
+- - Wireframe
 - Simple Camera
 - Obj model loading(Triangulated)
 - PPM image save/load
-- Z-Buffer
+- Custom math library
+- Minimal usage of 3ed party libs(only SDL2)
 
-TODO:
+#### TODO:
 - Rendering features and optimization
-- Fixes(Lighting)
