@@ -100,7 +100,10 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 						case RENDER_STATE_Z_BUFFER:
 							color = Color_Gray( (unsigned char)( 255.0f * renderer_->z_Buffer[index] ) );
 							break;
-						case RENDER_STATE_LIT:;
+						case RENDER_STATE_LIT:
+							color = Shader_Fragment( shader, model, d );
+							break;
+						case RENDER_STATE_UNLIT:
 							color = Shader_Fragment( shader, model, d );
 							break;
 					}

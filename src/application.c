@@ -25,7 +25,7 @@ static void SetupScene() {
 	printf( "Scene Setup: Start\n" );
     obj_model_t *testModel0 = Model_LoadOBJ( loadedObjectName );
     Model_SetPosition( testModel0, vec3_create( 0.0f, 0.0f, -2.0f ) );
-/*
+    /*
     obj_model_t *testModel1 = Model_CreateBasePlane( "Plane01" );
     Model_SetRotation( testModel1, vec3_create( to_radians( -90.0f ), to_radians( 180.0f ), 0.0f ) );
     Model_SetPosition( testModel1, vec3_create( 0.0f, -2.0f, 0.0f ) );

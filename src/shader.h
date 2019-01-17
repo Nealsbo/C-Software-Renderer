@@ -11,12 +11,14 @@ typedef struct {
 	vec3 ambient, diffuse, specular;
 	vec2 uvs[3];
 	float light_intens;
+	int isLit;
 	
 } shader_t;
 
 vec4    Shader_Vertex     ( shader_t *shader, vertex_t *vert, int index );
 color_t Shader_Fragment   ( shader_t *shader, obj_model_t *model, vec3 bary );
 
+void    Shader_UseLight   ( shader_t *shader, int to_use );
 void    Shader_SetMatrices( shader_t *shader, mat4 model, mat4 view, mat4 mvp );
 void    Shader_SetCamera  ( shader_t *shader, vec3 cam_pos );
 void    Shader_SetLight   ( shader_t *shader, vec3 dlpos, vec3 dlcolor, vec3 alcolor );

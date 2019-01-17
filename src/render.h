@@ -46,7 +46,6 @@ typedef struct {
 renderer_t *Renderer_Init ( scene_t *scene, uint32_t rs_flag, uint32_t rt_flag );
 
 void Renderer_SwitchRendState ( renderer_t *renderer );
-void Renderer_UpdateInfo      ( renderer_t *renderer ); //TODO
 void Renderer_ClearZBuffer    ( renderer_t *renderer );
 void Renderer_Putpixel        ( SDL_Surface *surface, int x, int y, uint32_t pixel );
 int  Renderer_ClipTriangle    ( vec4 *v );

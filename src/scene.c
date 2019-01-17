@@ -14,6 +14,9 @@ scene_t *Scene_Init( camera_t *camera ) {
     List_Init( scene->objectList, &Model_Test, &Model_Free );
 
     scene->mainCamera   = camera;
+    scene->directLight = vec3_create( 0.0f, 5.0f, 5.0f );
+	scene->directLightColor = vec3_create( 1.0f, 1.0f, 1.0f );
+	scene->ambientLightColor = vec3_create( 1.0f, 1.0f, 1.0f );
     scene->currentState = SCENE_STATE_UPDATABLE;
     return scene;
 }

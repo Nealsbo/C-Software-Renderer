@@ -12,16 +12,19 @@ vec4 Shader_Vertex( shader_t *shader, vertex_t *vert, int index ) {
 }
 
 color_t Shader_Fragment( shader_t *s, obj_model_t *model, vec3 bary ) {
+	//vec2 uv      = vec4_toVec2( vec4_byMat4( vec3_toVec4( bary ), s->var_uv ) );
+	vec2 uv      = vec2_create( bary.x*s->uvs[0].x + bary.y*s->uvs[1].x + bary.z*s->uvs[2].x,
+                                bary.x*s->uvs[0].y + bary.y*s->uvs[1].y + bary.z*s->uvs[2].y );
+                                
+	if( !s->isLit ) {
+		return Bitmap_GetPixelUV( model->diffmap->bitmap, uv );
+	}
 	float ambientStr = 0.1f, specularStr = 1.0f;
 	//vec3 fragPos = vec3_nrm( vec3_byMat4( bary, s->var_pos ) );
 	//vec3 normal  = vec3_nrm( vec3_byMat4( bary , s->var_nrm ) );
-	//vec2 uv      = vec4_toVec2( vec4_byMat4( vec3_toVec4( bary ), s->var_uv ) );
 	vec3 fragPos = vec3_nrm( vec3_create( bary.x*s->pos[0].x + bary.y*s->pos[1].x + bary.z*s->pos[2].x,
 										  bary.x*s->pos[0].y + bary.y*s->pos[1].y + bary.z*s->pos[2].y,
 										  bary.x*s->pos[0].z + bary.y*s->pos[1].z + bary.z*s->pos[2].z ) );
-										  
-    vec2 uv      = vec2_create( bary.x*s->uvs[0].x + bary.y*s->uvs[1].x + bary.z*s->uvs[2].x,
-                                bary.x*s->uvs[0].y + bary.y*s->uvs[1].y + bary.z*s->uvs[2].y );
                                           
 	vec3 normal  = vec3_nrm( vec3_create( bary.x*s->normals[0].x + bary.y*s->normals[1].x + bary.z*s->normals[2].x + s->normals[3].x,
 										  bary.x*s->normals[0].y + bary.y*s->normals[1].y + bary.z*s->normals[2].y + s->normals[3].y,
@@ -44,6 +47,10 @@ color_t Shader_Fragment( shader_t *s, obj_model_t *model, vec3 bary ) {
 	vec3  res       = vec3_add( vec3_add( vec3_mlt( diffuse, 0.5f ), ambient ), specular );
 	
 	return Color_IntensityVec3( Bitmap_GetPixelUV( model->diffmap->bitmap, uv ), res );
+}
+
+void Shader_UseLight( shader_t *shader, int to_use ) {
+	shader->isLit = to_use;
 }
 
 void Shader_SetMatrices( shader_t *shader, mat4 model, mat4 view, mat4 mvp ) {

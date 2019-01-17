@@ -26,13 +26,13 @@ void Renderer_SwitchRendState( renderer_t *renderer ) {
     if( renderer->flagState == RENDER_STATE_WIREFRAME ) {
         renderer->flagState = RENDER_STATE_LIT;
     } else if( renderer->flagState == RENDER_STATE_LIT ) {
+        renderer->flagState = RENDER_STATE_UNLIT;
+    } else if( renderer->flagState == RENDER_STATE_UNLIT ) {
         renderer->flagState = RENDER_STATE_Z_BUFFER;
     } else if( renderer->flagState == RENDER_STATE_Z_BUFFER ) {
         renderer->flagState = RENDER_STATE_WIREFRAME;
     }
 }
-
-void Renderer_Update( renderer_t *renderer ){} //TODO
 
 void Renderer_ClearZBuffer( renderer_t *renderer ) {
     int i;
@@ -97,10 +97,10 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
                                     vec3_create( 0.0, 1.0, 0.0 ) );
 
     mat4 translation = mat4_translate( model->position.x, model->position.y, model->position.z );
-    mat4 rotation    = mat4_rotation( model->rotation.x, model->rotation.y, model->rotation.z );
-    mat4 scale       = mat4_scale( model->scale.x, model->scale.y, model->scale.z );
-    mat4 modelMat    = mat4_mlt( mat4_mlt(translation, rotation), scale );
-
+    mat4 rotation    = mat4_rotation(  model->rotation.x, model->rotation.y, model->rotation.z );
+    mat4 scale       = mat4_scale(     model->scale.x,    model->scale.y,    model->scale.z );
+    
+    mat4 modelMat    = mat4_mlt( mat4_mlt( translation, rotation ), scale );
     mat4 viewMat     = mat4_mlt( lookAtMat, modelMat );
     mat4 projMat     = mat4_mlt( scene->mainCamera->projection, viewMat );
 
@@ -126,14 +126,21 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
                 Raster_DrawLine( rast_verts[1], rast_verts[2], Surface, model->baseColor );
                 Raster_DrawLine( rast_verts[0], rast_verts[2], Surface, model->baseColor );
                 break;
+                
+            case RENDER_STATE_UNLIT:
+				Shader_UseLight( &shader, FALSE );
+				Raster_DrawTriangle( rast_verts, Surface, model, &shader );
+				break;
 
             case RENDER_STATE_LIT:
+				Shader_UseLight( &shader, TRUE );
                 Raster_DrawTriangle( rast_verts, Surface, model, &shader );
                 break;
                 
             case RENDER_STATE_Z_BUFFER:
 				Raster_DrawTriangle( rast_verts, Surface, model, &shader );
-
+				break;
+				
             default:
                 break;
         }
