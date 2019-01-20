@@ -106,6 +106,7 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
 
     Shader_SetMatrices( &shader, modelMat, lookAtMat, projMat );
     Shader_SetCamera( &shader, Camera_GetPosition( cam ) );
+    Shader_InvertNormal( &shader, TRUE );
 
     for( i = 0; i < model->trisCount; i++ ) {
         face = model->faces[i];

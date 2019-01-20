@@ -19,8 +19,8 @@
 #define FALSE 0
 #endif
 
-#define WINDOW_WIDTH  960
-#define WINDOW_HEIGHT 540
+#define WINDOW_WIDTH  1280
+#define WINDOW_HEIGHT 720
 
 #define FPS_LIMIT 60.0
 

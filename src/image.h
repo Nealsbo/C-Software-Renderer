@@ -29,6 +29,7 @@ color_t   Color_Intensity    ( color_t c, float a );
 color_t   Color_IntensityVec3( color_t c, vec3 v );
 uint32_t  Color_ToUInt32     ( color_t c );
 uint32_t  Color_ToUInt32Fast ( color_t c );
+vec3      Color_ToVec3       ( color_t c );
 
 void      Color_Print        ( color_t c );
 

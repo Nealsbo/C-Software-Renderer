@@ -21,6 +21,10 @@ scene_t *Scene_Init( camera_t *camera ) {
     return scene;
 }
 
+void Scene_LoadScene ( scene_t *scene, const char *scene_name ) {
+	
+}
+
 void Scene_AddObject( scene_t *scene, obj_model_t *model ) {
     if( model != NULL ) {
         List_Push ( scene->objectList, model );

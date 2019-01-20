@@ -28,6 +28,7 @@ typedef struct {
 //###########################
 
 scene_t     *Scene_Init            ( camera_t *camera );
+void         Scene_LoadScene       ( scene_t *scene, const char *scene_name );
 void         Scene_AddObject       ( scene_t *scene, obj_model_t *model );
 void         Scene_SetDirectLight  ( scene_t *scene, vec3 dir, vec3 color );
 void         Scene_SetAmbientLight ( scene_t *scene, vec3 color );

@@ -42,7 +42,8 @@ typedef struct {
 
     color_t      baseColor;
 
-    texture_t     *diffmap;
+    texture_t    *diffmap;
+    texture_t    *normalmap;
 
     int          *indexes;
 } obj_model_t;

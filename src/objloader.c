@@ -83,6 +83,7 @@ obj_model_t *Model_Create( const char *model_name){
     model->scale       = vec3_create(1.3, 1.6, 1.9);
     model->baseColor   = Color_Init(63, 127, 191, 255);
     model->diffmap     = NULL;
+    model->normalmap   = NULL;
     model->vertices    = NULL;
     model->faces       = NULL;
     model->normals     = NULL;
@@ -124,6 +125,7 @@ obj_model_t *Model_CreateBaseTriangle( const char *model_name ){
     model->scale       = vec3_create(1.0, 1.0, 1.0);
     model->baseColor   = Color_Init(0, 245, 116, 255);
     model->diffmap     = NULL;
+    model->normalmap   = NULL;
 
     model->vertices    = malloc(sizeof(vec3) * 3);
     if(model->vertices == NULL){
@@ -190,6 +192,7 @@ obj_model_t *Model_CreateBasePlane( const char *model_name ){
     model->scale       = vec3_create(1.0, 1.0, 1.0);
     model->baseColor   = Color_Init(0, 245, 116, 255);
     model->diffmap     = NULL;
+    model->normalmap   = NULL;
 
     model->vertices    = (vec3 *)malloc(sizeof(vec3) * 4);
     for(i = 0; i < 4; i++){
@@ -213,6 +216,9 @@ obj_model_t *Model_CreateBasePlane( const char *model_name ){
 
     model->diffmap = (texture_t *)malloc(sizeof(texture_t));
     model->diffmap->bitmap = Bitmap_LoadPPM6("./assets/texture.ppm");
+    
+    model->normalmap = (texture_t *)malloc(sizeof(texture_t));
+    model->normalmap->bitmap = Bitmap_LoadPPM6("./assets/texture_n.ppm");
 
     return model;
 }
@@ -307,6 +313,7 @@ obj_model_t *Model_CreateBaseBox( const char *model_name){
     model->scale       = vec3_create(1.0, 1.0, 1.0);
     model->baseColor   = Color_Init(255, 255, 255, 255);
     model->diffmap     = NULL;
+    model->normalmap   = NULL;
 
     model->vertices    = (vec3 *)malloc(sizeof(vec3) * 8);
     for(i = 0; i < 8; i++){
@@ -330,6 +337,9 @@ obj_model_t *Model_CreateBaseBox( const char *model_name){
 
     model->diffmap = (texture_t *)malloc(sizeof(texture_t));
     model->diffmap->bitmap = Bitmap_LoadPPM6("./assets/texture.ppm");
+    
+    model->normalmap = (texture_t *)malloc(sizeof(texture_t));
+    model->normalmap->bitmap = Bitmap_LoadPPM6("./assets/texture_n.ppm");
 
     return model;
 }
@@ -456,6 +466,9 @@ obj_model_t *Model_LoadOBJ( const char *file_name ){
 
     model->diffmap = (texture_t *)malloc(sizeof(texture_t));
     model->diffmap->bitmap = Bitmap_LoadPPM6("./assets/texture.ppm");
+    
+    model->normalmap = (texture_t *)malloc(sizeof(texture_t));
+    model->normalmap->bitmap = Bitmap_LoadPPM6("./assets/texture_n.ppm");
 
     List_Destroy(vertList);
     List_Destroy(coordList);
@@ -594,12 +607,18 @@ void Model_Free(obj_model_t *model){
         Bitmap_Free(model->diffmap->bitmap);
         free(model->diffmap);
     }
+    
+    if( !model->normalmap ){
+        Bitmap_Free(model->normalmap->bitmap);
+        free(model->normalmap);
+    }
 
     model->vertices   = NULL;
     model->normals    = NULL;
     model->textcoords = NULL;
     model->faces      = NULL;
     model->diffmap    = NULL;
+    model->normalmap  = NULL;
 
     free(model);
     model = NULL;

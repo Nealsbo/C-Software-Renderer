@@ -23,8 +23,10 @@ int moveDirection[2] = {0,0}; // {forward, right};
 
 static void SetupScene() {
 	printf( "Scene Setup: Start\n" );
-    obj_model_t *testModel0 = Model_LoadOBJ( loadedObjectName );
+    //obj_model_t *testModel0 = Model_LoadOBJ( loadedObjectName );
+    obj_model_t *testModel0 = Model_CreateBasePlane( "Plane01" );
     Model_SetPosition( testModel0, vec3_create( 0.0f, 0.0f, -2.0f ) );
+    Model_SetRotation( testModel0, vec3_create( 0.0f, to_radians( 180.0f ), 0.0f ) );
     /*
     obj_model_t *testModel1 = Model_CreateBasePlane( "Plane01" );
     Model_SetRotation( testModel1, vec3_create( to_radians( -90.0f ), to_radians( 180.0f ), 0.0f ) );
@@ -42,7 +44,7 @@ static void SetupScene() {
                                 5.0f);                                  // Speed
     
     Scene = Scene_Init( Cam );
-    Scene_SetDirectLight( Scene, vec3_create( 0.0f, 2.0f, 5.0f ), vec3_create( 1.0f, 0.5f, 0.0f ) );
+    Scene_SetDirectLight( Scene, vec3_create( 0.0f, 3.0f, 5.0f ), vec3_create( 1.0f, 0.5f, 0.0f ) );
     Scene_SetAmbientLight( Scene, vec3_create( 0.0f, 0.5f, 1.0f ) );
     Scene_AddObject( Scene, testModel0 );
     //Scene_AddObject( Scene, testModel1 );
@@ -80,10 +82,7 @@ void Application_Run() {
     SetupScene( Scene );
     mainRenderer = Renderer_Init( Scene, RENDER_STATE_LIT, RENDER_TYPE_SOFTWARE );
     
-    float time_slice   = 0.0f;
     float frames_slice = 0.0f;
-    float total_time   = 0.0f;
-    
     float delta = 0.0f;
     
     unsigned int frames_slice_count = 0;
@@ -95,7 +94,7 @@ void Application_Run() {
         curr_time = clock();
         delta = (float)( curr_time - last_time )/CLOCKS_PER_SEC;
         frames_slice += delta;
-        total_time += time_slice;
+        elapsed_time += delta;
         frames_slice_count++;
         
         IH_ProcessInput( e, mainRenderer );
@@ -103,6 +102,7 @@ void Application_Run() {
         Renderer_DrawWorld( mainRenderer, gScreenSurface );
         SDL_UpdateWindowSurface( gWindow );
         
+        printf("%f\n", elapsed_time);
         if(frames_slice > 1.0f){
             printf("FPS: %u\n", (unsigned int)(1.0f / frames_slice * (float)frames_slice_count));
             frames_slice = 0.0f;
@@ -129,14 +129,14 @@ void Application_Close() {
 }
 
 void UpdateScene( renderer_t *renderer, float delta ) {
-	vec3 light_new_pos = vec3_byMat4( renderer->scene->directLight, mat4_roty(delta * 2.0f) );
-	renderer->scene->directLight = light_new_pos;
+	//vec3 light_new_pos = vec3_create( 5.0f * cosf(elapsed_time * 2.0f), renderer->scene->directLight.y, renderer->scene->directLight.z );
+	//vec3 light_new_pos = vec3_byMat4( renderer->scene->directLight, mat4_roty(delta * 1.0f) );
+	//renderer->scene->directLight = light_new_pos;
 	
-	/*
-	obj_model_t *model = Scene_FindObjectByName( renderer->scene, "monkey.obj" );
+	obj_model_t *model = Scene_FindObjectByName( renderer->scene, "Plane01" );
 	if( model != NULL )
 		Model_AddRotation( model, vec3_create( 0.0f, delta, 0.0f ) );
-	*/
+	
 	
 	int f = moveDirection[0]; // 1 - Forward; -1 - Backward;
 	int r = moveDirection[1]; // 1 - Right;   -1 - Left;

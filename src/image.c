@@ -63,6 +63,10 @@ uint32_t Color_ToUInt32Fast( color_t c ) {     //broken, indexes reversed
     return *(uint32_t *) &c;
 }
 
+vec3 Color_ToVec3( color_t c ) {
+	return vec3_create( (float)c.r / 255.0f, (float)c.g / 255.0f, (float)c.b / 255.0f );
+}
+
 void Color_Print( color_t c ) {
     printf( "Color:( r: %d, g: %d, b: %d, a: %d ) \n", c.r, c.g, c.b, c.a );
 }
