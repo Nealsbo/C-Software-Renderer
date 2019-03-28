@@ -23,10 +23,10 @@ int moveDirection[2] = {0,0}; // {forward, right};
 
 static void SetupScene() {
 	printf( "Scene Setup: Start\n" );
-    //obj_model_t *testModel0 = Model_LoadOBJ( loadedObjectName );
-    obj_model_t *testModel0 = Model_CreateBasePlane( "Plane01" );
+    obj_model_t *testModel0 = Model_LoadOBJ( loadedObjectName );
+    //obj_model_t *testModel0 = Model_CreateBasePlane( "Plane01" );
     Model_SetPosition( testModel0, vec3_create( 0.0f, 0.0f, -2.0f ) );
-    Model_SetRotation( testModel0, vec3_create( 0.0f, to_radians( 180.0f ), 0.0f ) );
+    Model_SetRotation( testModel0, vec3_create( 0.0f, 3.14f + to_radians( 180.0f ), 0.0f ) );
     /*
     obj_model_t *testModel1 = Model_CreateBasePlane( "Plane01" );
     Model_SetRotation( testModel1, vec3_create( to_radians( -90.0f ), to_radians( 180.0f ), 0.0f ) );
@@ -133,7 +133,7 @@ void UpdateScene( renderer_t *renderer, float delta ) {
 	//vec3 light_new_pos = vec3_byMat4( renderer->scene->directLight, mat4_roty(delta * 1.0f) );
 	//renderer->scene->directLight = light_new_pos;
 	
-	obj_model_t *model = Scene_FindObjectByName( renderer->scene, "Plane01" );
+	obj_model_t *model = Scene_FindObjectByName( renderer->scene, "monkey" );
 	if( model != NULL )
 		Model_AddRotation( model, vec3_create( 0.0f, delta, 0.0f ) );
 	
