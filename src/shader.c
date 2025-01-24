@@ -70,10 +70,14 @@ void Shader_InvertNormal( shader_t *shader, int to_inv ) {
 }
 
 void Shader_SetMatrices( shader_t *shader, mat4 model, mat4 view, mat4 mvp ) {
-	shader->m    = model;
-	shader->v    = view;
-	shader->m_it = mat4_tsp( mat4_inv( shader->m ) );
-	shader->mvp  = mvp;
+	mat4 tmp;
+	mat4_copy( model, shader->m );
+	mat4_copy( view, shader->v );
+	
+	mat4_inv( shader->m, tmp );
+	mat4_tsp( tmp, shader->m_it );
+	
+	mat4_copy( mvp, shader->mvp );
 }
 
 void Shader_SetCamera( shader_t *shader, vec3 cam_pos ) {

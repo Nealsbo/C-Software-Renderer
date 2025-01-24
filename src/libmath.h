@@ -38,8 +38,10 @@ typedef union
 typedef struct { int x, y; }                vec2i;
 typedef struct { int x, y, z; }             vec3i;
 
-typedef struct { float m[9]; }              mat3;
-typedef struct { float m[16]; }             mat4;
+//typedef struct { float m[9]; }              mat3;
+//typedef struct { float m[16]; }             mat4;
+typedef float                               mat3[9];
+typedef float                               mat4[16];
 
 typedef struct { vec3 origin, direction; }  ray;
 
@@ -166,14 +168,15 @@ void  vec4_printp(void *vp);
 //#   Matrix4   #
 //###############
 
-mat4  mat4_create();
+void  mat4_create(mat4 m);
+void  mat4_identity(mat4 m);
 
-void  mat4_setColVec2( mat4 *m, vec2 v, int i );
-void  mat4_setColVec3( mat4 *m, vec3 v, int i );
-void  mat4_setColVec4( mat4 *m, vec4 v, int i );
-void  mat4_setRowVec2( mat4 *m, vec2 v, int i );
-void  mat4_setRowVec3( mat4 *m, vec3 v, int i );
-void  mat4_setRowVec4( mat4 *m, vec4 v, int i );
+void  mat4_setColVec2( mat4 m, vec2 v, int i );
+void  mat4_setColVec3( mat4 m, vec3 v, int i );
+void  mat4_setColVec4( mat4 m, vec4 v, int i );
+void  mat4_setRowVec2( mat4 m, vec2 v, int i );
+void  mat4_setRowVec3( mat4 m, vec3 v, int i );
+void  mat4_setRowVec4( mat4 m, vec4 v, int i );
 
 vec2  mat4_getColVec2( mat4 m, vec2 v, int i );
 vec3  mat4_getColVec3( mat4 m, vec3 v, int i );
@@ -182,28 +185,30 @@ vec2  mat4_getRowVec2( mat4 m, vec2 v, int i );
 vec3  mat4_getRowVec3( mat4 m, vec3 v, int i );
 vec4  mat4_getRowVec4( mat4 m, vec4 v, int i );
 
-mat4  mat4_add(mat4 m1, mat4 m2);
-mat4  mat4_sub(mat4 m1, mat4 m2);
-mat4  mat4_mlt(mat4 m1, mat4 m2);
-mat4  mat4_tsp(mat4 m1);
-mat4  mat4_inv(mat4 m1);
-float mat4_det(mat4 m1);  // NO FUNCTION
+void  mat4_add(mat4 m1, mat4 m2, mat4 dest);
+void  mat4_sub(mat4 m1, mat4 m2, mat4 dest);
+void  mat4_mlt(mat4 m1, mat4 m2, mat4 dest);
+void  mat4_tsp(mat4 m1, mat4 dest);
+void  mat4_inv(mat4 m1, mat4 dest);
+void  mat4_det(mat4 m1, float dest);  // NO FUNCTION
 
-mat4  mat4_translate(float x, float y, float z);
-mat4  mat4_scale    (float x, float y, float z);
-mat4  mat4_uscale   (float s);
-mat4  mat4_rotationA(float x, float y, float z, float angle);
-mat4  mat4_rotation (float x, float y, float z);
-mat4  mat4_rotx     (float r);
-mat4  mat4_roty     (float r);
-mat4  mat4_rotz     (float r);
+void  mat4_translate(mat4 dest, float x, float y, float z);
+void  mat4_scale    (mat4 dest, float x, float y, float z);
+void  mat4_uscale   (mat4 dest, float s);
+void  mat4_rotationA(mat4 dest, float x, float y, float z, float angle);
+void  mat4_rotation (mat4 dest, float x, float y, float z);
+void  mat4_rotx     (mat4 dest, float r);
+void  mat4_roty     (mat4 dest, float r);
+void  mat4_rotz     (mat4 dest, float r);
 
-mat4  mat4_projection(float n, float f, float fov, float aspect);      //TO FIX
-mat4  mat4_screen    (float halfW, float halfH);      //TO FIX
-mat4  mat4_lookAt    (vec3 pos, vec3 front, vec3 up);
+void  mat4_projection(mat4 dest, float n, float f, float fov, float aspect);      //TO FIX
+void  mat4_screen    (mat4 dest, float halfW, float halfH);      //TO FIX
+void  mat4_lookAt    (mat4 dest, vec3 pos, vec3 front, vec3 up);
 
 void  mat4_print (mat4 m1);
-void  mat4_printp(void *mp);
+void  mat4_print_named(mat4 m, char *name);
+
+inline void mat4_copy(mat4 src, mat4 dest);
 
 //###########
 //#   Ray   #

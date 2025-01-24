@@ -2,9 +2,22 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <memory.h>
 
 #include "srdefs.h"
 #include "libmath.h"
+
+static mat4 zero_mat = {
+            0.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f };
+
+static mat4 identity_mat = {
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f };
 
 //###############
 //#   Vector2   #
@@ -316,14 +329,14 @@ vec4 vec3_toVec4(vec3 v){
 }
 
 vec3 vec3_byMat4(vec3 v, mat4 m){
-    vec4 v2 = {m.m[ 0] * v.x + m.m[ 1] * v.y + m.m[ 2] * v.z + m.m[ 3],
-               m.m[ 4] * v.x + m.m[ 5] * v.y + m.m[ 6] * v.z + m.m[ 7],
-               m.m[ 8] * v.x + m.m[ 9] * v.y + m.m[10] * v.z + m.m[11],
-               m.m[12] * v.x + m.m[13] * v.y + m.m[14] * v.z + m.m[15],};
+    vec4 v2 = {m[ 0] * v.x + m[ 1] * v.y + m[ 2] * v.z + m[ 3],
+               m[ 4] * v.x + m[ 5] * v.y + m[ 6] * v.z + m[ 7],
+               m[ 8] * v.x + m[ 9] * v.y + m[10] * v.z + m[11],
+               m[12] * v.x + m[13] * v.y + m[14] * v.z + m[15],};
     /*
-    vec3 v2 = {m.m[ 0] * v.x + m.m[ 1] * v.y + m.m[ 2] * v.z,
-               m.m[ 4] * v.x + m.m[ 5] * v.y + m.m[ 6] * v.z,
-               m.m[ 8] * v.x + m.m[ 9] * v.y + m.m[10] * v.z};
+    vec3 v2 = {m[ 0] * v.x + m[ 1] * v.y + m[ 2] * v.z,
+               m[ 4] * v.x + m[ 5] * v.y + m[ 6] * v.z,
+               m[ 8] * v.x + m[ 9] * v.y + m[10] * v.z};
     */
     return vec4_toVec3( vec4_pdiv( v2 ) );
 }
@@ -442,10 +455,10 @@ vec3 vec4_toVec3(vec4 v, int byw){
 */
 
 vec4 vec4_byMat4(vec4 v, mat4 m){
-    vec4 v2 = {m.m[ 0] * v.x + m.m[ 1] * v.y + m.m[ 2] * v.z + m.m[ 3] * v.w,
-               m.m[ 4] * v.x + m.m[ 5] * v.y + m.m[ 6] * v.z + m.m[ 7] * v.w,
-               m.m[ 8] * v.x + m.m[ 9] * v.y + m.m[10] * v.z + m.m[11] * v.w,
-               m.m[12] * v.x + m.m[13] * v.y + m.m[14] * v.z + m.m[15] * v.w};
+    vec4 v2 = {m[ 0] * v.x + m[ 1] * v.y + m[ 2] * v.z + m[ 3] * v.w,
+               m[ 4] * v.x + m[ 5] * v.y + m[ 6] * v.z + m[ 7] * v.w,
+               m[ 8] * v.x + m[ 9] * v.y + m[10] * v.z + m[11] * v.w,
+               m[12] * v.x + m[13] * v.y + m[14] * v.z + m[15] * v.w};
     return v2;
 }
 
@@ -462,269 +475,278 @@ void vec4_printp (void *vp){
 //#   Matrix4   #
 //###############
 
-mat4 mat4_add( mat4 m1, mat4 m2 ){
-    mat4 m3;
+void mat4_add( mat4 m1, mat4 m2, mat4 dest ){
     int i;
     for(i = 0; i < 16; i++){
-        m3.m[i] = m1.m[i] + m2.m[i];
+        dest[i] = m1[i] + m2[i];
     }
-    return m3;
 }
 
-mat4 mat4_sub( mat4 m1, mat4 m2 ){
-    mat4 m3;
+void mat4_sub( mat4 m1, mat4 m2, mat4 dest ){
     int i;
     for(i = 0; i < 16; i++){
-        m3.m[i] = m1.m[i] - m2.m[i];
+        dest[i] = m1[i] - m2[i];
     }
-    return m3;
 }
 
-mat4 mat4_mlt( mat4 m1, mat4 m2 ){
-    mat4 m3 = {{0}};
+void mat4_mlt( mat4 m1, mat4 m2, mat4 dest ){
     int i, j, k;
     for (i = 0; i < 4; i++)
         for (j = 0; j < 4; j++)
             for(k = 0; k < 4; k++)
-                m3.m[i * 4 + j] += m1.m[i * 4 + k] * m2.m[4 * k + j];
-    return m3;
+                dest[i * 4 + j] += m1[i * 4 + k] * m2[4 * k + j];
 }
 
-mat4 mat4_tsp( mat4 m1 ){
-    mat4 m2;
+void mat4_tsp( mat4 m1, mat4 dest ){
     int i, j;
     for (i = 0; i < 4; i++)
         for (j = 0; j < 4; j++)
-            m2.m[i * 4 + j] = m1.m[i + j * 4];
-    return m2;
+            dest[i * 4 + j] = m1[i + j * 4];
 }
 
-mat4 mat4_inv( mat4 m1 ) {
+void mat4_inv( mat4 m1, mat4 dest ){
     mat4 m;
     float det;
     int i, j;
 
-    m.m[0]  =  m1.m[5] * m1.m[10] * m1.m[15] - m1.m[5] * m1.m[11] * m1.m[14] - m1.m[9]  * m1.m[6]  * m1.m[15] + m1.m[9]  * m1.m[7]  * m1.m[14] + m1.m[13] * m1.m[6]  * m1.m[11] - m1.m[13] * m1.m[7]  * m1.m[10];
-    m.m[4]  = -m1.m[4] * m1.m[10] * m1.m[15] + m1.m[4] * m1.m[11] * m1.m[14] + m1.m[8]  * m1.m[6]  * m1.m[15] - m1.m[8]  * m1.m[7]  * m1.m[14] - m1.m[12] * m1.m[6]  * m1.m[11] + m1.m[12] * m1.m[7]  * m1.m[10];
-    m.m[8]  =  m1.m[4] * m1.m[9]  * m1.m[15] - m1.m[4]  * m1.m[11] * m1.m[13] - m1.m[8]  * m1.m[5] * m1.m[15] + m1.m[8]  * m1.m[7] * m1.m[13] + m1.m[12] * m1.m[5] * m1.m[11] - m1.m[12] * m1.m[7] * m1.m[9];
-    m.m[12] = -m1.m[4] * m1.m[9]  * m1.m[14] + m1.m[4]  * m1.m[10] * m1.m[13] + m1.m[8]  * m1.m[5] * m1.m[14] - m1.m[8]  * m1.m[6] * m1.m[13] - m1.m[12] * m1.m[5] * m1.m[10] + m1.m[12] * m1.m[6] * m1.m[9];
-    m.m[1]  = -m1.m[1] * m1.m[10] * m1.m[15] + m1.m[1]  * m1.m[11] * m1.m[14] + m1.m[9]  * m1.m[2] * m1.m[15] - m1.m[9]  * m1.m[3] * m1.m[14] - m1.m[13] * m1.m[2] * m1.m[11] + m1.m[13] * m1.m[3] * m1.m[10];
-    m.m[5]  =  m1.m[0] * m1.m[10] * m1.m[15] - m1.m[0]  * m1.m[11] * m1.m[14] - m1.m[8]  * m1.m[2] * m1.m[15] + m1.m[8]  * m1.m[3] * m1.m[14] + m1.m[12] * m1.m[2] * m1.m[11] - m1.m[12] * m1.m[3] * m1.m[10];
-    m.m[9]  = -m1.m[0] * m1.m[9]  * m1.m[15] + m1.m[0]  * m1.m[11] * m1.m[13] + m1.m[8]  * m1.m[1] * m1.m[15] - m1.m[8]  * m1.m[3] * m1.m[13] - m1.m[12] * m1.m[1] * m1.m[11] + m1.m[12] * m1.m[3] * m1.m[9];
-    m.m[13] =  m1.m[0] * m1.m[9]  * m1.m[14] - m1.m[0]  * m1.m[10] * m1.m[13] - m1.m[8]  * m1.m[1] * m1.m[14] + m1.m[8]  * m1.m[2] * m1.m[13] + m1.m[12] * m1.m[1] * m1.m[10] - m1.m[12] * m1.m[2] * m1.m[9];
-    m.m[2]  =  m1.m[1] * m1.m[6]  * m1.m[15] - m1.m[1]  * m1.m[7] * m1.m[14] - m1.m[5]  * m1.m[2] * m1.m[15] + m1.m[5]  * m1.m[3] * m1.m[14] + m1.m[13] * m1.m[2] * m1.m[7] - m1.m[13] * m1.m[3] * m1.m[6];
-    m.m[6]  = -m1.m[0] * m1.m[6]  * m1.m[15] + m1.m[0]  * m1.m[7] * m1.m[14] + m1.m[4]  * m1.m[2] * m1.m[15] - m1.m[4]  * m1.m[3] * m1.m[14] - m1.m[12] * m1.m[2] * m1.m[7] + m1.m[12] * m1.m[3] * m1.m[6];
-    m.m[10] =  m1.m[0] * m1.m[5]  * m1.m[15] - m1.m[0]  * m1.m[7] * m1.m[13] - m1.m[4]  * m1.m[1] * m1.m[15] + m1.m[4]  * m1.m[3] * m1.m[13] + m1.m[12] * m1.m[1] * m1.m[7] - m1.m[12] * m1.m[3] * m1.m[5];
-    m.m[14] = -m1.m[0] * m1.m[5]  * m1.m[14] + m1.m[0]  * m1.m[6] * m1.m[13] + m1.m[4]  * m1.m[1] * m1.m[14] - m1.m[4]  * m1.m[2] * m1.m[13] - m1.m[12] * m1.m[1] * m1.m[6] + m1.m[12] * m1.m[2] * m1.m[5];
-    m.m[3]  = -m1.m[1] * m1.m[6]  * m1.m[11] + m1.m[1] * m1.m[7] * m1.m[10] + m1.m[5] * m1.m[2] * m1.m[11] - m1.m[5] * m1.m[3] * m1.m[10] - m1.m[9] * m1.m[2] * m1.m[7] + m1.m[9] * m1.m[3] * m1.m[6];
-    m.m[7]  =  m1.m[0] * m1.m[6]  * m1.m[11] - m1.m[0] * m1.m[7] * m1.m[10] - m1.m[4] * m1.m[2] * m1.m[11] + m1.m[4] * m1.m[3] * m1.m[10] + m1.m[8] * m1.m[2] * m1.m[7] - m1.m[8] * m1.m[3] * m1.m[6];
-    m.m[11] = -m1.m[0] * m1.m[5]  * m1.m[11] + m1.m[0] * m1.m[7] * m1.m[9] + m1.m[4] * m1.m[1] * m1.m[11] - m1.m[4] * m1.m[3] * m1.m[9] - m1.m[8] * m1.m[1] * m1.m[7] + m1.m[8] * m1.m[3] * m1.m[5];
-    m.m[15] =  m1.m[0] * m1.m[5]  * m1.m[10] - m1.m[0] * m1.m[6] * m1.m[9] - m1.m[4] * m1.m[1] * m1.m[10] + m1.m[4] * m1.m[2] * m1.m[9] + m1.m[8] * m1.m[1] * m1.m[6] - m1.m[8] * m1.m[2] * m1.m[5];
+    dest[0]  =  m1[5] * m1[10] * m1[15] - m1[5] * m1[11] * m1[14] - m1[9]  * m1[6]  * m1[15] + m1[9]  * m1[7]  * m1[14] + m1[13] * m1[6]  * m1[11] - m1[13] * m1[7]  * m1[10];
+    dest[4]  = -m1[4] * m1[10] * m1[15] + m1[4] * m1[11] * m1[14] + m1[8]  * m1[6]  * m1[15] - m1[8]  * m1[7]  * m1[14] - m1[12] * m1[6]  * m1[11] + m1[12] * m1[7]  * m1[10];
+    dest[8]  =  m1[4] * m1[9]  * m1[15] - m1[4]  * m1[11] * m1[13] - m1[8]  * m1[5] * m1[15] + m1[8]  * m1[7] * m1[13] + m1[12] * m1[5] * m1[11] - m1[12] * m1[7] * m1[9];
+    dest[12] = -m1[4] * m1[9]  * m1[14] + m1[4]  * m1[10] * m1[13] + m1[8]  * m1[5] * m1[14] - m1[8]  * m1[6] * m1[13] - m1[12] * m1[5] * m1[10] + m1[12] * m1[6] * m1[9];
+    dest[1]  = -m1[1] * m1[10] * m1[15] + m1[1]  * m1[11] * m1[14] + m1[9]  * m1[2] * m1[15] - m1[9]  * m1[3] * m1[14] - m1[13] * m1[2] * m1[11] + m1[13] * m1[3] * m1[10];
+    dest[5]  =  m1[0] * m1[10] * m1[15] - m1[0]  * m1[11] * m1[14] - m1[8]  * m1[2] * m1[15] + m1[8]  * m1[3] * m1[14] + m1[12] * m1[2] * m1[11] - m1[12] * m1[3] * m1[10];
+    dest[9]  = -m1[0] * m1[9]  * m1[15] + m1[0]  * m1[11] * m1[13] + m1[8]  * m1[1] * m1[15] - m1[8]  * m1[3] * m1[13] - m1[12] * m1[1] * m1[11] + m1[12] * m1[3] * m1[9];
+    dest[13] =  m1[0] * m1[9]  * m1[14] - m1[0]  * m1[10] * m1[13] - m1[8]  * m1[1] * m1[14] + m1[8]  * m1[2] * m1[13] + m1[12] * m1[1] * m1[10] - m1[12] * m1[2] * m1[9];
+    dest[2]  =  m1[1] * m1[6]  * m1[15] - m1[1]  * m1[7] * m1[14] - m1[5]  * m1[2] * m1[15] + m1[5]  * m1[3] * m1[14] + m1[13] * m1[2] * m1[7] - m1[13] * m1[3] * m1[6];
+    dest[6]  = -m1[0] * m1[6]  * m1[15] + m1[0]  * m1[7] * m1[14] + m1[4]  * m1[2] * m1[15] - m1[4]  * m1[3] * m1[14] - m1[12] * m1[2] * m1[7] + m1[12] * m1[3] * m1[6];
+    dest[10] =  m1[0] * m1[5]  * m1[15] - m1[0]  * m1[7] * m1[13] - m1[4]  * m1[1] * m1[15] + m1[4]  * m1[3] * m1[13] + m1[12] * m1[1] * m1[7] - m1[12] * m1[3] * m1[5];
+    dest[14] = -m1[0] * m1[5]  * m1[14] + m1[0]  * m1[6] * m1[13] + m1[4]  * m1[1] * m1[14] - m1[4]  * m1[2] * m1[13] - m1[12] * m1[1] * m1[6] + m1[12] * m1[2] * m1[5];
+    dest[3]  = -m1[1] * m1[6]  * m1[11] + m1[1] * m1[7] * m1[10] + m1[5] * m1[2] * m1[11] - m1[5] * m1[3] * m1[10] - m1[9] * m1[2] * m1[7] + m1[9] * m1[3] * m1[6];
+    dest[7]  =  m1[0] * m1[6]  * m1[11] - m1[0] * m1[7] * m1[10] - m1[4] * m1[2] * m1[11] + m1[4] * m1[3] * m1[10] + m1[8] * m1[2] * m1[7] - m1[8] * m1[3] * m1[6];
+    dest[11] = -m1[0] * m1[5]  * m1[11] + m1[0] * m1[7] * m1[9] + m1[4] * m1[1] * m1[11] - m1[4] * m1[3] * m1[9] - m1[8] * m1[1] * m1[7] + m1[8] * m1[3] * m1[5];
+    dest[15] =  m1[0] * m1[5]  * m1[10] - m1[0] * m1[6] * m1[9] - m1[4] * m1[1] * m1[10] + m1[4] * m1[2] * m1[9] + m1[8] * m1[1] * m1[6] - m1[8] * m1[2] * m1[5];
 
-    det = m1.m[0] * m.m[0] + m1.m[1] * m.m[4] + m1.m[2] * m.m[8] + m1.m[3] * m.m[12];
+    det = m1[0] * dest[0] + m1[1] * dest[4] + m1[2] * dest[8] + m1[3] * dest[12];
 
     det = 1.0 / det;
 
     for( i = 0; i < 16; i++ ) {
-        m.m[i] = m.m[i] * det;
+        dest[i] = dest[i] * det;
     }
-    return m;
 }
 
 void mat4_print( mat4 m1 ){
     int i;
     for( i = 0; i < 4; i++ )
-        printf( "Matrix:{ %f, %f, %f, %f )\n", m1.m[4*i], m1.m[4*i + 1], m1.m[4*i + 2], m1.m[4*i + 3] );
+        printf( "Matrix:{ %f, %f, %f, %f )\n", m1[4*i], m1[4*i + 1], m1[4*i + 2], m1[4*i + 3] );
     printf("\n");
 }
 
-mat4 mat4_create(){
-    mat4 m = {{
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f }};
-    return m;
+void mat4_print_named( mat4 m1 , char *name ){
+    int i;
+    printf("Matrix name: %s\n", name);
+
+    for( i = 0; i < 4; i++ )
+        printf( "Matrix:{ %f, %f, %f, %f )\n", m1[4*i], m1[4*i + 1], m1[4*i + 2], m1[4*i + 3] );
+    printf("\n");
 }
 
-void mat4_setColVec2( mat4 *m, vec2 v, int i ) {
+void mat4_create( mat4 dest ){
+    memcpy(dest, zero_mat, sizeof(mat4));
+}
+
+void mat4_identity( mat4 dest ){
+    memcpy(dest, identity_mat, sizeof(mat4));
+}
+
+void mat4_setColVec2( mat4 m, vec2 v, int i ) {
 	if( i >= 0 || i <= 3 ) {
-        m->m[    i] = v.x;
-        m->m[4 + i] = v.y;
+        m[    i] = v.x;
+        m[4 + i] = v.y;
 	}
 }
 
-void mat4_setColVec3( mat4 *m, vec3 v, int i ) {
+void mat4_setColVec3( mat4 m, vec3 v, int i ) {
 	if( i >= 0 || i <= 3 ) {
-        m->m[    i] = v.x;
-        m->m[4 + i] = v.y;
-        m->m[8 + i] = v.z;
+        m[    i] = v.x;
+        m[4 + i] = v.y;
+        m[8 + i] = v.z;
 	}
 }
 
-void mat4_setColVec4( mat4 *m, vec4 v, int i ) {
+void mat4_setColVec4( mat4 m, vec4 v, int i ) {
 	if( i >= 0 || i <= 3 ) {
-        m->m[     i] = v.x;
-        m->m[ 4 + i] = v.y;
-        m->m[ 8 + i] = v.z;
-        m->m[12 + i] = v.w;
+        m[     i] = v.x;
+        m[ 4 + i] = v.y;
+        m[ 8 + i] = v.z;
+        m[12 + i] = v.w;
 	}
 }
 
-void mat4_setRowVec2( mat4 *m, vec2 v, int i ) {
+void mat4_setRowVec2( mat4 m, vec2 v, int i ) {
 	if( i >= 0 || i <= 3 ) {
-        m->m[i    ] = v.x;
-        m->m[i + 1] = v.y;
+        m[i    ] = v.x;
+        m[i + 1] = v.y;
 	}
 }
 
-void mat4_setRowVec3( mat4 *m, vec3 v, int i ) {
+void mat4_setRowVec3( mat4 m, vec3 v, int i ) {
 	if( i >= 0 || i <= 3 ) {
-        m->m[i    ] = v.x;
-        m->m[i + 1] = v.y;
-        m->m[i + 2] = v.z;
+        m[i    ] = v.x;
+        m[i + 1] = v.y;
+        m[i + 2] = v.z;
 	}
 }
 
-void mat4_setRowVec4( mat4 *m, vec4 v, int i ) {
+void mat4_setRowVec4( mat4 m, vec4 v, int i ) {
 	if( i >= 0 || i <= 3 ) {
-        m->m[i    ] = v.x;
-        m->m[i + 1] = v.y;
-        m->m[i + 2] = v.z;
-        m->m[i + 3] = v.w;
+        m[i    ] = v.x;
+        m[i + 1] = v.y;
+        m[i + 2] = v.z;
+        m[i + 3] = v.w;
 	}
 }
 
 vec2  mat4_getColVec2( mat4 m, vec2 v, int i ) {
-	return vec2_create( m.m[i], m.m[4 + i] );
+	return vec2_create( m[i], m[4 + i] );
 }
 
 vec3  mat4_getColVec3( mat4 m, vec3 v, int i ) {
-	return vec3_create( m.m[i], m.m[4 + i], m.m[8 + i] );
+	return vec3_create( m[i], m[4 + i], m[8 + i] );
 }
 
 vec4  mat4_getColVec4( mat4 m, vec4 v, int i ) {
-	return vec4_create( m.m[i], m.m[4 + i], m.m[8 + i], m.m[12 + i] );
+	return vec4_create( m[i], m[4 + i], m[8 + i], m[12 + i] );
 }
 
 vec2  mat4_getRowVec2( mat4 m, vec2 v, int i ) {
-	return vec2_create( m.m[i], m.m[i + 1]);
+	return vec2_create( m[i], m[i + 1]);
 }
 
 vec3  mat4_getRowVec3( mat4 m, vec3 v, int i ) {
-	return vec3_create( m.m[i], m.m[i + 1], m.m[i + 2] );
+	return vec3_create( m[i], m[i + 1], m[i + 2] );
 }
 
 vec4  mat4_getRowVec4( mat4 m, vec4 v, int i ) {
-	return vec4_create( m.m[i], m.m[i + 1], m.m[i + 2], m.m[i + 3] );
+	return vec4_create( m[i], m[i + 1], m[i + 2], m[i + 3] );
 }
 
-mat4 mat4_translate(float x, float y, float z){
-    mat4 m = {{
-            1.0f, 0.0f, 0.0f,    x,
-            0.0f, 1.0f, 0.0f,    y,
-            0.0f, 0.0f, 1.0f,    z,
-            0.0f, 0.0f, 0.0f, 1.0f }};
-    return m;
+void mat4_translate( mat4 dest, float x, float y, float z){
+    mat4_copy( identity_mat, dest );
+    dest[3] = x;
+    dest[7] = y;
+    dest[11] = z;
 }
 
-mat4 mat4_scale( float x, float y, float z ){
-    mat4 m = {{
-               x, 0.0f, 0.0f, 0.0f,
-            0.0f,    y, 0.0f, 0.0f,
-            0.0f, 0.0f,    z, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f }};
-    return m;
+void mat4_scale( mat4 dest, float x, float y, float z ){
+    mat4_copy( zero_mat, dest );
+    dest[0] = x;
+    dest[5] = y;
+    dest[10] = z;
+    dest[15] = 1.0f;
 }
 
-mat4 mat4_uscale( float s ){
-    mat4 m = {{
-               s, 0.0f, 0.0f, 0.0f,
-            0.0f,    s, 0.0f, 0.0f,
-            0.0f, 0.0f,    s, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f }};
-    return m;
+void mat4_uscale( mat4 dest, float s ){
+    mat4_copy( zero_mat, dest );
+    dest[0] = s;
+    dest[5] = s;
+    dest[10] = s;
+    dest[15] = 1.0f;
 }
 
-mat4 mat4_rotationA(float x, float y, float z, float angle){
+void mat4_rotationA( mat4 dest, float x, float y, float z, float angle ){
     float sin = sinf(angle);
     float cos = cosf(angle);
 
-    mat4 m = {{
+    mat4 m = {
               cos+x*x*(1-cos), x*y*(1-cos)-z*sin, x*z*(1-cos)+y*sin, 0,
             y*x*(1-cos)+z*sin,   cos+y*y*(1-cos), y*z*(1-cos)-x*sin, 0,
             z*x*(1-cos)-y*sin, z*y*(1-cos)+x*sin,   cos+z*z*(1-cos), 0,
-                            0,                 0,                 0, 1 }};
-    return m;
+                            0,                 0,                 0, 1 };
+    mat4_copy(m, dest);
 }
 
-mat4 mat4_rotation(float x, float y, float z){
-    mat4 mx = mat4_rotx(x);
-    mat4 my = mat4_roty(y);
-    mat4 mz = mat4_rotz(z);
-    mat4 m = mat4_mlt( mz, mat4_mlt( my, mx ) );
-    return m;
+void mat4_rotation( mat4 dest, float x, float y, float z ){
+    mat4 mx, my, mz, tmp;
+    mat4_create(tmp);
+    mat4_create(dest);
+    mat4_rotx(mx, x);
+    mat4_roty(my, y);
+    mat4_rotz(mz, z);
+    mat4_mlt( my, mx, tmp );
+    mat4_mlt( mz, tmp, dest );
+    //mat4_print(mx);
+    //mat4_print(my);
+    //mat4_print(mz);
+    //mat4_print(tmp);
+    //mat4_print(dest);
 }
 
-mat4 mat4_rotx( float r ){
-    mat4 m = {{
+void mat4_rotx( mat4 dest, float r ){
+    mat4 m = {
         1.0f,    0.0f,   0.0f, 0.0f,
         0.0f,  cos(r), sin(r), 0.0f,
         0.0f, -sin(r), cos(r), 0.0f,
-        0.0f,    0.0f,   0.0f, 1.0f }};
-    return m;
+        0.0f,    0.0f,   0.0f, 1.0f };
+    mat4_copy(m, dest);
 }
 
-mat4 mat4_roty( float r ){
-    mat4 m = {{
+void mat4_roty( mat4 dest, float r ){
+    mat4 m = {
         cos(r), 0.0f, -sin(r), 0.0f,
           0.0f, 1.0f,    0.0f, 0.0f,
         sin(r), 0.0f,  cos(r), 0.0f,
-          0.0f, 0.0f,    0.0f, 1.0f }};
-    return m;
+          0.0f, 0.0f,    0.0f, 1.0f };
+    mat4_copy(m, dest);
 }
 
-mat4 mat4_rotz( float r ){
-    mat4 m = {{
+void mat4_rotz( mat4 dest, float r ){
+    mat4 m = {
          cos(r), sin(r), 0.0f, 0.0f,
         -sin(r), cos(r), 0.0f, 0.0f,
            0.0f,   0.0f, 1.0f, 0.0f,
-           0.0f,   0.0f, 0.0f, 1.0f }};
-    return m;
+           0.0f,   0.0f, 0.0f, 1.0f };
+
+    mat4_copy(m, dest);
 }
 
-mat4 mat4_projection(float n, float f, float fov, float aspect){
+void mat4_projection( mat4 dest, float n, float f, float fov, float aspect ){
     float s = 1.0f/tanf(fov * 0.5f * M_PI / 180.0f);
     float zr = n - f;
-    mat4 m = {{
+    
+    mat4 m = {
             s/aspect, 0.0f,      0.0f,        0.0f,
                 0.0f,    s,      0.0f,        0.0f,
                 0.0f, 0.0f, (-n-f)/zr, 2.0f*n*f/zr,
-                0.0f, 0.0f,     -1.0f,        0.0f }};
-    return m;
+                0.0f, 0.0f,     -1.0f,        0.0f };
+    mat4_copy(m, dest);
 }
 
-mat4 mat4_screen(float halfW, float halfH){
-    mat4 m = {{
+void mat4_screen( mat4 dest, float halfW, float halfH ){
+    mat4 m = {
             halfW,   0.0f,  0.0f, halfW,
              0.0f,  halfH,  0.0f, halfH,
              0.0f,   0.0f,  1.0f,  0.0f,
-             0.0f,   0.0f,  0.0f,  1.0f }};
-    return m;
+             0.0f,   0.0f,  0.0f,  1.0f };
+    mat4_copy(m, dest);
 }
 
-mat4 mat4_lookAt(vec3 eye, vec3 center, vec3 up){    
+void mat4_lookAt( mat4 dest, vec3 eye, vec3 center, vec3 up ){    
     vec3 f = vec3_nrm(vec3_sub(center, eye));
     vec3 r = vec3_crs(up, f);
     vec3 u = vec3_crs(f, r);
 
-    mat4 m = {{
+    mat4 m = {
              r.x,  u.x,  f.x, eye.x,
              r.y,  u.y,  f.y, eye.y,
              r.z,  u.z,  f.z, eye.z,
-            0.0f, 0.0f, 0.0f,  1.0f }};
+            0.0f, 0.0f, 0.0f,  1.0f };
     
-    return m;
+    mat4_copy(m, dest);
+}
+
+void mat4_copy(mat4 src, mat4 dest){
+    memcpy(dest, src, sizeof(mat4));
 }
 
 //###########

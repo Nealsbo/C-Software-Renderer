@@ -5,8 +5,9 @@
 //### Typedefs ###
 //################
 
-typedef struct {
-    unsigned char r, g, b, a;
+typedef union {
+    struct { uint8_t r, g, b, a };
+    uint8_t data[4];
 } color_t;
 
 typedef struct {

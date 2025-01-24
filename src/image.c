@@ -52,11 +52,7 @@ color_t Color_IntensityVec3( color_t c, vec3 v ) {
 }
 
 uint32_t Color_ToUInt32( color_t c ) {
-    uint32_t r = (uint32_t)c.r;
-    uint32_t g = (uint32_t)c.g;
-    uint32_t b = (uint32_t)c.b;
-    uint32_t a = (uint32_t)c.a;
-    return (a << 24) | (r << 16) | (g << 8) | b;
+    return (c.a << 24) | (c.r << 16) | (c.g << 8) | c.b;
 }
 
 uint32_t Color_ToUInt32Fast( color_t c ) {     //broken, indexes reversed
@@ -160,20 +156,18 @@ void Bitmap_SetPixel( bitmap_t *i, unsigned int x, unsigned int y, color_t c ) {
 }
 
 color_t Bitmap_GetPixel( bitmap_t *i, unsigned int x, unsigned int y ) {
-    color_t col;
-    col = i->bitmap[ y * i->width + x ];
-    return col;
+    return i->bitmap[ y * i->width + x ];
 }
 
 color_t Bitmap_GetPixelUV( bitmap_t *i, vec2 uv ) {
-    color_t col;
-    unsigned int x = i->width * (uv.x - (int)uv.x);
-    unsigned int y = i->height * (uv.y - (int)uv.y);
-    if( x < 0 || y < 0 || x >= i->width || y >= i->height )
-		col = Color_Init(0,0,0,0);
-	else
-		col = i->bitmap[ y * i->width + x ];
-    return col;
+    //unsigned int x = i->width * (uv.x - (int)uv.x);
+    //unsigned int y = i->height * (uv.y - (int)uv.y);
+    //uint32_t x = (uint32_t)(i->width * uv.x) % i->width;
+    //uint32_t y = (uint32_t)(i->height * uv.y) % i->height;
+    uint32_t x = (uint32_t)((i->width - 1) * uv.x);
+    uint32_t y = (uint32_t)((i->height -1) * uv.y);
+
+    return i->bitmap[ (y % i->height) * i->width + x % i->width ];
 }
 
 void Bitmap_FillColor( bitmap_t *i, color_t c ) {

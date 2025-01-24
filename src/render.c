@@ -85,6 +85,9 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
     obj_face_t face;
     vec4 rast_verts[3];
     vertex_t vertex[3], vertexx[3];
+    mat4 camMat = {0.0f}, lookAtMat = {0.0f}, tmp = {0.0f};
+    mat4 translation = {0.0f}, rotation = {0.0f}, scale = {0.0f};
+    mat4 modelMat = {0.0f}, viewMat = {0.0f}, projMat = {0.0f};
     
     renderer_       = renderer;
     camera_t *cam   = scene->mainCamera;
@@ -92,17 +95,19 @@ void Renderer_DrawObject( scene_t *scene, renderer_t *renderer, obj_model_t *mod
     
     Shader_SetLight( &shader, scene->directLight, scene->directLightColor, scene->ambientLightColor );
 
-    mat4 lookAtMat   = mat4_lookAt( Camera_GetPosition( cam ),
-                                    vec3_add( Camera_GetPosition( cam ), Camera_GetFront( cam ) ),
-                                    vec3_create( 0.0, 1.0, 0.0 ) );
+    mat4_lookAt( lookAtMat,
+                 Camera_GetPosition( cam ),
+                 vec3_add( Camera_GetPosition( cam ), Camera_GetFront( cam ) ),
+                 vec3_create( 0.0, 1.0, 0.0 ) );
 
-    mat4 translation = mat4_translate( model->position.x, model->position.y, model->position.z );
-    mat4 rotation    = mat4_rotation(  model->rotation.x, model->rotation.y, model->rotation.z );
-    mat4 scale       = mat4_scale(     model->scale.x,    model->scale.y,    model->scale.z );
+    mat4_translate( translation, model->position.x, model->position.y, model->position.z );
+    mat4_rotation(  rotation,    model->rotation.x, model->rotation.y, model->rotation.z );
+    mat4_scale(     scale,       model->scale.x,    model->scale.y,    model->scale.z );
     
-    mat4 modelMat    = mat4_mlt( mat4_mlt( translation, rotation ), scale );
-    mat4 viewMat     = mat4_mlt( lookAtMat, modelMat );
-    mat4 projMat     = mat4_mlt( scene->mainCamera->projection, viewMat );
+    mat4_mlt( translation, rotation, tmp );
+    mat4_mlt( tmp, scale, modelMat );
+    mat4_mlt( lookAtMat, modelMat, viewMat );
+    mat4_mlt( scene->mainCamera->projection, viewMat, projMat );
 
     Shader_SetMatrices( &shader, modelMat, lookAtMat, projMat );
     Shader_SetCamera( &shader, Camera_GetPosition( cam ) );

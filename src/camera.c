@@ -15,7 +15,7 @@ camera_t *Camera_Init( vec3 pos, vec3 up, float yaw, float pitch, float fov, flo
     cam->far        = far;
     cam->speed      = speed;
     Camera_UpdateVectors( cam );
-    cam->projection = mat4_projection( cam->near, cam->far, cam->fov, cam->aspect );
+    mat4_projection( cam->projection, cam->near, cam->far, cam->fov, cam->aspect );
     return cam;
 }
 
@@ -41,11 +41,11 @@ void Camera_SetAspect( camera_t *cam, float aspect ) {
 
 void Camera_SetProjMatrix( camera_t *cam, float fov, float znear, float zfar, float aspect ) {
     cam->fov = fov;
-    cam->projection = mat4_projection( znear, zfar, fov, aspect );
+    mat4_projection( cam->projection, znear, zfar, fov, aspect );
 }
 
 void Camera_UpdateMatrix( camera_t *cam ) {
-    cam->projection = mat4_projection( cam->near, cam->far, cam->fov, cam->aspect );
+    mat4_projection( cam->projection, cam->near, cam->far, cam->fov, cam->aspect );
 }
 
 void Camera_SetNear( camera_t *cam, float n) {
@@ -91,8 +91,8 @@ float Camera_GetFar ( camera_t *cam ) {
     return cam->far;
 }
 
-mat4 Camera_GetViewProj ( camera_t *cam ) {
-    return cam->projection;
+void Camera_GetViewProj ( camera_t *cam, mat4 cam_mat ) {
+    mat4_copy(cam->projection, cam_mat);
 }
 
 float Camera_GetSpeed ( camera_t *cam ) {

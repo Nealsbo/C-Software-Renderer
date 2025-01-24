@@ -59,7 +59,7 @@ triangle_t  *CreateTriangle();
 
 obj_face_t   Face_Create( int n, vec3i *v );
 void         Face_Print ( obj_face_t f );
-void         Face_Printp( obj_face_t *f );
+void         Face_Printp( void *f );
 
 //###########################
 //###   Model functions   ###
@@ -73,7 +73,7 @@ obj_model_t *Model_CreateBasePlane   ( const char *model_name );
 obj_model_t *Model_CreateBaseBox     ( const char *model_name );
 
 obj_model_t *Model_LoadOBJ           ( const char *file_name );
-void         Model_Test              ( obj_model_t *model );
+void         Model_Test              ( void *model );
 
 void         Model_SetPosition       ( obj_model_t *model, vec3 pos );
 void         Model_SetRotation       ( obj_model_t *model, vec3 rot );
@@ -93,5 +93,5 @@ int          Model_GetVertCount      ( obj_model_t *model );
 int          Model_GetTrisCount      ( obj_model_t *model );
 texture_t   *Model_GetTexture        ( obj_model_t *model );
 
-void         Model_Free              ( obj_model_t *model );
+void         Model_Free              ( void *model );
 #endif // OBJLOADER_H_INCLUDED

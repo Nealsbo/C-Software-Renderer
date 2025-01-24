@@ -114,8 +114,6 @@ void Application_Run() {
         }
         last_time = curr_time;
     }
-
-    return 0;
 }
 
 void Application_Close() {
@@ -135,7 +133,7 @@ void UpdateScene( renderer_t *renderer, float delta ) {
 	
 	obj_model_t *model = Scene_FindObjectByName( renderer->scene, "monkey" );
 	if( model != NULL )
-		Model_AddRotation( model, vec3_create( 0.0f, delta, 0.0f ) );
+		Model_AddRotation( model, vec3_create( 0.0f, 0.25f * delta, 0.0f ) );
 	
 	
 	int f = moveDirection[0]; // 1 - Forward; -1 - Backward;

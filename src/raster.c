@@ -5,8 +5,8 @@ extern renderer_t *renderer_;
 
 
 
-static float EdgeFunc( vec3 a, vec3 b, vec3 c ) {
-	return (c.x - a.x) * (b.y - a.y) - (c.y - a.y) * (b.x - a.x);
+static float EdgeFunc( vec3 *a, vec3 *b, vec3 *c ) {
+	return (c->x - a->x) * (b->y - a->y) - (c->y - a->y) * (b->x - a->x);
 }
 
 static float TriangleAreaTimesTwo( vertex_t *a, vertex_t *b, vertex_t *c ) {
@@ -18,7 +18,8 @@ static float TriangleAreaTimesTwo( vertex_t *a, vertex_t *b, vertex_t *c ) {
 }
 
 void Raster_DrawLine(vec4 v0, vec4 v1, SDL_Surface *image, color_t color) {
-    mat4 sst = mat4_screen ( WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
+    mat4 sst;
+	mat4_screen ( sst, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
     
     vec2i p0 = vec4_toVec2i( vec4_pdiv( vec4_byMat4( v0, sst ) ) );
     vec2i p1 = vec4_toVec2i( vec4_pdiv( vec4_byMat4( v1, sst ) ) );
@@ -56,20 +57,22 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 	float w0, w1, w2, z, area;
 	int index, x ,y, srcX, srcY;
 	
+	mat4 sst;
 	color_t color;
 	
-	mat4 sst    = mat4_screen( WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
-	vec3 p;
-	vec3 overW = vec3_create( 1.0f / v[0].w, 1.0f / v[1].w, 1.0f / v[2].w );
+	mat4_screen( sst, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 );
+
+	//vec3 p;
+	vec3 overW = { 1.0f / v[0].w, 1.0f / v[1].w, 1.0f / v[2].w };
 	vec3 pts[3] = {vec4_toVec3( vec4_pdiv( vec4_byMat4(v[0], sst) ) ),
 				   vec4_toVec3( vec4_pdiv( vec4_byMat4(v[1], sst) ) ),
 				   vec4_toVec3( vec4_pdiv( vec4_byMat4(v[2], sst) ) )};
 				   
-	vec2i bboxmin = vec2i_create( 0, 0 );
-	vec2i bboxmax = vec2i_create( WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1 );
-	vec2i clamp   = vec2i_create( WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1 );
+	vec2i bboxmin = { 0, 0 };
+	vec2i bboxmax = { WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1 };
+	vec2i clamp   = { WINDOW_WIDTH - 1, WINDOW_HEIGHT - 1 };
 	
-	area = EdgeFunc( pts[0], pts[1], pts[2] );
+	area = EdgeFunc( &pts[0], &pts[1], &pts[2] );
 	
 	bboxmax.x = MIN( MAX( pts[0].x, MAX( pts[1].x, pts[2].x) ), clamp.x );
 	bboxmin.x = MAX( MIN( pts[0].x, MIN( pts[1].x, pts[2].x) ), 0 );
@@ -79,10 +82,10 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 	for( x = bboxmin.x; x <= bboxmax.x; x++ ) {
 		for( y = bboxmin.y; y <= bboxmax.y; y++ ) {
 			int index = y * WINDOW_WIDTH + x;
-			p = vec3_create( x, y, 0.0f );
-			w0 = EdgeFunc( pts[1], pts[2], p );
-			w1 = EdgeFunc( pts[2], pts[0], p );
-			w2 = EdgeFunc( pts[0], pts[1], p );
+			vec3 p = { x, y, 0.0f };
+			w0 = EdgeFunc( &pts[1], &pts[2], &p );
+			w1 = EdgeFunc( &pts[2], &pts[0], &p );
+			w2 = EdgeFunc( &pts[0], &pts[1], &p );
 			
 			if( w0 >= 0.0f && w1 >= 0.0f && w2 >= 0.0f ) {
 				w0 /= area;
@@ -93,8 +96,9 @@ void Raster_DrawTriangle( vec4 *v, SDL_Surface *Surface, obj_model_t *model, sha
 				if( z < renderer_->z_Buffer[index] ) {
 					renderer_->z_Buffer[index] = z;
 					
-					vec3 d = vec3_create( w0, w1, w2 );
-					//vec3 d = vec3_create( w0 * overW.x, w1 * overW.y, w2 * overW.z );
+					vec3 d = { w0 * overW.x, w1 * overW.y, w2 * overW.z };
+					float f = 1.0f/ (d.x + d.y + d.z);
+					d = vec3_mlt(d, f);
 					
 					switch( renderer_->flagState ) {
 						case RENDER_STATE_Z_BUFFER:

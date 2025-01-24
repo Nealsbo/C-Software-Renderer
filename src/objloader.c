@@ -59,7 +59,8 @@ void Face_Print(obj_face_t f){
     printf("\n");
 }
 
-void Face_Printp(obj_face_t *f){
+void Face_Printp(void *_f){
+    obj_face_t *f = (obj_face_t *)_f;
     int i;
     printf("Face:");
     for(i = 0; i <f->vcount; i++)
@@ -507,7 +508,8 @@ char *Model_GetName( obj_model_t *model ){
 	return model->name;
 }
 
-void Model_Test(obj_model_t *model){
+void Model_Test(void *_model){
+    obj_model_t *model = (obj_model_t *)_model;
     int i;
     if(model == NULL){
         printf("====================\n");
@@ -584,7 +586,8 @@ texture_t *Model_GetTexture( obj_model_t *model ){
     return model->diffmap;
 }
 
-void Model_Free(obj_model_t *model){
+void Model_Free(void *_model){
+    obj_model_t *model = (obj_model_t *)_model;
     if(model == NULL){
         printf("Warning: Free request for NULL model pointer!");
         return;
